@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Details</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+</head>
+<body> 
+	<div th:replace="fragments/layout :: siteHeader"></div>
+	<!-- Back button -->
+		<div>
+			<a th:href="@{/catalogue}"  class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
+			<h3 style="padding-left:20px;">Product Details<h3>	
+		</div>
+		
+		
+	<div class="card" style="margin-left:20px; margin-right:20px;"  th:each="p: ${productlist}">	
+			<img th:src="@{${p.imageUrl}}"
+					class="card-img-top" 
+					alt="watch"
+					style="width:150px ;height:150px; object-fit:cover;">
+		
+	<table>		
+		    <tr>
+				<td style="width:20%; padding-left:50px;" >Name:</td>
+				<td> <b><span th:text="${p.name}"></span></b> </td>
+			</tr>
+			<tr>
+			  	<td style="width:20%; padding-left:50px;" >Price:</td>
+				<td> <b><span th:text="${p.unitPrice}"></span></td>
+			</tr>
+			<tr>
+			 	<td style="width:20%; padding-left:50px;" >Description: </td>
+				<td> <b><span th:text="${p.description}"></span> </td>
+			</tr>
+			<tr>
+			 	<td style="width:20%; padding-left:50px;" >Details: </td>
+				<td><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+			  			Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+			  			Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+			  			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+					</b>
+				</td>
+			</tr>
+			<tr>
+			  	<td style="width:20%; padding-left:50px;" >Stock: </td>
+				<td><b><span th:text="${p.stock}"></span></b></td>
+			</tr>
+			</table>
+				
+			 <div>
+				<form th:action = "@{/cart/add}" method = "post">
+					<input type="hidden" name="productId" th:value="${p.id}"/> 
+					<input type="number" name="quantity" min="1" value="1"/>
+				 <button type="submit" class="btn btn-primary mt-4 mb-4 ms-4" style="margin-left:20px;">Add To Cart</button>
+			 </form>
+			</div>
+
+		</div>
+	
+	
+
+	 
+	 
+	   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+	   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div th:fragment="authCheck">
+      <script th:inline="javascript">
+        (function () {
+          // call backend endpoint to get user info; backend will read cookies (supports HttpOnly)
+          fetch("/auth/user", { credentials: "same-origin" })
+            .then(function (res) {
+              if (!res.ok) throw new Error("unauth");
+              return res.json();
+            })
+            .then(function (payload) {
+              // payload structure matches com.application.utility.Result
+              if (payload && payload.code === 200 && payload.data) {
+                // if you want to expose the data into the page, you can set window._CURRENT_USER_
+                window._CURRENT_USER_ = payload.data;
+                // optionally populate elements with data
+                var el = document.querySelector("[data-user-name]");
+                if (el) el.textContent = payload.data.username || "";
+                var tel = document.querySelector("[data-user-phone]");
+                if (tel) tel.textContent = payload.data.phoneNumber || "";
+                var email = document.querySelector("[data-user-email]");
+                if (email) email.textContent = payload.data.email || "";
+                var addr = document.querySelector("[data-user-address]");
+                if (addr) addr.textContent = payload.data.address || "";
+                console.log("payload", payload);
+                console.log("payload", payload.data.username);
+                console.log(payload.data.phoneNumber);
+              } else {
+                // window.location.replace("http://localhost:8080/cart");
+              }
+            })
+            .catch(function () {
+              // window.location.replace("http://localhost:8080/cart");
+            });
+        })();
+      </script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout page</title>
+    <style>
+      .checkout-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .shipping-row {
+        display: flex;
+        gap: 32px;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .shipping-address table {
+        width: 260px;
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+      }
+      .shipping-address td {
+        border: 1px solid #e0e0e0;
+        padding: 8px;
+      }
+      .shipping-method {
+        min-width: 320px;
+      }
+      .shipping-method .options {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .section-title {
+        font-weight: 700;
+      }
+      .cart-wrapper {
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+      }
+      .cart-wrapper table {
+        border-collapse: collapse;
+        min-width: 520px;
+      }
+      .cart-wrapper td,
+      .cart-wrapper th {
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+      .billing {
+        margin-top: 32px;
+        text-align: center;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <!-- Thymeleaf fragment to check cookie and fetch user info via /auth/user -->
+    <!-- <div th:replace="~{fragments/authCheck :: authCheck}"></div> -->
+
+    <div th:replace="~{fragments/layout :: siteHeader}"></div>
+
+    <div class="checkout-container">
+      <h1 style="text-align: center">Checkout</h1>
+
+      <!-- Address + Shipping side by side -->
+      <div class="shipping-row">
+        <div class="shipping-address">
+          <h2 class="section-title" style="font-size: 20px">
+            Shipping Address
+          </h2>
+          <table>
+            <tr style="font-weight: bold">
+              <td
+                th:text="${customer.firstName} +' ' + ${customer.lastName}"
+              ></td>
+            </tr>
+            <tr>
+              <td th:text="${customer.address}"></td>
+            </tr>
+            <tr>
+              <td
+                th:text="${customer.country} + ' ' + ${customer.postalCode}"
+              ></td>
+            </tr>
+            <tr>
+              <td th:text="${customer.phoneNumber}"></td>
+            </tr>
+            <tr>
+              <td th:text="${customer.email}"></td>
+            </tr>
+          </table>
+        </div>
+
+        <form
+          th:action="@{/checkout/shipping}"
+          method="POST"
+          class="shipping-method"
+        >
+          <h2 class="section-title" style="font-size: 24px">Shipping Method</h2>
+          <div class="options">
+            <label
+              ><input type="radio" name="shippingMethod" value="ninjavan" />
+              NinjaVan</label
+            >
+            <label
+              ><input type="radio" name="shippingMethod" value="singpost" />
+              SingPost</label
+            >
+            <label
+              ><input type="radio" name="shippingMethod" value="selfcollect" />
+              Self-Collect</label
+            >
+          </div>
+          <div style="margin-top: 12px">
+            <button type="submit">Confirm Shipping</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Cart -->
+      <div class="cart-wrapper">
+        <div>
+          <h2 class="section-title" style="font-size: 18px; text-align: center">
+            Cart Items
+          </h2>
+          <table>
+            <tr style="font-weight: bold; font-size: 16px">
+              <td>Product Name</td>
+              <td>Unit price ($)</td>
+              <td>Quantity</td>
+              <td>Item cost</td>
+            </tr>
+            <tr th:each="customerCartItem:${customerCartItems}">
+              <td th:text="${customerCartItem.product.name}"></td>
+              <td
+                th:text="${#numbers.formatDecimal(customerCartItem.unitPrice,1,2)}"
+              ></td>
+              <td th:text="${customerCartItem.quantity}"></td>
+              <td
+                th:text="${#numbers.formatDecimal(customerCartItem.quantity * customerCartItem.unitPrice,1,2)}"
+              ></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align: right; font-weight: bold">
+                Total:
+              </td>
+              <td th:text="${#numbers.formatDecimal(cartTotal, 1, 2)}"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Billing -->
+      <div class="billing" style="font-size: 18px">
+        <form th:action="@{/checkout/billing}" method="POST" autocomplete="off">
+          <h2 class="section-title" style="font-size: 18px">
+            Billing Information
+          </h2>
+          <p style="font-size: 18px">
+            Card Number:
+            <input
+              type="text"
+              name="cardNumber"
+              placeholder="XXXX-XXXX-XXXX-XXXX"
+              style="font-size: 18px"
+            />
+          </p>
+          <p style="font-size: 18px">
+            Exp Date:
+            <input
+              type="number"
+              name="expMonth"
+              style="max-width: 50px; font-size: 18px"
+              placeholder="MM"
+            />
+            /
+            <input
+              type="number"
+              name="expYear"
+              style="max-width: 50px; font-size: 18px"
+              placeholder="YY"
+            />
+            &nbsp; CVV:
+            <input
+              type="password"
+              name="cvv"
+              style="max-width: 50px; font-size: 18px"
+              placeholder="CVV"
+            />
+          </p>
+          <p>
+            <button
+              type="submit"
+              style="
+                height: 50px;
+                width: 120px;
+                font-size: 18px;
+                font-weight: bold;
+              "
+            >
+              Confirm
+            </button>
+          </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div th:replace="~{fragments/layout :: siteHeader}"></div>
+    <!--  ========================Cart table=================  -->
+    <h1>Cart</h1>
+
+    <table class="checkoutCart">
+      <tr class="header">
+        <td>Image</td>
+        <td>Product name</td>
+        <td>Price ($)</td>
+        <td>Quantity</td>
+        <td>Remove from Cart</td>
+      </tr>
+      <tr class="cartItem" th:each="ci : ${items}">
+        <td>
+          <img th:src="${ci.product.imageUrl}" alt="product" height="100px" />
+        </td>
+        <td th:text="${ci.product.name}"/>
+        <td th:text="${ci.product.unitPrice}"/>
+        <td>
+          <form th:action="@{/cart/update}" method="post" class="inline">
+            <input type="hidden" name="productId" th:value="${ci.product.id}" />
+            <input
+              type="number"
+              name="quantity"
+              min="0"
+              th:value="${ci.quantity}"
+            />
+            <button type="submit">Update</button>
+          </form>
+        </td>
+        <td>
+          <form th:action="@{/cart/remove}" method="post">
+            <input type="hidden" name="productId" th:value="${ci.product.id}" />
+            <button type="submit" class="removeItem" title="Remove">
+              Remove Item
+            </button>
+          </form>
+        </td>
+      </tr>
+    </table>
+    <p>
+    <form th:action="@{/cart/clear}" method="post">
+      <button type="submit">Clear cart</button>
+    </form>
+    </p>
+    <!--=============================== checkout table =============================-->
+    <div class="checkoutContainer">
+      <form th:action="@{/checkout}" method="GET">
+        <table class="checkout">
+          <tr>
+            <td class="header" colspan="2">Cart Total</td>
+          </tr>
+          <tr>
+            <td class="label">Subtotal:</td>
+            <td class="subtotal" th:text="${subtotal}">0.00</td>
+          </tr>
+          <tr>
+            <td class="label">Shipping:</td>
+            <td class="shippingCharges">
+              <input type="radio" name="delivery" value="flatRate" /> Flat Rate
+              of S$7.00 <br />
+              <input type="radio" name="delivery" value="selfCollect" />
+              Self-collect <br />
+            </td>
+          </tr>
+
+          <tr>
+            <td class="label">Total:</td>
+            <td class="Total" th:text="${subtotal}">0.00</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td class="checkoutButtonContainer">
+              <button type="submit" class="checkoutButton">
+                Proceed to Checkout
+              </button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "ShoppingCartApplication",
+      "request": "launch",
+      "mainClass": "sg.nus.edu.shopping_cart.ShoppingCartApplication",
+      "projectName": ""
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ShoppingCartApplication<shopping-cart>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "sg.nus.edu.shopping_cart.ShoppingCartApplication",
+      "projectName": "shopping-cart",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

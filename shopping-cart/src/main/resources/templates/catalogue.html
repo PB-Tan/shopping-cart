@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Catalogue</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div th:replace="fragments/layout :: siteHeader"></div>
+
+      <div class="row">
+        <div class="col-4 mt-4" th:each="p : ${productlist}">
+          <div class="card">
+            <img
+              th:src="@{${p.imageUrl}}"
+              class="card-img-top"
+              alt="watch"
+              style="width: 200px; height: 200px; object-fit: cover"
+            />
+            <div class="card-body">
+              <h5 class="card-title" th:text="${p.name}"></h5>
+              <p class="card-text" th:text="${p.description}"></p>
+              <p class="card-text" th:text="${p.unitPrice}"></p>
+              <a th:href="@{catalogue/{id}(id=${p.id})}" class="btn btn-primary"
+                >View detail</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
