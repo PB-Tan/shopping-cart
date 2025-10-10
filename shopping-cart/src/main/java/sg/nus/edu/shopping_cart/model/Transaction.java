@@ -18,7 +18,10 @@ public class Transaction {
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
 
-    @Column(nullable = false)
+    @OneToOne(mappedBy = "transaction")
+    private Order order;
+
+    @Column
     private double grandTotal;
 
     private String providerProduct;

@@ -4,11 +4,15 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 import sg.nus.edu.shopping_cart.model.*;
 import sg.nus.edu.shopping_cart.service.*;
+import sg.nus.edu.shopping_cart.validator.*;
 
 @Controller
 // @RequestMapping("")
@@ -18,96 +22,109 @@ public class CheckoutController {
     CartService cartService;
 
     @Autowired
-    CustomerService cs;
+    CustomerService customerService;
 
     @Autowired
-    OrderService os;
+    OrderService orderService;
 
     @Autowired
-    ShipmentService ss;
+    ShipmentService shipmentService;
 
     @Autowired
-    OrderItemService ois;
+    private PaymentMethodValidator paymentMethodValidator;
 
-    String activeUsername = "";
-    Optional<Customer> customer;
+    @InitBinder("paymentMethod")
+    private void initPaymentMethodValidator(WebDataBinder binder) {
+        binder.addValidators(paymentMethodValidator);
+    }
 
+    // payment controlling
     @GetMapping("/checkout")
     public String displayCheckout(HttpSession session, Model model) {
-        activeUsername = (String) session.getAttribute("username");
-        // if (activeUsername == null) {
-        // // optional: session.setAttribute("error", "Not authenticated");
-        // return "redirect:/login";
-        // }
-
-        customer = cs.findCustomerByUsername(activeUsername);
+        String username = (String) session.getAttribute("username");
+        Optional<Customer> customer = customerService.findCustomerByUsername(username);
         if (customer.isEmpty()) {
             return "redirect:/login";
         }
 
         // by this point customer exists and has been validated
         Customer activeCustomer = customer.get();
-        List<CartItem> items = cartService.getCartItemsByCustomer(activeUsername);
-        double cartTotal = 0;
-        for (CartItem cartItem : items) {
-            cartTotal += cartItem.getUnitPrice() * cartItem.getQuantity();
-            // persist cartitems into orderItems
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProductName(cartItem.getProduct().getName());
-            orderItem.setUnitPrice(cartItem.getUnitPrice());
-            orderItem.setItemDiscount(0);
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setItemTax(0);
-            orderItem.setItemTotal(cartItem.getUnitPrice() * cartItem.getQuantity() // - discount + tax
-            );
-            ois.saveOrderItem(orderItem);
-        }
+        // persist new order with order items from cart and its cart Items
+        Order order = orderService.createOrderFromCart(username);
 
-        model.addAttribute("customerCartItems", items);
+        model.addAttribute("customerOrderItems", orderService.findOrderItemByUsername(username));
         model.addAttribute("customer", activeCustomer);
-        model.addAttribute("cartTotal", cartTotal);
-        return "checkout";
+        model.addAttribute("cartTotal", order.getGrandTotal());
+        return "payment";
     }
 
-    // Persist cart items into a new ACTIVE order for the logged-in customer
-    @PostMapping("/checkout/billing")
-    public String confirmCheckout(
+    // select payment methods
+    @PostMapping("/checkout/method")
+    public String selectPaymentMethod(
             HttpSession session,
-            @RequestParam String cardNumber,
-            @RequestParam Integer expMonth,
-            @RequestParam Integer expYear,
-            @RequestParam String cvv) {
-
-        // // check if session is valid
-        // if (activeUsername == null) {
-        // return "redirect:/login";
-        // }
-
-        Optional<Order> orderOpt = os.createActiveOrderFromCart(activeUsername);
-        if (orderOpt.isEmpty()) {
-            return "redirect:/checkout";
+            @RequestParam String paymentMethod) {
+        if (paymentMethod.equals("card")) {
+            return "redirect:/checkout/creditcard";
+        } else {
+            return "redirect:/checkout/qr";
         }
-        Order activeOrder = orderOpt.get();
-        List<OrderItem> orderItems = ois.findActiveOrderItemsByUsername(activeUsername);
-        for (OrderItem orderItem : orderItems) {
-
-        }
-
-        return "checkout/confirm";
-
     }
 
-    @PostMapping("/checkout/shipping")
-    public String submitShippingMethod(@RequestParam("shippingMethod") String shippingMethod,
+    @GetMapping("checkout/creditcard")
+    public String displayCreditCardForm(Model model) {
+        if (!model.containsAttribute("paymentMethod")) {
+            model.addAttribute("paymentMethod", new PaymentMethod());
+        }
+        return "credit-card-payment";
+    }
+
+    @PostMapping("/checkout/creditcard")
+    public String payWithCreditCard(
             HttpSession session,
+            @Validated @ModelAttribute("paymentMethod") PaymentMethod paymentMethod,
+            BindingResult bindingResult,
             Model model) {
 
-        // if (activeUsername == null) {
-        // return "redirect:/login";
-        // }
+        if (bindingResult.hasErrors()) {
+            return "credit-card-payment";
+        }
 
-        os.updateShippingMethodForActiveOrder(activeUsername, shippingMethod);
-        return "redirect:/checkout";
+        String username = (String) session.getAttribute("username");
+        Optional<Customer> customer = customerService.findCustomerByUsername(username);
+        if (customer.isEmpty()) {
+            return "redirect:/login";
+        }
+        Optional<Order> orderOpt = orderService.findOrderByUsername(username);
+        if (orderOpt.isEmpty()) {
+            return "redirect:/test";
+        }
+
+        model.addAttribute("customer", customer.get());
+        model.addAttribute("cartTotal", orderOpt.get().getGrandTotal());
+
+        return "redirect:/checkout/success";
     }
+
+    @GetMapping("/checkout/success")
+    public String displaySuccess(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username != null) {
+            customerService.findCustomerByUsername(username).ifPresent(c -> model.addAttribute("customer", c));
+            orderService.findOrderByUsername(username)
+                    .ifPresent(o -> model.addAttribute("cartTotal", o.getGrandTotal()));
+        }
+        return "paymentsuccess";
+    }
+
+    // @PostMapping("/checkout/shipping")
+    // public String submitShippingMethod(
+    // @RequestParam("shippingMethod") String shippingMethod,
+    // HttpSession session,
+    // Model model) {
+
+    // String username = (String) session.getAttribute("username");
+    // orderService.updateShippingMethodForOrder(username, shippingMethod);
+    // return "redirect:/checkout";
+    // }
 
 }

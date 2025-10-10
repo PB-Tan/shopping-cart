@@ -60,7 +60,6 @@ public class CartController {
             @RequestParam("quantity") int quantity,
             HttpSession session) {
         String username = (String) session.getAttribute("username");
-        Customer activeCustomer = customerInterface.findCustomerByUsername(username).get();
         Optional<Product> productOpt = cartInterface.findProduct(productId);
         if (!productOpt.isPresent() || quantity <= 0) {
             return "redirect:/cart";

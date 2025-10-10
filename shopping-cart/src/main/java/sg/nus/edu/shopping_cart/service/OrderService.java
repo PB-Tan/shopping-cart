@@ -16,33 +16,34 @@ import java.time.LocalDateTime;
 public class OrderService implements OrderInterface {
 
     @Autowired
-    OrderRepository or;
+    OrderRepository orderRepo;
 
     @Autowired
-    ShipmentRepository sr;
+    ShipmentRepository shipRepo;
 
     @Autowired
-    CustomerRepository cr;
+    CustomerRepository customerRepo;
 
     @Autowired
-    CartItemRepository cir;
+    CartItemRepository cartItemRepo;
 
     @Autowired
-    OrderItemRepository oir;
+    OrderItemRepository orderItemRepo;
 
     @Override
     public Order findOrderById(int id) {
-        return or.findById(id).get();
+        return orderRepo.findById(id).get();
     }
 
     @Override
-    public Optional<Order> findActiveOrderByUsername(String username) {
-        return or.findActiveOrderByUsername(username);
+    public Optional<Order> findOrderByUsername(String username) {
+        return orderRepo.findTopByCustomerUsernameAndStatusOrderByOrderDateDesc(username, "ACTIVE");
     }
 
+    @Override
     @Transactional(readOnly = false)
-    public void updateShippingMethodForActiveOrder(String username, String shippingMethod) {
-        Optional<Order> activeOrder = or.findActiveOrderByUsername(username);
+    public void updateShippingMethodForOrder(String username, String shippingMethod) {
+        Optional<Order> activeOrder = orderRepo.findTopByCustomerUsernameAndStatusOrderByOrderDateDesc(username, "ACTIVE");
         if (activeOrder.isPresent()) {
             Order order = activeOrder.get();
             Shipment shipment = order.getShipment();
@@ -52,74 +53,74 @@ public class OrderService implements OrderInterface {
             // assoicated with the order
             if (shipment == null) {
                 shipment = new Shipment();
-                sr.save(shipment); // assigns id with
+                shipRepo.save(shipment); // assigns id with
             }
 
             // update shipment method for new shipment
             shipment.setShipmentMethod(shippingMethod);
             order.setShipment(shipment);
-            or.save(order);
+            orderRepo.save(order);
         }
 
         // if no active orders found, then do nothing
-
     }
 
+    @Override
     @Transactional(readOnly = false)
-    public Optional<Order> createActiveOrderFromCart(String username) {
-        if (username == null || username.isBlank())
-            return Optional.empty();
+    public Order createOrderFromCart(String username) {
+        // If an ACTIVE order already exists, reuse it
+        Optional<Order> existingActive = orderRepo.findTopByCustomerUsernameAndStatusOrderByOrderDateDesc(username, "ACTIVE");
+        if (existingActive.isPresent()) {
+            return existingActive.get();
+        }
 
-        Optional<Customer> customerOpt = cr.findById(username);
-        if (customerOpt.isEmpty())
-            return Optional.empty();
-
-        List<CartItem> cartItems = cir.findAllCartItemsByCustomer(username);
+        // If customer checks out an empty cart, return an empty order
+        List<CartItem> cartItems = cartItemRepo.findAllCartItemsByCustomer(username);
         if (cartItems == null || cartItems.isEmpty())
-            return Optional.empty();
+            return new Order();
 
+        // Creating a new order and setting prelim attributes
         Order order = new Order();
-        order.setCustomer(customerOpt.get());
-        order.setOrderStatus("ACTIVE");
-        order.setPaymentStatus("UNPAID");
-        order.setFulfilmentStatus("PENDING");
-        order.setCreatedAt(LocalDateTime.now());
+        order.setCustomer(customerRepo.findById(username).get());
+        order.setStatus("ACTIVE");
+        order.setOrderDate(LocalDateTime.now());
 
         double subTotal = 0.0;
-        for (CartItem ci : cartItems) {
-            subTotal += ci.getUnitPrice() * ci.getQuantity();
+        for (CartItem cartItem : cartItems) {
+            subTotal += cartItem.getUnitPrice() * cartItem.getQuantity();
         }
-        order.setSubTotal(subTotal);
-        order.setTaxTotal(0.0);
-        order.setDiscountTotal(0.0);
         order.setGrandTotal(subTotal);
+        order = orderRepo.save(order);
 
-        order = or.save(order);
-
+        // Building order Items with cartItems
         List<OrderItem> orderItems = new ArrayList<>();
-        for (CartItem ci : cartItems) {
-            OrderItem oi = new OrderItem();
-            oi.setOrder(order);
-            oi.setProduct(ci.getProduct());
-            if (ci.getProduct() != null) {
-                oi.setProductName(ci.getProduct().getName());
-            } else {
-                oi.setProductName(null);
-            }
-            oi.setUnitPrice(ci.getUnitPrice());
-            oi.setItemDiscount(0);
-            oi.setItemTax(0);
-            oi.setQuantity(ci.getQuantity());
-            oi.setItemTotal(oi.getUnitPrice() * oi.getQuantity() - oi.getItemDiscount() + oi.getItemTax());
-            oir.save(oi);
-            orderItems.add(oi);
+        for (CartItem cartItem : cartItems) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(cartItem.getProduct());
+            orderItem.setUnitPrice(cartItem.getUnitPrice());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setItemTotal(orderItem.getUnitPrice() * orderItem.getQuantity());
+
+            // persist new orderItem into entity and add to list of OrderItems
+            orderItemRepo.save(orderItem);
+            orderItems.add(orderItem);
         }
+        // persist order associated with list of newly created orderItems
         order.setOrderItems(orderItems);
-        or.save(order);
+        orderRepo.save(order);
 
-        cir.deleteAll(cartItems);
+        // clear cart after purchase is made
+        cartItemRepo.deleteAll(cartItems);
 
-        return Optional.of(order);
+        return order;
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemByUsername(String username) {
+        return findOrderByUsername(username)
+                .map(Order::getOrderItems)
+                .orElseGet(Collections::emptyList);
     }
 
 }

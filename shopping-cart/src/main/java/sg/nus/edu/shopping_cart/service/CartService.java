@@ -51,10 +51,6 @@ public class CartService implements CartInterface {
             cartRepository.save(cart);// 将绑定了username的购物车放入数据库中
             customer.setCart(cart); // 关联回customer
         }
-
-        // check if cartitem is still in stock?
-        // else greyed out
-        // cart html needs another section with grey zone
         return cart;
     }
 
@@ -63,7 +59,24 @@ public class CartService implements CartInterface {
     public List<CartItem> getCartItemsByCustomer(String username) {
         Customer customer = customerRepository.findById(username).get();
         Cart cart = customer.getCart();
-        return cart.getCartItems();
+        List<CartItem> items = cart.getCartItems();
+
+        // LJ
+        for (CartItem item : items) {
+            Product product = item.getProduct();
+            int stock = product.getStock(); // 当前库存
+            int cartQty = item.getQuantity();
+
+            if (stock < cartQty) {
+                item.setStatus("INSUFFICIENT STOCK"); // 售罄
+            } else if (stock - cartQty <= 5) {
+                item.setStatus("LIMITED STOCK"); // 库存不足（小于或等于5）
+            } else {
+                item.setStatus("AVAILABLE"); // 正常
+            }
+        }
+
+        return items;
     }
 
     // add item'num by quantity
@@ -87,14 +100,15 @@ public class CartService implements CartInterface {
         if (existingItem != null) {
             // the num cant > stock
             if (existingItem.getQuantity() + quantity > product.getStock()) {
-                throw new RuntimeException("Cannot add more, stock limit reached");
+                existingItem.setStatus("INSUFFICIENT STOCK");
             }
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
             // if item does not exist yet
         } else {
             // if stock==0 cant add
             if (product.getStock() <= 0) {
-                throw new RuntimeException("Cannot add, no stock available");
+                existingItem.setStatus("INSUFFICIENT STOCK");
+                // throw new RuntimeException("Cannot add, no stock available");
 
             }
             CartItem newItem = new CartItem();
@@ -126,12 +140,14 @@ public class CartService implements CartInterface {
         // check quantity
         int stock = item.getProduct().getStock(); // product 的inventory
         if (quantity > stock) {
-            throw new RuntimeException("Quantity exceeds available stock: " + stock);
+            item.setStatus("INSUFFICIENT STOCK");
+        } else if (quantity > stock + 5) {
+            item.setStatus("LIMITED STOCK");
+            item.setQuantity(quantity);
+        } else {
+            // update number
+            item.setQuantity(quantity);
         }
-
-        // update number
-        item.setQuantity(quantity);
-
         return cartRepository.save(cart);
     }
 

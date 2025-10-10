@@ -27,17 +27,12 @@ public class Order {
     @JoinColumn(name = "shipment_id")
     private Shipment shipment;
 
-    private String orderStatus;
-    private String paymentStatus;
-    private String fulfilmentStatus;
+    private String status; // PENDING, PAID, FAILED, CANCELLED
     private String promoCodes;
-    private LocalDateTime createdAt;
-    private double subTotal;
-    private double taxTotal;
-    private double discountTotal;
+    private LocalDateTime orderDate;
     private double grandTotal;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
 }

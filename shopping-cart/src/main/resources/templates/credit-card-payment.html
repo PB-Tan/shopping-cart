@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Cart</title>
+    <script>
+      function inputSizeCheck(inputElement) {
+        const maxLength = 2;
+        if (inputElement.value.length > maxLength) {
+          inputElement.value = inputElement.value.slice(0, maxLength);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <form action="#" th:action="@{/checkout/discountCode}" method="POST">
+        <span
+          >Discount Code:
+          <input type="text" name="code" />
+        </span>
+        <button type="submit">Apply Code</button>
+        <span th:if="${invalidCode}" th:text="${invalidCode}"></span>
+      </form>
+    </div>
+    <div>
+      <form
+        th:action="@{/checkout/creditcard}"
+        th:object="${paymentMethod}"
+        method="POST"
+      >
+        <!-- payment details field here-->
+        <table>
+          <tr>
+            <th>
+              <!-- <input type="hidden" th:field="*{id}" />Enter Payment Details -->
+              <!-- only need to put this if there is existing data already -->
+            </th>
+          </tr>
+          <tr>
+            <td>Card Number:</td>
+            <td>
+              <input
+                type="text"
+                th:field="*{cardNumber}"
+                pattern="\d{16}"
+                maxlength="16"
+                minlength="16"
+                inputmode="numeric"
+              />
+            </td>
+            <td
+              th:if="${#fields.hasErrors('cardNumber')}"
+              th:errors="*{cardNumber}"
+            ></td>
+          </tr>
+          <tr>
+            <td>Expiry Month:</td>
+            <td>
+              <input
+                type="number"
+                th:field="*{expiryMonth}"
+                min="1"
+                max="12"
+                oninput="inputSizeCheck(this)"
+              />
+            </td>
+            <td
+              th:if="${#fields.hasErrors('expiryMonth')}"
+              th:errors="*{expiryMonth}"
+            ></td>
+            <td>Expiry Year:</td>
+            <td>
+              <input
+                type="number"
+                th:field="*{expiryYear}"
+                min="24"
+                max="99"
+                oninput="inputSizeCheck(this)"
+              />
+            </td>
+            <td
+              th:if="${#fields.hasErrors('expiryYear')}"
+              th:errors="*{expiryYear}"
+            ></td>
+            <td>CVV</td>
+            <td>
+              <input type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>Card Holder Name:</td>
+            <td>
+              <input type="text" th:field="*{cardHolderName}" />
+            </td>
+            <td
+              th:if="${#fields.hasErrors('cardHolderName')}"
+              th:errors="*{cardHolderName}"
+            ></td>
+          </tr>
+          <tr>
+            <td>Card Holder Name:</td>
+            <td>
+              <input type="text" th:field="*{cardHolderName}" />
+            </td>
+            <td
+              th:if="${#fields.hasErrors('cardHolderName')}"
+              th:errors="*{cardHolderName}"
+            ></td>
+            <td>Save as preferred card?</td>
+            <td>
+              <select id="isDefault" name="isDefault" class="form-select" th:field="*{isDefault}">
+                <option th:value="true">Yes</option>
+                <option th:value="false">No</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <button type="submit">Place Order</button>
+      </form>
+    </div>
+  </body>
+</html>

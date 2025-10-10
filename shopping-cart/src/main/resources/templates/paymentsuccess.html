@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Payment Success</title>
+  </head>
+  <body>
+    <h2>Payment Successful 🎉</h2>
+    <p>
+      Thank you
+      <span th:text="${customer.firstName + ' ' + customer.lastName}"></span>!
+    </p>
+    <p>Your payment has been received successfully.</p>
+    <a th:href="@{/catalogue}">Continue Shopping</a>
+  </body>
+</html>

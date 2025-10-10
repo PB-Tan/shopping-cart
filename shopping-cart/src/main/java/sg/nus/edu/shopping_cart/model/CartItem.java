@@ -26,4 +26,6 @@ public class CartItem {
 
     private int quantity;
     private String methodType;
+    private String status;
+    // INSUFFICIENT STOCK, LIMITED STOCK, AVAILABLE
 }

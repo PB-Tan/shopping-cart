@@ -142,14 +142,14 @@
               <td>Quantity</td>
               <td>Item cost</td>
             </tr>
-            <tr th:each="customerCartItem:${customerCartItems}">
-              <td th:text="${customerCartItem.product.name}"></td>
+            <tr th:each="customerOrderItem:${customerOrderItems}">
+              <td th:text="${customerOrderItem.product.name}"></td>
               <td
-                th:text="${#numbers.formatDecimal(customerCartItem.unitPrice,1,2)}"
+                th:text="${#numbers.formatDecimal(customerOrderItem.unitPrice,1,2)}"
               ></td>
-              <td th:text="${customerCartItem.quantity}"></td>
+              <td th:text="${customerOrderItem.quantity}"></td>
               <td
-                th:text="${#numbers.formatDecimal(customerCartItem.quantity * customerCartItem.unitPrice,1,2)}"
+                th:text="${#numbers.formatDecimal(customerOrderItem.quantity * customerOrderItem.unitPrice,1,2)}"
               ></td>
             </tr>
             <tr>

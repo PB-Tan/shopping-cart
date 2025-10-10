@@ -15,11 +15,10 @@ INSERT INTO `product`
 (name, brand, category, collection, description, image_url, image_alt, stock, unit_price)
 VALUES
 ('Wireless Mouse','Logi','Peripherals',NULL,'2.4GHz ergonomic mouse','https://img/mouse','Wireless Mouse',100,29.90),
-('Mechanical Keyboard','KeyCo','Peripherals',NULL,'Blue-switch keyboard','https://img/kb','Mechanical Keyboard',50,89.00),
-('27-inch Monitor','ViewBest','Display',NULL,'Full HD IPS monitor','https://img/monitor','27-inch Monitor',25,189.00);
+('Mechanical Keyboard','KeyCo','Peripherals',NULL,'Blue-switch keyboard','https://img/kb','Mechanical Keyboard',2,89.00),
+('27-inch Monitor','ViewBest','Display',NULL,'Full HD IPS monitor','https://img/monitor','27-inch Monitor',3,189.00)    ;
 
 -- ===== CART ITEMS =====
--- Alice has 3 cart items now
 INSERT INTO `cart_item` (cart_id, product_id, quantity, unit_price, method_type)
 VALUES
 (1, 1, 2, 29.90, 'add'),   
@@ -32,9 +31,9 @@ VALUES
 INSERT INTO `payment_method`
 (customer_username, expiry_month, expiry_year, card_type, card_holder_name, last_four_digits, is_default)
 VALUES
-('alice', 12, 2027, 'VISA',       'ALICE TAN',   '4242', 1),
-('ben',   11, 2026, 'MASTERCARD', 'BEN NG',      '1111', 1),
-('charlie', 6, 2028,'AMEX',       'CHARLIE LIM', '2222', 0);
+('alice', 12, 27, 'VISA',       'ALICE TAN',   '4242', 1),
+('ben',   11, 26, 'MASTERCARD', 'BEN NG',      '1111', 1),
+('charlie', 6, 28,'AMEX',       'CHARLIE LIM', '2222', 0);
 
 -- ===== TRANSACTIONS =====
 INSERT INTO `transaction`
@@ -54,18 +53,18 @@ VALUES
 
 -- ===== ORDERS =====
 INSERT INTO `orders`
-(created_at, discount_total, fulfilment_status, grand_total, order_status, payment_status, sub_total, tax_total, promo_codes, customer_username, shipment_id, transaction_id)
+(order_date, grand_total, status, promo_codes, customer_username, shipment_id, transaction_id)
 VALUES
-(NOW(6), 0, 'Processing', 338.80, 'Pending',   'Paid', 338.80, 0, NULL, 'alice', 1, 1),
-(NOW(6), 5, 'Shipped',     84.00, 'Shipped',   'Paid',  89.00, 0, NULL, 'ben',   2, 2),
-(NOW(6), 0, 'Delivered',  189.00, 'Completed', 'Paid', 189.00, 0, NULL, 'charlie',3, 3);
+(NOW(6), 338.80, 'Pending',   NULL, 'alice', 1, 1),
+(NOW(6),  84.00, 'Shipped',   NULL, 'ben',   2, 2),
+(NOW(6), 189.00, 'Completed', NULL, 'charlie',3, 3);
 
 -- ===== ORDER ITEMS =====
 INSERT INTO `order_item`
-(order_id, product_id, product_name, unit_price, quantity, item_discount, item_tax, item_total)
+(order_id, product_id, product_name, unit_price, quantity, item_total)
 VALUES
-(1, 1, 'Wireless Mouse',        29.90, 2, 0, 0, 59.80),
-(1, 2, 'Mechanical Keyboard',   89.00, 1, 0, 0, 89.00),
-(1, 3, '27-inch Monitor',      189.00, 3, 0, 0,189.00),
-(2, 2, 'Mechanical Keyboard',   89.00, 1, 5, 0, 84.00),
-(3, 3, '27-inch Monitor',      189.00, 1, 0, 0,189.00);
+(1, 1, 'Wireless Mouse',        29.90, 2,  59.80),
+(1, 2, 'Mechanical Keyboard',   89.00, 1,  89.00),
+(1, 3, '27-inch Monitor',      189.00, 3, 189.00),
+(2, 2, 'Mechanical Keyboard',   89.00, 1,  84.00),
+(3, 3, '27-inch Monitor',      189.00, 1, 189.00);
