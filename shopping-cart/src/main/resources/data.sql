@@ -53,7 +53,7 @@ VALUES
 
 -- ===== ORDERS =====
 INSERT INTO `orders`
-(order_date, grand_total, status, promo_codes, customer_username, shipment_id, transaction_id)
+(created_at, grand_total, status, promo_codes, customer_username, shipment_id, transaction_id)
 VALUES
 (NOW(6), 338.80, 'Pending',   NULL, 'alice', 1, 1),
 (NOW(6),  84.00, 'Shipped',   NULL, 'ben',   2, 2),

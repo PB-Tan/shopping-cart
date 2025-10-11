@@ -94,7 +94,7 @@ public class CheckoutController {
         if (customer.isEmpty()) {
             return "redirect:/login";
         }
-        Optional<Order> orderOpt = orderService.findOrderByUsername(username);
+        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
         if (orderOpt.isEmpty()) {
             return "redirect:/test";
         }
@@ -110,7 +110,7 @@ public class CheckoutController {
         String username = (String) session.getAttribute("username");
         if (username != null) {
             customerService.findCustomerByUsername(username).ifPresent(c -> model.addAttribute("customer", c));
-            orderService.findOrderByUsername(username)
+            orderService.findTopOrderByUsername(username)
                     .ifPresent(o -> model.addAttribute("cartTotal", o.getGrandTotal()));
         }
         return "paymentsuccess";

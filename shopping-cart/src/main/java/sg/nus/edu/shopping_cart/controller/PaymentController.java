@@ -1,5 +1,9 @@
 // package sg.nus.edu.shopping_cart.controller;
 
+// ========================combined with checkout controller
+// ======================================
+// serves as archive
+
 // import jakarta.servlet.http.HttpSession;
 // import lombok.RequiredArgsConstructor;
 

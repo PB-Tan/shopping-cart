@@ -36,14 +36,20 @@ public class OrderService implements OrderInterface {
     }
 
     @Override
-    public Optional<Order> findOrderByUsername(String username) {
-        return orderRepo.findTopByCustomerUsernameAndStatusOrderByOrderDateDesc(username, "ACTIVE");
+    public Optional<Order> findTopOrderByUsername(String username) {
+        return orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username, "ACTIVE");
+    }
+
+    @Override
+    public List<Order> findAllOrdersByUsername(String username) {
+        return orderRepo.findAllByCustomerUsernameOrderByCreatedAtDesc(username);
     }
 
     @Override
     @Transactional(readOnly = false)
     public void updateShippingMethodForOrder(String username, String shippingMethod) {
-        Optional<Order> activeOrder = orderRepo.findTopByCustomerUsernameAndStatusOrderByOrderDateDesc(username, "ACTIVE");
+        Optional<Order> activeOrder = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
+                "ACTIVE");
         if (activeOrder.isPresent()) {
             Order order = activeOrder.get();
             Shipment shipment = order.getShipment();
@@ -69,7 +75,8 @@ public class OrderService implements OrderInterface {
     @Transactional(readOnly = false)
     public Order createOrderFromCart(String username) {
         // If an ACTIVE order already exists, reuse it
-        Optional<Order> existingActive = orderRepo.findTopByCustomerUsernameAndStatusOrderByOrderDateDesc(username, "ACTIVE");
+        Optional<Order> existingActive = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
+                "ACTIVE");
         if (existingActive.isPresent()) {
             return existingActive.get();
         }
@@ -83,7 +90,7 @@ public class OrderService implements OrderInterface {
         Order order = new Order();
         order.setCustomer(customerRepo.findById(username).get());
         order.setStatus("ACTIVE");
-        order.setOrderDate(LocalDateTime.now());
+        order.setCreatedAt(LocalDateTime.now());
 
         double subTotal = 0.0;
         for (CartItem cartItem : cartItems) {
@@ -116,11 +123,18 @@ public class OrderService implements OrderInterface {
         return order;
     }
 
+    // lambda expression for finding order items in the active order. --> display
+    // inside cart UI view
     @Override
     public List<OrderItem> findOrderItemByUsername(String username) {
-        return findOrderByUsername(username)
+        return findTopOrderByUsername(username)
                 .map(Order::getOrderItems)
                 .orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemByOrderId(int id) {
+        return orderItemRepo.findAllByOrderId(id);
     }
 
 }

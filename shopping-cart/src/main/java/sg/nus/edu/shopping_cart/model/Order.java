@@ -29,7 +29,7 @@ public class Order {
 
     private String status; // PENDING, PAID, FAILED, CANCELLED
     private String promoCodes;
-    private LocalDateTime orderDate;
+    private LocalDateTime createdAt;
     private double grandTotal;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

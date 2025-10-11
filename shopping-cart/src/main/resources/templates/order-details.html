@@ -1,0 +1,52 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Details</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div th:replace="fragments/layout :: siteHeader"></div>
+    <table class="table table-striped">
+      <thead class="thead-light">
+        <tr>
+          <th>Id</th>
+          <th>Product Name</th>
+          <th>Unit Price</th>
+          <th>Quantity</th>
+          <th>Total paid</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="orderItem : ${orderItems}">
+          <td th:text="${orderItem.id}" />
+          <td th:text="${orderItem.product.name}" />
+          <td th:text="${orderItem.unitPrice}" />
+          <td th:text="${orderItem.quantity}" />
+          <td th:text="${orderItem.itemTotal}" />
+          <td>
+            <!-- <a
+              th:href="@{/order/review/{id}(id=${order.id})}"
+              class="btn btn-sm btn-outline-primary"
+            > -->
+              Leave Review
+            </a>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+    <div class="container-lg" style="text-align: center; padding-top: 100px;">
+    <a
+      th:href="@{/order/history}"
+              class="btn btn-secondary">
+            Back to Orders
+        </a>
+        </div>
+  </body>
+</html>
