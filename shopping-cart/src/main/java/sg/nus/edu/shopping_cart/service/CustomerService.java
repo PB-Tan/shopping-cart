@@ -6,13 +6,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sg.nus.edu.shopping_cart.interfaces.*;
-import sg.nus.edu.shopping_cart.model.*;
+import sg.nus.edu.shopping_cart.repository.CustomerDAO;
+import sg.nus.edu.shopping_cart.interfaces.CustomerInterface;
+import sg.nus.edu.shopping_cart.model.Customer;
 import sg.nus.edu.shopping_cart.repository.CustomerRepository;
 
 @Service
-@Transactional(readOnly = true)
 public class CustomerService implements CustomerInterface {
+
+    @Autowired
+    CustomerDAO customerDAO;
+
+    @Transactional
+    public Customer createCustomer(Customer customer) {
+        return customerDAO.save(customer);
+    }
+
+    public Customer getCustomerByName(String name) {
+        return customerDAO.findById(name).orElse(null);
+    }
+
+    @Transactional
+    public int updateCustomerPassworde(String name, String password) {
+        Customer customer = customerDAO.findById(name).orElse(null);
+        if (customer != null) {
+            customer.setPassword(password);
+            customerDAO.save(customer);
+            return 0;
+        }
+        return 1;
+    }
+
+    @Transactional
+    public Customer updateCustomer(Customer customer) {
+        return customerDAO.save(customer);
+    }
 
     @Autowired
     CustomerRepository cr;
