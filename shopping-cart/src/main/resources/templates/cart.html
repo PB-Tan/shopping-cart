@@ -192,6 +192,38 @@
                 <span>Subtotal</span>
                 <span class="font-weight-bold" th:text="${subtotal}">0.00</span>
               </div>
+              <form
+                th:action="@{/checkout/discountCode}"
+                method="post"
+                class="mb-2"
+              >
+                <label for="discountCode" class="sr-only">Discount Code</label>
+                <div class="input-group">
+                  <input
+                    id="discountCode"
+                    name="code"
+                    type="text"
+                    class="form-control"
+                    placeholder="Discount code"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="submit">
+                      Apply Code
+                    </button>
+                  </div>
+                </div>
+                <small class="form-text text-muted">One code per order.</small>
+                <div
+                  class="alert alert-danger py-1 px-2 mt-2 mb-0"
+                  th:if="${invalidCode}"
+                  th:text="${invalidCode}"
+                ></div>
+                <div
+                  class="alert alert-success py-1 px-2 mt-2 mb-0"
+                  th:if="${codeApplied}"
+                  th:text="${codeApplied}"
+                ></div>
+              </form>
 
               <hr />
 
