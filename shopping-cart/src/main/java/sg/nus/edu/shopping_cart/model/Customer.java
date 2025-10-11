@@ -22,6 +22,10 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<PaymentMethod> paymentMethods;
 
+    // edit by serene
+    @OneToMany(mappedBy = "customer")
+    private List<Favorite> favorites;
+
     private String firstName;
     private String lastName;
     private String phoneNumber;
