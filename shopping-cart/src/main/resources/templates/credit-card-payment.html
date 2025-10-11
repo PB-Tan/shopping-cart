@@ -98,17 +98,14 @@
             ></td>
           </tr>
           <tr>
-            <td>Card Holder Name:</td>
-            <td>
-              <input type="text" th:field="*{cardHolderName}" />
-            </td>
-            <td
-              th:if="${#fields.hasErrors('cardHolderName')}"
-              th:errors="*{cardHolderName}"
-            ></td>
             <td>Save as preferred card?</td>
             <td>
-              <select id="isDefault" name="isDefault" class="form-select" th:field="*{isDefault}">
+              <select
+                id="isDefault"
+                name="isDefault"
+                class="form-select"
+                th:field="*{isDefault}"
+              >
                 <option th:value="true">Yes</option>
                 <option th:value="false">No</option>
               </select>
