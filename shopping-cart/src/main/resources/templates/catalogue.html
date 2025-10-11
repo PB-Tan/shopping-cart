@@ -7,28 +7,79 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <style>
+      .favorite-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+      }
+      .favorite-btn {
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        padding: 0;
+      }
+      .favorite-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      }
+      .favorite-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+      .favorite-btn.favorited svg {
+        fill: #ff4d4d;
+        stroke: #ff4d4d;
+      }
+      .favorite-btn:not(.favorited) svg {
+        fill: none;
+        stroke: #666;
+      }
+      .card {
+        position: relative;
+      }
+    </style>
   </head>
 
   <body>
     <div th:replace="fragments/layout :: siteHeader"></div>
 
-      <div class="row">
-        <div class="col-4 mt-4" th:each="p : ${productlist}">
-          <div class="card">
-            <img
-              th:src="@{${p.imageUrl}}"
-              class="card-img-top"
-              alt="watch"
-              style="width: 200px; height: 200px; object-fit: cover"
-            />
-            <div class="card-body">
-              <h5 class="card-title" th:text="${p.name}"></h5>
-              <p class="card-text" th:text="${p.description}"></p>
-              <p class="card-text" th:text="${p.unitPrice}"></p>
-              <a th:href="@{catalogue/{id}(id=${p.id})}" class="btn btn-primary"
-                >View detail</a
-              >
-            </div>
+    <!-- edit by serene -->
+    <div class="row">
+      <div class="col-4 mt-4" th:each="p : ${productlist}">
+        <div class="card">
+          <form th:action="@{/favorites/toggle}" method="post" class="favorite-form">
+            <input type="hidden" name="productId" th:value="${p.id}" />
+            <input type="hidden" name="returnUrl" value="/catalogue" />
+            <button type="submit" class="favorite-btn"
+                    th:classappend="${favoritedProductIds.contains(p.id)} ? 'favorited' : ''">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </form>
+          <img
+            th:src="@{${p.imageUrl}}"
+            class="card-img-top"
+            alt="watch"
+            style="width: 200px; height: 200px; object-fit: cover"
+          />
+          <div class="card-body">
+            <h5 class="card-title" th:text="${p.name}"></h5>
+            <p class="card-text" th:text="${p.description}"></p>
+            <p class="card-text" th:text="${p.unitPrice}"></p>
+            <a th:href="@{catalogue/{id}(id=${p.id})}" class="btn btn-primary"
+              >View detail</a
+            >
           </div>
         </div>
       </div>

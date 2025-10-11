@@ -1,0 +1,145 @@
+<!-- edit by serene -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Favorites</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      .favorite-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+      }
+      .favorite-btn {
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        padding: 0;
+      }
+      .favorite-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      }
+      .favorite-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+      .favorite-btn.favorited svg {
+        fill: #ff4d4d;
+        stroke: #ff4d4d;
+      }
+      .favorite-btn:not(.favorited) svg {
+        fill: none;
+        stroke: #666;
+      }
+      .card {
+        position: relative;
+      }
+      .empty-message {
+        text-align: center;
+        padding: 50px 20px;
+        color: #666;
+      }
+      .empty-message h3 {
+        margin-bottom: 20px;
+      }
+      .sort-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+      }
+      .sort-section label {
+        font-weight: 600;
+        margin-right: 10px;
+      }
+      .sort-section select {
+        padding: 5px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: white;
+      }
+      .sort-section button {
+        margin-left: 10px;
+        padding: 5px 15px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="fragments/layout :: siteHeader"></div>
+
+    <div class="container mt-4">
+      <h2 class="mb-4">My Favorites</h2>
+
+      <div th:if="${productlist != null and !productlist.isEmpty()}">
+        <!-- Sorting Section -->
+        <div class="sort-section">
+          <form method="get" action="/favorites" class="form-inline">
+            <label for="sortBy">Sort By:</label>
+            <select name="sortBy" id="sortBy" class="form-control">
+              <option value="" th:selected="${currentSort == ''}">Default</option>
+              <option value="priceAsc" th:selected="${currentSort == 'priceAsc'}">Price: Low to High</option>
+              <option value="priceDesc" th:selected="${currentSort == 'priceDesc'}">Price: High to Low</option>
+              <option value="timeAsc" th:selected="${currentSort == 'timeAsc'}">Added: Oldest First</option>
+              <option value="timeDesc" th:selected="${currentSort == 'timeDesc'}">Added: Newest First</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Apply</button>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="col-4 mt-4" th:each="p : ${productlist}">
+            <div class="card">
+              <form th:action="@{/favorites/toggle}" method="post" class="favorite-form">
+                <input type="hidden" name="productId" th:value="${p.id}" />
+                <input type="hidden" name="returnUrl" value="/favorites" />
+                <button type="submit" class="favorite-btn favorited">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </button>
+              </form>
+              <img
+                th:src="@{${p.imageUrl}}"
+                class="card-img-top"
+                alt="product"
+                style="width: 200px; height: 200px; object-fit: cover"
+              />
+              <div class="card-body">
+                <h5 class="card-title" th:text="${p.name}"></h5>
+                <p class="card-text" th:text="${p.description}"></p>
+                <p class="card-text" th:text="${p.unitPrice}"></p>
+                <a th:href="@{/catalogue/{id}(id=${p.id})}" class="btn btn-primary"
+                  >View detail</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${productlist == null or productlist.isEmpty()}" class="empty-message">
+        <h3>You haven't favorited any products yet</h3>
+        <p>Go to <a href="/catalogue">product catalog</a> to favorite your favorite products!</p>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
