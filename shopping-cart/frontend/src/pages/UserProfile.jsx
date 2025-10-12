@@ -73,6 +73,7 @@ const UserProfile = () => {
                     email: d.email || '',
                     phone: d.phoneNumber || ''
                 });
+                console.log('User info loaded:', d);
             }
         } catch (error) {
             console.error('Error fetching user info:', error);
