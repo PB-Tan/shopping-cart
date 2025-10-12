@@ -48,11 +48,13 @@ public class CheckoutController {
         if (customer.isEmpty()) {
             return "redirect:/login";
         }
+
         // by this point customer exists and has been validated
         Customer activeCustomer = customer.get();
         List<CartItem> cartItems = activeCustomer.getCart().getCartItems();
-        // if cartItem is out of stock, then prevent going into payment page, and show
-        // error msg
+        // if cartItem is out of stock, then prevent customer from going into payment
+        // page,
+        // and show error msg
         for (CartItem cartItem : cartItems) {
             int stock = cartItem.getProduct().getStock();
             int qty = cartItem.getQuantity();
