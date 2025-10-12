@@ -3,7 +3,39 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Details</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+	/* 星级评分样式 */
+	.rating-stars {
+		font-size: 1.5rem;
+		color: #ffc107;
+	}
+
+	/* 评分输入样式 */
+	.rating-input {
+		display: flex;
+		flex-direction: row-reverse;
+		justify-content: flex-end;
+		gap: 5px;
+	}
+
+	.rating-input input[type="radio"] {
+		display: none;
+	}
+
+	.rating-input label {
+		cursor: pointer;
+		font-size: 2rem;
+		color: #ddd;
+		transition: color 0.2s;
+	}
+
+	.rating-input input[type="radio"]:checked ~ label,
+	.rating-input label:hover,
+	.rating-input label:hover ~ label {
+		color: #ffc107;
+	}
+</style>
 </head>
 <body> 
 	<div th:replace="fragments/layout :: siteHeader"></div>
@@ -51,12 +83,110 @@
 				
 			 <div>
 				<form th:action = "@{/cart/add}" method = "post">
-					<input type="hidden" name="productId" th:value="${p.id}"/> 
+					<input type="hidden" name="productId" th:value="${p.id}"/>
 					<input type="number" name="quantity" min="1" value="1"/>
 				 <button type="submit" class="btn btn-primary mt-4 mb-4 ms-4" style="margin-left:20px;">Add To Cart</button>
 			 </form>
 			</div>
 
+		</div>
+
+		<!-- 评价区域 -->
+		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
+			<h4>Product Reviews</h4>
+
+			<!-- 平均评分显示 -->
+			<div class="mb-4">
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
+					<span class="text-muted">(<span th:text="${reviewCount}">0</span> reviews)</span>
+				</div>
+				<div class="rating-stars">
+					<span th:each="i : ${#numbers.sequence(1, 5)}"
+						  th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>
+				</div>
+			</div>
+
+			<!-- 提示信息 -->
+			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+				<span th:text="${success}"></span>
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+			<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+				<span th:text="${error}"></span>
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+
+			<!-- 评价提交表单 -->
+			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
+				<div class="card-body">
+					<h5 class="card-title">Write a Review</h5>
+					<form th:action="@{/review/add}" method="post">
+						<input type="hidden" name="productId" th:value="${p.id}"/>
+
+						<div class="mb-3">
+							<label class="form-label">Rating *</label>
+							<div class="rating-input">
+								<input type="radio" name="rating" value="5" id="star5" required/>
+								<label for="star5">★</label>
+								<input type="radio" name="rating" value="4" id="star4"/>
+								<label for="star4">★</label>
+								<input type="radio" name="rating" value="3" id="star3"/>
+								<label for="star3">★</label>
+								<input type="radio" name="rating" value="2" id="star2"/>
+								<label for="star2">★</label>
+								<input type="radio" name="rating" value="1" id="star1"/>
+								<label for="star1">★</label>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="comment" class="form-label">Review Content</label>
+							<textarea class="form-control" id="comment" name="comment" rows="4"
+									  placeholder="Share your experience..." maxlength="1000"></textarea>
+						</div>
+
+						<button type="submit" class="btn btn-primary">Submit Review</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- 未登录提示 -->
+			<div class="alert alert-info" th:if="${session.username == null}">
+				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
+			</div>
+
+			<!-- 已评价提示 -->
+			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
+				You have already reviewed this product
+			</div>
+
+			<!-- 评价列表 -->
+			<div class="reviews-list mt-4">
+				<h5>All Reviews (<span th:text="${reviewCount}">0</span>)</h5>
+
+				<div th:if="${reviews.isEmpty()}" class="text-muted">
+					No reviews yet. Be the first to review!
+				</div>
+
+				<div th:each="review : ${reviews}" class="card mb-3">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-start mb-2">
+							<div>
+								<h6 class="mb-1" th:text="${review.customer.username}">Username</h6>
+								<div class="rating-stars">
+									<span th:each="i : ${#numbers.sequence(1, 5)}"
+										  th:classappend="${i <= review.rating} ? 'text-warning' : 'text-muted'">★</span>
+								</div>
+							</div>
+							<small class="text-muted" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}">
+								Review Time
+							</small>
+						</div>
+						<p class="mb-0" th:text="${review.comment}">Review Content</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	
 	
