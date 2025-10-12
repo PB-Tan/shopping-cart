@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Write a review</title>
+  </head>
+  <body>
+    <h3 th:text="'Review for ' + ${product.name}"></h3>
+
+    <form
+      th:action="@{__${#httpServletRequest.requestURI}__}"
+      th:object="${review}"
+      method="post"
+    >
+      <label>Rating (1–5)</label>
+      <input type="number" th:field="*{rating}" min="1" max="5" required />
+      <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></div>
+      <!-- validation? -->
+
+      <label>Comment</label>
+      <textarea th:field="*{comment}" rows="4" maxlength="500"></textarea>
+      <div th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
+      <!-- Small comment  -->
+
+      <button type="submit">Submit Review</button>
+    </form>
+  </body>
+</html>

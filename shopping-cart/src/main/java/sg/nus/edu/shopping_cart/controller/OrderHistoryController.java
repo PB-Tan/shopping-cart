@@ -40,4 +40,12 @@ public class OrderHistoryController {
         model.addAttribute("orderItems", orderItems);
         return "order-details";
     }
+
+    // @GetMapping("/{id}/review")
+    // public String displayReviewForm(HttpSession session, Model model,
+    // @PathVariable int id) {
+    // String username = (String) session.getAttribute("username");
+    // model.addAttribute("username", username);
+    // return "order-review";
+    // }
 }
