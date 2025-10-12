@@ -21,6 +21,9 @@ public class CatalogueController {
     @Autowired
     private FavoriteService favoriteService;
 
+    @Autowired
+    private sg.nus.edu.shopping_cart.service.ReviewService reviewService;
+
     @GetMapping("")
     // 1. list all the products
     public String home(Model model, HttpSession session) {
@@ -72,7 +75,7 @@ public class CatalogueController {
     }
 
     @GetMapping("/{id}")
-    public String idDetail(@PathVariable int id, Model model) {
+    public String idDetail(@PathVariable int id, Model model, HttpSession session) {
         List<Product> allproducts = pi.findAll();
 
         Product pro = allproducts.stream()
@@ -81,6 +84,24 @@ public class CatalogueController {
                 .orElse(null);
 
         model.addAttribute("productlist", pro);
+
+        // 添加评价相关数据
+        if (pro != null) {
+            // 获取商品的所有评价
+            model.addAttribute("reviews", reviewService.getProductReviews(id));
+            // 获取平均评分
+            model.addAttribute("averageRating", reviewService.getAverageRating(id));
+            // 获取评价总数
+            model.addAttribute("reviewCount", reviewService.getReviewCount(id));
+
+            // 检查当前用户是否已经评价过
+            String username = (String) session.getAttribute("username");
+            if (username != null) {
+                model.addAttribute("hasReviewed", reviewService.hasUserReviewed(id, username));
+            } else {
+                model.addAttribute("hasReviewed", false);
+            }
+        }
 
         return "productDetails";
     }
