@@ -20,21 +20,13 @@
       >
     </h4>
 
-    <form th:action="@{/checkout/method}" method="post">
-      <div class="mb-3">
-        <label for="paymentMethod" class="form-label">Payment Method</label>
-        <select
-          id="paymentMethod"
-          name="paymentMethod"
-          class="form-select"
-          required
-        >
-          <option value="card">Credit Card</option>
-          <option value="qr">QR Payment</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn btn-success">Pay Now</button>
+    <form th:action="@{/checkout/method}" method="post" class="mb-3">
+      <label for="method">Payment Method</label>
+      <select id="method" name="paymentMethod" class="form-control" required>
+        <option value="card">Credit Card</option>
+        <option value="qr">QR</option>
+      </select>
+      <button type="submit" class="btn btn-primary mt-3">Pay Now</button>
     </form>
 
     <a th:href="@{/cart}" class="btn btn-secondary mt-2">Back to Cart</a>

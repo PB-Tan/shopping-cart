@@ -31,7 +31,7 @@ public class CatalogueController {
         List<Product> products = pi.findAll(); // it will take all the products from the DB through repos
         model.addAttribute("productlist", products);
 
-        // Add favorite status for each product 
+        // Add favorite status for each product
         // edit by serene
         String username = (String) session.getAttribute("username");
         if (username != null) {
@@ -84,6 +84,10 @@ public class CatalogueController {
                 .orElse(null);
 
         model.addAttribute("productlist", pro);
+        int stock = pro.getStock();
+        if (stock <= 0) {
+            model.addAttribute("errorMsg", pro.getName() + " is out of stock");
+        }
 
         // 添加评价相关数据
         if (pro != null) {

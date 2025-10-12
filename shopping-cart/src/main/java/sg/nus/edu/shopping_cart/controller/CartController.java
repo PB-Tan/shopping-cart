@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.*;
 import sg.nus.edu.shopping_cart.model.*;
@@ -25,7 +26,6 @@ public class CartController {
     @GetMapping("/cart")
     public String viewCart(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
-        Customer activeCustomer = customerInterface.findCustomerByUsername(username).get();
         Cart cart = cartInterface.getCartByCustomer(username);
         BigDecimal subtotal = cartInterface.calculateCartTotal(username);
         List<CartItem> items = cartInterface.getCartItemsByCustomer(username);
@@ -41,16 +41,39 @@ public class CartController {
     public String addToCart(
             @RequestParam("productId") int productId,
             @RequestParam("quantity") int quantity,
+            RedirectAttributes ra,
             HttpSession session) {
         String username = (String) session.getAttribute("username");
-        Customer activeCustomer = customerInterface.findCustomerByUsername(username).get();
-        Optional<Product> productOpt = cartInterface.findProduct(productId);
-        if (!productOpt.isPresent() || quantity <= 0) {
-            return "redirect:/error";
+        Product product = cartInterface.findProduct(productId).get();
+        Cart cart = customerInterface.findCustomerByUsername(username).get().getCart();
+        int stock = product.getStock();
+
+        // check if item already exist inside cart, if not, set as null
+        CartItem existingItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId() == productId)
+                .findFirst()
+                .orElse(null); // if no return null
+
+        // first sanity check if the quantity makes sense
+        if (quantity <= 0) {
+            ra.addFlashAttribute("errorMsg", "Quantity must be at least 1");
+            ra.addAttribute("id", productId);
+            return "redirect:/catalogue/" + productId;
+        } // if product is not found in cart, then does the qty exceed stock?
+        if (existingItem == null && quantity > stock) {
+            ra.addFlashAttribute("errorMsg", "Only " + stock + " left for " + product.getName());
+            return "redirect:/catalogue/" + productId;
+        } // if product is found inside cart, then does the combined qty exceed stock?
+        if (existingItem != null && quantity + existingItem.getQuantity() > stock) {
+            ra.addFlashAttribute("errorMsg",
+                    "Only " + stock + " left for " + product.getName() + ". You have " + quantity + " in your cart");
+            return "redirect:/catalogue/" + productId;
         }
 
+        // by this point, quantity to be added to cart has been validated.
         cartInterface.addProductToCart(username, productId, quantity);
-        return "redirect:/cart";
+        ra.addFlashAttribute("statusMsg", quantity + " " + product.getName() + " has been successfully added to cart");
+        return "redirect:/catalogue/" + productId;
     }
 
     @PostMapping("/cart/update")

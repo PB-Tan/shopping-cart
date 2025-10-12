@@ -89,6 +89,9 @@
 			 </form>
 			</div>
 
+			<div class="alert alert-danger" th:if="${errorMsg}" th:text="${errorMsg}"></div>
+			<div class="alert alert-success" th:if="${statusMsg}" th:text="${statusMsg}"></div>
+
 		</div>
 
 		<!-- 评价区域 -->

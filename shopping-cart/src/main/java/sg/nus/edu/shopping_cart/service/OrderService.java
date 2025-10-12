@@ -117,9 +117,6 @@ public class OrderService implements OrderInterface {
         order.setOrderItems(orderItems);
         orderRepo.save(order);
 
-        // clear cart after purchase is made
-        cartItemRepo.deleteAll(cartItems);
-
         return order;
     }
 
