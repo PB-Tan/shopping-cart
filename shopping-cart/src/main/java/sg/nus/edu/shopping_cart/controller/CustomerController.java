@@ -107,7 +107,7 @@ public class CustomerController {
     // 根据用户名获取用户信息
     @GetMapping("/name/{name}")
     public Result<Customer> getCustomerByName(@PathVariable String name) {
-        Customer entity = customerService.getCustomerByName(name);
+        Customer entity = customerService.getCustomerByUsername(name);
         if (entity == null) {
             return Result.error("User not found");
         }
