@@ -43,3 +43,4 @@ temp/
 .env
 .env.properties
 !env.properties.example
+shopping-cart/frontend/README.md
