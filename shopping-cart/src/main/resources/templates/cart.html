@@ -266,6 +266,13 @@
                   Proceed to Checkout
                 </button>
               </form>
+              <!-- Evaluate if cart is empty or not, deny checkout if empty -->
+              <div
+                th:if="${errorMsg}"
+                class="alert alert-warning mt-3"
+                role="alert"
+                th:text="${errorMsg}"
+              ></div>
             </div>
           </div>
         </div>

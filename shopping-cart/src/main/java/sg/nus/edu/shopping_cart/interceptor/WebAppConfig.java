@@ -16,6 +16,6 @@ public class WebAppConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/checkout/*", "/checkout",
                         "/cart/*", "/cart",
-                        "/orders/*", "/orders");
+                        "/order/*", "/order");
     }
 }

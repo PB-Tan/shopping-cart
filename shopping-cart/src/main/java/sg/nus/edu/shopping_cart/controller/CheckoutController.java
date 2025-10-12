@@ -1,5 +1,6 @@
 package sg.nus.edu.shopping_cart.controller;
 
+import java.math.BigDecimal;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import sg.nus.edu.shopping_cart.model.*;
@@ -40,22 +42,45 @@ public class CheckoutController {
 
     // payment controlling
     @GetMapping("/checkout")
-    public String displayCheckout(HttpSession session, Model model) {
+    public String displayCheckout(HttpSession session, Model model, RedirectAttributes ra) {
         String username = (String) session.getAttribute("username");
         Optional<Customer> customer = customerService.findCustomerByUsername(username);
         if (customer.isEmpty()) {
             return "redirect:/login";
         }
-
         // by this point customer exists and has been validated
         Customer activeCustomer = customer.get();
-        // persist new order with order items from cart and its cart Items
-        Order order = orderService.createOrderFromCart(username);
+        List<CartItem> cartItems = activeCustomer.getCart().getCartItems();
+        // if cartItem is out of stock, then prevent going into payment page, and show
+        // error msg
+        for (CartItem cartItem : cartItems) {
+            int stock = cartItem.getProduct().getStock();
+            int qty = cartItem.getQuantity();
+            if (qty > stock) {
+                String msg = cartItem.getProduct().getName() + " is out of stock";
+                ra.addFlashAttribute("errorMsg", msg);
+                return "redirect:/cart";
+            }
+        }
 
-        model.addAttribute("customerOrderItems", orderService.findOrderItemByUsername(username));
+        // persist new order with order items from cart and its cart Items and empty
+        // cart
+        Order order = orderService.createOrderFromCart(username);
+        List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
+        BigDecimal cartTotal = cartService.calculateCartTotal(username);
+        model.addAttribute("customerOrderItems", orderItems);
         model.addAttribute("customer", activeCustomer);
-        model.addAttribute("cartTotal", order.getGrandTotal());
-        return "payment";
+        model.addAttribute("cartTotal", cartTotal);
+
+        // if order is empty, then prevent going into payment page and show error msg
+        if (order.getGrandTotal() == 0) {
+            model.addAttribute("errorMsg", "cart is empty");
+            return "cart";
+        }
+
+        else {
+            return "payment";
+        }
     }
 
     // select payment methods
@@ -91,9 +116,6 @@ public class CheckoutController {
 
         String username = (String) session.getAttribute("username");
         Optional<Customer> customer = customerService.findCustomerByUsername(username);
-        if (customer.isEmpty()) {
-            return "redirect:/login";
-        }
         Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
         if (orderOpt.isEmpty()) {
             return "redirect:/test";

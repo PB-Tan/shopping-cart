@@ -46,7 +46,7 @@ public class CartController {
         Customer activeCustomer = customerInterface.findCustomerByUsername(username).get();
         Optional<Product> productOpt = cartInterface.findProduct(productId);
         if (!productOpt.isPresent() || quantity <= 0) {
-            return "redirect:/test";
+            return "redirect:/error";
         }
 
         cartInterface.addProductToCart(username, productId, quantity);

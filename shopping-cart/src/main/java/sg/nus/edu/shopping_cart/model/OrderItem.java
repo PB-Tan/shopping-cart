@@ -15,7 +15,7 @@ public class OrderItem {
 
     private String productName;
     private double unitPrice;
-    private double quantity;
+    private int quantity;
     private double itemTotal; // derivable
 
     public OrderItem() {
