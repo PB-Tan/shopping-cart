@@ -75,8 +75,8 @@ public class CheckoutController {
         model.addAttribute("cartTotal", cartTotal);
 
         // if order is empty, then prevent going into payment page and show error msg
-        if (order.getGrandTotal() == 0) {
-            model.addAttribute("errorMsg", "cart is empty");
+        if (cartTotal.compareTo(BigDecimal.ZERO) <= 0) {
+            model.addAttribute("errorMsg", "Cart cannot empty");
             return "cart";
         }
 
