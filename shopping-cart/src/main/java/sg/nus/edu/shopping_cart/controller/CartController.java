@@ -49,7 +49,7 @@ public class CartController {
             RedirectAttributes ra,
             @RequestParam("discountCode") String discountCode,
             Model model) {
-
+        // ov test
         discountCode = discountCode.toUpperCase().trim();
         String username = (String) session.getAttribute("username");
         Cart cart = cartInterface.getCartByCustomer(username);
