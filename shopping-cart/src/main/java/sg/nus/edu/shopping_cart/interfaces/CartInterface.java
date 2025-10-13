@@ -26,4 +26,8 @@ public interface CartInterface {
 
     public void clearCart(String username);
 
+    public Optional<Double> getPercentByCode(String code);
+
+    public Cart saveCart(Cart cart);
+
 }

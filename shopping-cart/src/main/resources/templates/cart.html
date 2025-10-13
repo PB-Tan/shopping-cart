@@ -92,15 +92,15 @@
                         ></div>
                         <small
                           class="text-muted"
-                          th:text="'SKU: ' + ${ci.product.id}"
+                          th:text="'ID: ' + ${ci.product.id}"
                         ></small>
                       </td>
 
                       <td
                         class="align-middle price-col"
-                        th:text="${ci.product.unitPrice}"
+                        th:text="${'$' + #numbers.formatDecimal(ci.product.unitPrice,1,'COMMA',2, 'POINT')}"
                       ></td>
-
+                      <!-- switch cases to control stock status flags -->
                       <td class="align-middle" th:switch="${true}">
                         <!-- Insufficient -->
                         <span
@@ -190,10 +190,14 @@
             <div class="card-body">
               <div class="d-flex justify-content-between">
                 <span>Subtotal</span>
-                <span class="font-weight-bold" th:text="${subtotal}">0.00</span>
+                <span
+                  class="font-weight-bold"
+                  th:text="${'$' + #numbers.formatDecimal(subtotal,1,'COMMA',2, 'POINT')}"
+                  >0.00</span
+                >
               </div>
               <form
-                th:action="@{/checkout/discountCode}"
+                th:action="@{/cart/discountCode}"
                 method="post"
                 class="mb-2"
               >
@@ -201,7 +205,7 @@
                 <div class="input-group">
                   <input
                     id="discountCode"
-                    name="code"
+                    name="discountCode"
                     type="text"
                     class="form-control"
                     placeholder="Discount code"
@@ -259,8 +263,13 @@
                 <div class="d-flex justify-content-between total-col mt-3">
                   <span>Total</span>
                   <!-- Keep using subtotal if you’re computing shipping server-side -->
-                  <span class="h5 mb-0" th:text="${subtotal}">0.00</span>
+                  <span
+                    class="h5 mb-0"
+                    th:text="${'$' + #numbers.formatDecimal(grandTotal,1,'COMMA',2, 'POINT')}"
+                    >0.00</span
+                  >
                 </div>
+
                 <!-- Clicking this redirects to checkoutpage -->
                 <button type="submit" class="btn btn-primary btn-block mt-3">
                   Proceed to Checkout

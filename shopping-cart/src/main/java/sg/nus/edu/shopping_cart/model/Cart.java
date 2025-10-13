@@ -2,6 +2,8 @@ package sg.nus.edu.shopping_cart.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
@@ -19,6 +21,9 @@ public class Cart {
     @OneToOne // owner of FK
     @JoinColumn(name = "customer_username")
     private Customer customer;
+
+    private BigDecimal grandTotal;
+    private String discountCode;
 
     public Cart() {
     }

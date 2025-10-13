@@ -97,7 +97,7 @@ public class CheckoutController {
         }
     }
 
-    @GetMapping("checkout/creditcard")
+    @GetMapping("/checkout/creditcard")
     public String displayCreditCardForm(Model model) {
         if (!model.containsAttribute("paymentMethod")) {
             model.addAttribute("paymentMethod", new PaymentMethod());

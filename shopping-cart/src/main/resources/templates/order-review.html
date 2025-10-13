@@ -2,24 +2,83 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Write a review</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
   </head>
   <body>
     <h3 th:text="'Review for ' + ${product.name}"></h3>
 
-    <form
-      th:action="@{__${#httpServletRequest.requestURI}__}"
-      th:object="${review}"
-      method="post"
-    >
-      <label>Rating (1–5)</label>
-      <input type="number" th:field="*{rating}" min="1" max="5" required />
-      <div th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></div>
-      <!-- validation? -->
+		<!-- 评价区域 -->
+		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
+			<h4>Product Reviews</h4>
 
-      <label>Comment</label>
-      <textarea th:field="*{comment}" rows="4" maxlength="500"></textarea>
-      <div th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
-      <!-- Small comment  -->
+			<!-- 平均评分显示 -->
+			<div class="mb-4">
+				<div class="d-flex align-items-center">
+					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
+					<span class="text-muted">(<span th:text="${reviewCount}">0</span> reviews)</span>
+				</div>
+				<div class="rating-stars">
+					<span th:each="i : ${#numbers.sequence(1, 5)}"
+						  th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>
+				</div>
+			</div>
+
+			<!-- 提示信息 -->
+			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+				<span th:text="${success}"></span>
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+			<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+				<span th:text="${error}"></span>
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>
+
+			<!-- 评价提交表单 -->
+			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
+				<div class="card-body">
+					<h5 class="card-title">Write a Review</h5>
+					<form th:action="@{/review/add}" method="post">
+						<input type="hidden" name="productId" th:value="${p.id}"/>
+
+						<div class="mb-3">
+							<label class="form-label">Rating *</label>
+							<div class="rating-input">
+								<input type="radio" name="rating" value="5" id="star5" required/>
+								<label for="star5">★</label>
+								<input type="radio" name="rating" value="4" id="star4"/>
+								<label for="star4">★</label>
+								<input type="radio" name="rating" value="3" id="star3"/>
+								<label for="star3">★</label>
+								<input type="radio" name="rating" value="2" id="star2"/>
+								<label for="star2">★</label>
+								<input type="radio" name="rating" value="1" id="star1"/>
+								<label for="star1">★</label>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="comment" class="form-label">Review Content</label>
+							<textarea class="form-control" id="comment" name="comment" rows="4"
+									  placeholder="Share your experience..." maxlength="1000"></textarea>
+						</div>
+
+						<button type="submit" class="btn btn-primary">Submit Review</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- 未登录提示 -->
+			<div class="alert alert-info" th:if="${session.username == null}">
+				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
+			</div>
+
+			<!-- 已评价提示 -->
+			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
+				You have already reviewed this product
+			</div>
 
       <button type="submit">Submit Review</button>
     </form>

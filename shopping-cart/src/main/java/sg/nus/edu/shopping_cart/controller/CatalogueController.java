@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import sg.nus.edu.shopping_cart.interfaces.*;
 import sg.nus.edu.shopping_cart.model.*;
-import sg.nus.edu.shopping_cart.service.FavoriteService;
+import sg.nus.edu.shopping_cart.service.*;
 
 @Controller
 @RequestMapping("/catalogue")
@@ -22,7 +22,7 @@ public class CatalogueController {
     private FavoriteService favoriteService;
 
     @Autowired
-    private sg.nus.edu.shopping_cart.service.ReviewService reviewService;
+    private ReviewService reviewService;
 
     @GetMapping("")
     // 1. list all the products
@@ -89,13 +89,14 @@ public class CatalogueController {
             model.addAttribute("errorMsg", pro.getName() + " is out of stock");
         }
 
-        // 添加评价相关数据
+        // populate thymeleaf tags in HTML with attributes regarding products'
+        // attributes
         if (pro != null) {
-            // 获取商品的所有评价
+            // retrieve all product reviews associated with the product
             model.addAttribute("reviews", reviewService.getProductReviews(id));
-            // 获取平均评分
+            // retrieve average rating across all ratings asssociated with product
             model.addAttribute("averageRating", reviewService.getAverageRating(id));
-            // 获取评价总数
+            // retrieve total count of reviews associated with product
             model.addAttribute("reviewCount", reviewService.getReviewCount(id));
 
             // 检查当前用户是否已经评价过

@@ -29,11 +29,48 @@ public class CartController {
         Cart cart = cartInterface.getCartByCustomer(username);
         BigDecimal subtotal = cartInterface.calculateCartTotal(username);
         List<CartItem> items = cartInterface.getCartItemsByCustomer(username);
-
+        // default before any manipulation
+        if (cart.getGrandTotal() == null) {
+            cart.setGrandTotal(subtotal); // swap subtotal here for anything after taxes
+        }
+        BigDecimal grandTotal = cart.getGrandTotal();
         model.addAttribute("items", items);
         model.addAttribute("subtotal", subtotal);
         model.addAttribute("cart", cart);
+        if (!model.containsAttribute("grandTotal")) {
+            model.addAttribute("grandTotal", grandTotal);
+        }
         return "cart";
+    }
+
+    @PostMapping("/cart/discountCode")
+    @Transactional
+    public String calculateGrandTotal(HttpSession session,
+            RedirectAttributes ra,
+            @RequestParam("discountCode") String discountCode,
+            Model model) {
+
+        discountCode = discountCode.toUpperCase().trim();
+        String username = (String) session.getAttribute("username");
+        Cart cart = cartInterface.getCartByCustomer(username);
+        BigDecimal subtotal = cartInterface.calculateCartTotal(username);
+        BigDecimal grandTotal;
+        if (cartInterface.getPercentByCode(discountCode).isPresent()) {
+            BigDecimal percent = BigDecimal.valueOf(cartInterface.getPercentByCode(discountCode).get());
+            grandTotal = subtotal.multiply(BigDecimal.valueOf(100).subtract(percent).divide(BigDecimal.valueOf(100)));
+            ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
+            ra.addFlashAttribute("grandTotal", grandTotal);
+            cart.setDiscountCode(discountCode);
+            cart.setGrandTotal(grandTotal);
+            cartInterface.saveCart(cart);
+        } else {
+            grandTotal = subtotal;
+            ra.addFlashAttribute("invalidCode", "Discount code not found");
+            ra.addFlashAttribute("grandTotal", grandTotal);
+            cart.setGrandTotal(grandTotal);
+        }
+
+        return "redirect:/cart";
     }
 
     @PostMapping("/cart/add")

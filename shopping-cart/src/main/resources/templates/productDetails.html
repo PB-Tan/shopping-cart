@@ -42,25 +42,24 @@
 	<!-- Back button -->
 		<div>
 				<!-- edit by serene -->
-			<a href="javascript:history.back()" id="backButton" class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
-			<h3 style="padding-left:20px;">Product Details<h3>
+		<a href="javascript:history.back()" id="backButton" class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
 		</div>
-		
-		
-	<div class="card" style="margin-left:20px; margin-right:20px;"  th:each="p: ${productlist}">	
-			<img th:src="@{${p.imageUrl}}"
+		<div class="container mt-5 mb-5">
+		<div class="card" th:each="p: ${productlist}" style = "padding: 50px">	
+		<h3 class = "card-title text-center" th:text="${p.name}"/>
+		<img th:src="@{${p.imageUrl}}"
 					class="card-img-top" 
 					alt="watch"
 					style="width:150px ;height:150px; object-fit:cover;">
 		
 	<table>		
-		    <tr>
+		    <!-- <tr>
 				<td style="width:20%; padding-left:50px;" >Name:</td>
 				<td> <b><span th:text="${p.name}"></span></b> </td>
-			</tr>
+			</tr> -->
 			<tr>
-			  	<td style="width:20%; padding-left:50px;" >Price:</td>
-				<td> <b><span th:text="${p.unitPrice}"></span></td>
+			  	<td style="width:20%; padding-left:50px;" >Prices:</td>
+				<td> <b><span th:text="${'$'+ #numbers.formatDecimal(p.unitPrice,0,2)}"></span></td>
 			</tr>
 			<tr>
 			 	<td style="width:20%; padding-left:50px;" >Description: </td>
@@ -76,22 +75,26 @@
 				</td>
 			</tr>
 			<tr>
-			  	<td style="width:20%; padding-left:50px;" >Stock: </td>
+			  	<td style="width:20%; padding-left:50px;" >Remaining stock: </td>
 				<td><b><span th:text="${p.stock}"></span></b></td>
 			</tr>
+			
 			</table>
 				
-			 <div>
+			 <div class="card-body text-center">
 				<form th:action = "@{/cart/add}" method = "post">
+					<span>Quantity to add: &nbsp;
 					<input type="hidden" name="productId" th:value="${p.id}"/>
-					<input type="number" name="quantity" min="1" value="1"/>
+					<input type="number" name="quantity" min="1" value="1" style="width: 100px"/>
+					</span>
 				 <button type="submit" class="btn btn-primary mt-4 mb-4 ms-4" style="margin-left:20px;">Add To Cart</button>
 			 </form>
+			 
+			
+			<div style = "width: 500px" class="alert alert-warning" th:if="${errorMsg}" th:text="${errorMsg}"/>
+			<div style = "width: 500px" class="alert alert-success" th:if="${statusMsg}" th:text="${statusMsg}"/>
 			</div>
-
-			<div class="alert alert-danger" th:if="${errorMsg}" th:text="${errorMsg}"></div>
-			<div class="alert alert-success" th:if="${statusMsg}" th:text="${statusMsg}"></div>
-
+		</div>
 		</div>
 
 		<!-- 评价区域 -->

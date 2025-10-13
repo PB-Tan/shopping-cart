@@ -30,6 +30,9 @@ public class CartService implements CartInterface {
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    @Autowired
+    private DiscountCodeRepository discountCodeRepository;
+
     @Override
     public List<Product> findAllProduct() {
         return productRepository.findAll();
@@ -204,5 +207,15 @@ public class CartService implements CartInterface {
 
         // save change
         cartRepository.save(cart);
+    }
+
+    @Override
+    public Optional<Double> getPercentByCode(String code) {
+        return discountCodeRepository.findPercentByCode(code);
+    }
+
+    @Override
+    public Cart saveCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 }
