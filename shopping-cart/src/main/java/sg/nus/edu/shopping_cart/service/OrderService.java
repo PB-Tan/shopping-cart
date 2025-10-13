@@ -9,6 +9,7 @@ import sg.nus.edu.shopping_cart.interfaces.*;
 import sg.nus.edu.shopping_cart.repository.*;
 
 import java.util.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -29,6 +30,9 @@ public class OrderService implements OrderInterface {
 
     @Autowired
     OrderItemRepository orderItemRepo;
+
+    @Autowired
+    CartRepository cartRepository;
 
     @Override
     public Order findOrderById(int id) {
@@ -108,6 +112,7 @@ public class OrderService implements OrderInterface {
             orderItem.setUnitPrice(cartItem.getUnitPrice());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setItemTotal(orderItem.getUnitPrice() * orderItem.getQuantity());
+            orderItem.setProductName(cartItem.getProduct().getName());
 
             // persist new orderItem into entity and add to list of OrderItems
             orderItemRepo.save(orderItem);
@@ -115,6 +120,16 @@ public class OrderService implements OrderInterface {
         }
         // persist order associated with list of newly created orderItems
         order.setOrderItems(orderItems);
+
+        // get cart from customer to get discountTotal attribute
+        Optional<Cart> optCart = cartRepository.findCartByCustomerUsername(username);
+        if (optCart.isPresent()) {
+            Cart cart = optCart.get();
+            order.setDiscountCode(cart.getDiscountCode());
+            order.setDiscountTotal(cart.getDiscountTotal());
+        } else {
+            order.setDiscountTotal(BigDecimal.ZERO);
+        }
         orderRepo.save(order);
 
         return order;

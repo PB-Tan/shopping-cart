@@ -23,6 +23,7 @@ public class Cart {
     private Customer customer;
 
     private BigDecimal grandTotal;
+    private BigDecimal discountTotal;
     private String discountCode;
 
     public Cart() {

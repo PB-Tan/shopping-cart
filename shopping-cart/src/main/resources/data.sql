@@ -39,11 +39,11 @@ VALUES
 
 -- ===== PAYMENT METHODS =====
 INSERT INTO `payment_method`
-(customer_username, expiry_month, expiry_year, card_type, card_holder_name, last_four_digits, is_default)
+(customer_username, card_holder_name)
 VALUES
-('alice', 12, 27, 'VISA',       'ALICE TAN',   '4242', 1),
-('ben',   11, 26, 'MASTERCARD', 'BEN NG',      '1111', 1),
-('charlie', 6, 28,'AMEX',       'CHARLIE LIM', '2222', 0);
+('alice','ALICE TAN'),
+('ben', 'BEN NG'),
+('charlie','CHARLIE LIM');
 
 -- ===== TRANSACTIONS =====
 INSERT INTO `transaction`
@@ -63,7 +63,7 @@ VALUES
 
 -- ===== ORDERS =====
 INSERT INTO `orders`
-(created_at, grand_total, status, promo_codes, customer_username, shipment_id, transaction_id)
+(created_at, grand_total, status, discount_code, customer_username, shipment_id, transaction_id)
 VALUES
 (NOW(6), 338.80, 'Pending',   NULL, 'alice', 1, 1),
 (NOW(6),  84.00, 'Shipped',   NULL, 'ben',   2, 2),
