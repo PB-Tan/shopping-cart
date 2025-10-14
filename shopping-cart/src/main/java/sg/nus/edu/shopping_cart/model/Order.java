@@ -31,7 +31,7 @@ public class Order {
     private String status; // PENDING, PAID, FAILED, CANCELLED
     private String discountCode;
     private LocalDateTime createdAt;
-    private double grandTotal;
+    private BigDecimal grandTotal;
     private BigDecimal discountTotal = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

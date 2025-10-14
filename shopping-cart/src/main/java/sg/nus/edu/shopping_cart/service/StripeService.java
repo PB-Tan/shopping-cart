@@ -27,6 +27,9 @@ public class StripeService {
     @Value("${stripe.secret-key}")
     private String secretKey;
 
+    @Value("${stripe.tax-rate-id}")
+    private String taxRateId;
+
     @Autowired
     DiscountCodeRepository discountCodeRepository;
 
@@ -68,7 +71,7 @@ public class StripeService {
             SessionCreateParams.LineItem lineItem = SessionCreateParams.LineItem.builder()
                     .setQuantity(quantity)
                     .setPriceData(priceData)
-                    .addTaxRate("txr_1SHP8CLE4e5BDmJr8uRGOfvB")
+                    .addTaxRate(taxRateId)
                     .build();
 
             lineItems.add(lineItem);

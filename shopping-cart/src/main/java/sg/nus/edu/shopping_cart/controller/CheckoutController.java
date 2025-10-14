@@ -43,14 +43,15 @@ public class CheckoutController {
     // binder.addValidators(paymentMethodValidator);
     // }
 
-    // checkout page from cart
+    // proceed to checkout button from cart
     @GetMapping("/checkout")
     public String displayCheckout(HttpSession session, Model model, RedirectAttributes ra) {
         String username = (String) session.getAttribute("username");
         // assuming that customer has been validated, due to security interceptor
         Customer customer = customerService.findCustomerByUsername(username).get();
         List<CartItem> cartItems = customer.getCart().getCartItems();
-        // if cartItem is out of stock, then prevent customer from going into payment
+        // Loop through cartitems to check if any item is out of stock
+        // , then prevent customer from going into payment
         // page, and show error msg
         for (CartItem cartItem : cartItems) {
             int stock = cartItem.getProduct().getStock();
@@ -68,6 +69,16 @@ public class CheckoutController {
             return "cart";
         }
 
+        // if no active order made for current cart, persist new order with order items
+        // from cart and its cart Items
+        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
+        Order order;
+        if (orderOpt.isEmpty()) {
+            order = orderService.createOrderFromCart(username);
+        } else {
+            order = orderOpt.get();
+        }
+        List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
         // implement stripe starting here
         StripeResponse stripeResponse = stripeService.payProducts(orderItems, order);
         System.out.println("[Order] stripe status=" + stripeResponse.getStatus() +
@@ -79,7 +90,7 @@ public class CheckoutController {
             ra.addFlashAttribute("stripeError", stripeResponse.getMessage());
             return "redirect:/cart";
         }
-        return "payment";
+
     }
 
     // select payment methods

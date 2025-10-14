@@ -32,7 +32,7 @@ public class OrderService implements OrderInterface {
     OrderItemRepository orderItemRepo;
 
     @Autowired
-    CartRepository cartRepository;
+    CartRepository cartRepo;
 
     @Override
     public Order findOrderById(int id) {
@@ -79,21 +79,33 @@ public class OrderService implements OrderInterface {
     @Override
     @Transactional(readOnly = false)
     public Order createOrderFromCart(String username) {
-        // If an ACTIVE order already exists, reuse it
+        // Check if an ACTIVE order already exists, reuse it
         Optional<Order> existingActive = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
                 "ACTIVE");
         if (existingActive.isPresent()) {
             return existingActive.get();
         }
 
-        // If customer checks out an empty cart, return an empty order
+        // If customer cart does not exists, return empty order, controller will prevent
+        // checkout
+        Optional<Cart> optCart = cartRepo.findCartByCustomerUsername(username);
+        if (optCart.isEmpty()) {
+            Cart cart = new Cart();
+            cart.setCustomer(customerRepo.findById(username).get());
+            return new Order();
+        }
+
+        // At this point, cart already exists
+        Cart cart = optCart.get();
+
+        // If customer checks out an empty cart, return an empty order, controller will
+        // prevent checkout
         List<CartItem> cartItems = cartItemRepo.findAllCartItemsByCustomer(username);
         if (cartItems == null || cartItems.isEmpty()) {
             return new Order();
         }
 
         // Creating a new order and setting prelim attributes from cart
-        Cart cart = cartInterface.getCartByCustomer(username);
         Order order = new Order();
         order.setCustomer(customerRepo.findById(username).get());
         order.setStatus("ACTIVE");
@@ -121,14 +133,10 @@ public class OrderService implements OrderInterface {
         order.setOrderItems(orderItems);
 
         // get cart from customer to get discountTotal attribute
-        Optional<Cart> optCart = cartRepository.findCartByCustomerUsername(username);
-        if (optCart.isPresent()) {
-            Cart cart = optCart.get();
-            order.setDiscountCode(cart.getDiscountCode());
-            order.setDiscountTotal(cart.getDiscountTotal());
-        } else {
-            order.setDiscountTotal(BigDecimal.ZERO);
-        }
+        order.setDiscountCode(cart.getDiscountCode());
+        order.setDiscountTotal(cart.getDiscountTotal());
+
+        // finally save the newly created ordeer
         orderRepo.save(order);
 
         return order;
