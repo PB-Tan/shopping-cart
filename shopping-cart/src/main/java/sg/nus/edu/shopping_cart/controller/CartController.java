@@ -50,19 +50,22 @@ public class CartController {
             RedirectAttributes ra,
             @RequestParam("discountCode") String discountCode,
             Model model) {
-
+        // ov test
         discountCode = discountCode.toUpperCase().trim();
         String username = (String) session.getAttribute("username");
         Cart cart = cartInterface.getCartByCustomer(username);
         BigDecimal subtotal = cartInterface.calculateCartTotal(username);
         BigDecimal grandTotal;
+        BigDecimal discountTotal = BigDecimal.ZERO;
         if (cartInterface.getPercentByCode(discountCode).isPresent()) {
             BigDecimal percent = BigDecimal.valueOf(cartInterface.getPercentByCode(discountCode).get());
             grandTotal = subtotal.multiply(BigDecimal.valueOf(100).subtract(percent).divide(BigDecimal.valueOf(100)));
+            discountTotal = subtotal.subtract(grandTotal);
             ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
             ra.addFlashAttribute("grandTotal", grandTotal);
             cart.setDiscountCode(discountCode);
             cart.setGrandTotal(grandTotal);
+            cart.setDiscountTotal(discountTotal);
             cartInterface.saveCart(cart);
         } else {
             grandTotal = subtotal;

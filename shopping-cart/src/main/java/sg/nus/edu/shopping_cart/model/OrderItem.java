@@ -2,6 +2,8 @@ package sg.nus.edu.shopping_cart.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 @Getter

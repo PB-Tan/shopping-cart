@@ -282,6 +282,11 @@
                 role="alert"
                 th:text="${errorMsg}"
               ></div>
+              <div
+                th:if="${stripeError}"
+                style="color: red"
+                th:text="${stripeError}"
+              ></div>
             </div>
           </div>
         </div>

@@ -33,12 +33,15 @@ public class CheckoutController {
     ShipmentService shipmentService;
 
     @Autowired
-    private PaymentMethodValidator paymentMethodValidator;
+    StripeService stripeService;
 
-    @InitBinder("paymentMethod")
-    private void initPaymentMethodValidator(WebDataBinder binder) {
-        binder.addValidators(paymentMethodValidator);
-    }
+    // @Autowired
+    // private PaymentMethodValidator paymentMethodValidator;
+
+    // @InitBinder("paymentMethod")
+    // private void initPaymentMethodValidator(WebDataBinder binder) {
+    // binder.addValidators(paymentMethodValidator);
+    // }
 
     // checkout page from cart
     @GetMapping("/checkout")
@@ -65,65 +68,64 @@ public class CheckoutController {
             return "cart";
         }
 
-        // if no active order made for current cart, persist new order with order items
-        // from cart and its cart Items
-        if (orderService.findTopOrderByUsername(username).isEmpty()) {
-            Order order = orderService.createOrderFromCart(username);
-            List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
-            BigDecimal cartTotal = cartService.calculateCartTotal(username);
-            model.addAttribute("customerOrderItems", orderItems);
-            model.addAttribute("customer", customer);
-            model.addAttribute("cartTotal", cartTotal);
+        // implement stripe starting here
+        StripeResponse stripeResponse = stripeService.payProducts(orderItems, order);
+        System.out.println("[Order] stripe status=" + stripeResponse.getStatus() +
+                "url=" + stripeResponse.getSessionUrl() +
+                "msg=" + stripeResponse.getMessage());
+        if ("SUCCESS".equalsIgnoreCase(stripeResponse.getStatus())) {
+            return "redirect:" + stripeResponse.getSessionUrl();
+        } else {
+            ra.addFlashAttribute("stripeError", stripeResponse.getMessage());
+            return "redirect:/cart";
         }
         return "payment";
     }
 
     // select payment methods
-    @PostMapping("/checkout/method")
-    public String selectPaymentMethod(
-            HttpSession session,
-            @RequestParam String paymentMethod) {
-        if (paymentMethod.equals("card")) {
-            return "redirect:/checkout/creditcard";
-        } else {
-            return "redirect:/checkout/qr";
-        }
-    }
+    // @PostMapping("/checkout/method")
+    // public String selectPaymentMethod(
+    // HttpSession session,
+    // @RequestParam String paymentMethod) {
+    // if (paymentMethod.equals("card")) {
+    // return "redirect:/checkout/creditcard";
+    // } else {
+    // return "redirect:/checkout/qr";
+    // }
+    // }
 
-    @GetMapping("/checkout/creditcard")
-    public String displayCreditCardForm(Model model) {
-        if (!model.containsAttribute("paymentMethod")) {
-            model.addAttribute("paymentMethod", new PaymentMethod());
-        }
-        return "credit-card-payment";
-    }
+    // @GetMapping("/checkout/creditcard")
+    // public String displayCreditCardForm(Model model) {
+    // if (!model.containsAttribute("paymentMethod")) {
+    // model.addAttribute("paymentMethod", new PaymentMethod());
+    // }
+    // return "credit-card-payment";
+    // }
 
-    // When customer clicks pay with credit card
-    @PostMapping("/checkout/creditcard")
-    public String payWithCreditCard(
-            HttpSession session,
-            @Validated @ModelAttribute("paymentMethod") PaymentMethod paymentMethod,
-            BindingResult bindingResult,
-            Model model) {
+    // @PostMapping("/checkout/creditcard")
+    // public String payWithCreditCard(
+    // HttpSession session,
+    // @Validated @ModelAttribute("paymentMethod") PaymentMethod paymentMethod,
+    // BindingResult bindingResult,
+    // Model model) {
 
-        // validate credentials
-        if (bindingResult.hasErrors()) {
-            return "credit-card-payment";
-        }
+    // if (bindingResult.hasErrors()) {
+    // return "credit-card-payment";
+    // }
 
-        String username = (String) session.getAttribute("username");
-        Optional<Customer> customer = customerService.findCustomerByUsername(username);
-        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
-        if (orderOpt.isEmpty()) {
-            return "redirect:/error";
-        }
-        Order order = orderOpt.get();
-        order.setStatus("PENDING");
-        model.addAttribute("customer", customer.get());
-        model.addAttribute("cartTotal", orderOpt.get().getGrandTotal());
+    // String username = (String) session.getAttribute("username");
+    // Optional<Customer> customer =
+    // customerService.findCustomerByUsername(username);
+    // Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
+    // if (orderOpt.isEmpty()) {
+    // return "redirect:/test";
+    // }
 
-        return "redirect:/checkout/success";
-    }
+    // model.addAttribute("customer", customer.get());
+    // model.addAttribute("cartTotal", orderOpt.get().getGrandTotal());
+
+    // return "redirect:/checkout/success";
+    // }
 
     @GetMapping("/checkout/success")
     public String paymentSuccess(Model model, HttpSession session) {
