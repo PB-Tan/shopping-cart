@@ -142,6 +142,17 @@ public class OrderService implements OrderInterface {
         return order;
     }
 
+    @Override
+    public void updateStock(Order order) {
+        List<OrderItem> orderItems = order.getOrderItems();
+        for (OrderItem orderItem : orderItems) {
+            Product product = orderItem.getProduct();
+            int orderQty = orderItem.getQuantity();
+            int currentStock = product.getStock();
+            product.setStock(currentStock - orderQty);
+        }
+    }
+
     // lambda expression for finding order items in the active order. --> display
     // inside cart UI view
     @Override

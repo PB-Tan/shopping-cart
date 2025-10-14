@@ -143,12 +143,18 @@ public class CheckoutController {
         String username = (String) session.getAttribute("username");
         // Unwrap Optional<Customer> before placing into the model
         model.addAttribute("customer", customerService.findCustomerByUsername(username).get());
-        Optional<Order> order = orderService.findTopOrderByUsername(username);
-        if (order.isPresent()) {
-            order.get().setStatus("PAID");
+        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+            orderService.updateStock(order);
+            order.setStatus("PAID");
             cartService.clearCart(username);
+
+            return "paymentsuccess";
+        } else {
+            return "error";
         }
-        return "paymentsuccess";
+
     }
 
     // @PostMapping("/checkout/shipping")

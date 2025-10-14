@@ -21,4 +21,6 @@ public interface OrderInterface {
 
     public List<OrderItem> findOrderItemByOrderId(int id);
 
+    public void updateStock(Order order);
+
 }
