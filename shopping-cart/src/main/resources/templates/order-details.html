@@ -12,7 +12,7 @@
     <div th:replace="fragments/layout :: siteHeader"></div>
     <h2 class="text-center my-4"> Order details </h2>
     <div class="mx-auto px-5" style="max-width: 75%; padding-top: 50px">
-    <table class="table table-striped table-hover table-bordered table-condensed">
+    <table class="table table-hover table-bordered table-condensed">
       <thead class="thead-light">
         <tr>
           <th>Id</th>
@@ -27,9 +27,9 @@
         <tr th:each="orderItem : ${orderItems}">
           <td th:text="${orderItem.id}" />
           <td th:text="${orderItem.product.name}" />
-          <td th:text="${orderItem.unitPrice}" />
+          <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.product.unitPrice,1,2)}"/>
           <td th:text="${orderItem.quantity}" />
-          <td th:text="${orderItem.itemTotal}" />
+          <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.itemTotal,1,2)}" /> 
           <td>
             <!-- <a
               th:href="@{/order/review/{id}(id=${order.id})}"

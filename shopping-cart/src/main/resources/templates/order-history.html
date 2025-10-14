@@ -12,7 +12,7 @@
     <div th:replace="fragments/layout :: siteHeader"></div>
     <h2 class="text-center my-4"> Order History </h2>
     <div class="mx-auto px-5" style="max-width: 75%; padding-top: 50px">
-    <table class="table table-striped table-hover table-bordered table-condensed">
+    <table class="table table-hover table-bordered table-condensed">
       <thead class="thead-light">
         <tr>
           <th>Date</th>
@@ -25,11 +25,12 @@
       </thead>
       <tbody>
         <tr th:each="order : ${orders}">
-          <td th:text="${order.createdAt.toLocalDate()}"></td>
-          <td th:text="${order.createdAt.toLocalTime()}"></td>
+          <!-- Format using Thymeleaf's #temporals for java.time types -->
+          <td th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}"></td>
+          <td th:text="${#temporals.format(order.createdAt, 'hh:mma')}"></td>
           <td th:text="${order.id}"></td>
           <td th:text="${order.status}"></td>
-          <td th:text="${order.grandTotal}"></td>
+          <td th:text="${'$' + #numbers.formatDecimal(order.grandTotal,1,2)}"></td>
           <td>
             <a
               th:href="@{/order/history/{id}(id=${order.id})}"

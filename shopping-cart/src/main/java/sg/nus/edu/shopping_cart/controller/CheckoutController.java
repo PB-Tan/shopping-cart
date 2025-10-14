@@ -40,49 +40,42 @@ public class CheckoutController {
         binder.addValidators(paymentMethodValidator);
     }
 
-    // payment controlling
+    // checkout page from cart
     @GetMapping("/checkout")
     public String displayCheckout(HttpSession session, Model model, RedirectAttributes ra) {
         String username = (String) session.getAttribute("username");
-        Optional<Customer> customer = customerService.findCustomerByUsername(username);
-        if (customer.isEmpty()) {
-            return "redirect:/login";
-        }
-
-        // by this point customer exists and has been validated
-        Customer activeCustomer = customer.get();
-        List<CartItem> cartItems = activeCustomer.getCart().getCartItems();
+        // assuming that customer has been validated, due to security interceptor
+        Customer customer = customerService.findCustomerByUsername(username).get();
+        List<CartItem> cartItems = customer.getCart().getCartItems();
         // if cartItem is out of stock, then prevent customer from going into payment
-        // page,
-        // and show error msg
+        // page, and show error msg
         for (CartItem cartItem : cartItems) {
             int stock = cartItem.getProduct().getStock();
             int qty = cartItem.getQuantity();
             if (qty > stock) {
-                String msg = cartItem.getProduct().getName() + " is out of stock";
+                String msg = cartItem.getProduct().getName() + " quantity cannot be higher than stock: " + stock;
                 ra.addFlashAttribute("errorMsg", msg);
                 return "redirect:/cart";
             }
         }
 
-        // persist new order with order items from cart and its cart Items and empty
-        // cart
-        Order order = orderService.createOrderFromCart(username);
-        List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
-        BigDecimal cartTotal = cartService.calculateCartTotal(username);
-        model.addAttribute("customerOrderItems", orderItems);
-        model.addAttribute("customer", activeCustomer);
-        model.addAttribute("cartTotal", cartTotal);
-
         // if order is empty, then prevent going into payment page and show error msg
-        if (cartTotal.compareTo(BigDecimal.ZERO) <= 0) {
+        if (cartItems.isEmpty()) {
             model.addAttribute("errorMsg", "Cart cannot empty");
             return "cart";
         }
 
-        else {
-            return "payment";
+        // if no active order made for current cart, persist new order with order items
+        // from cart and its cart Items
+        if (orderService.findTopOrderByUsername(username).isEmpty()) {
+            Order order = orderService.createOrderFromCart(username);
+            List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
+            BigDecimal cartTotal = cartService.calculateCartTotal(username);
+            model.addAttribute("customerOrderItems", orderItems);
+            model.addAttribute("customer", customer);
+            model.addAttribute("cartTotal", cartTotal);
         }
+        return "payment";
     }
 
     // select payment methods
@@ -105,6 +98,7 @@ public class CheckoutController {
         return "credit-card-payment";
     }
 
+    // When customer clicks pay with credit card
     @PostMapping("/checkout/creditcard")
     public String payWithCreditCard(
             HttpSession session,
@@ -112,6 +106,7 @@ public class CheckoutController {
             BindingResult bindingResult,
             Model model) {
 
+        // validate credentials
         if (bindingResult.hasErrors()) {
             return "credit-card-payment";
         }
@@ -120,9 +115,10 @@ public class CheckoutController {
         Optional<Customer> customer = customerService.findCustomerByUsername(username);
         Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
         if (orderOpt.isEmpty()) {
-            return "redirect:/test";
+            return "redirect:/error";
         }
-
+        Order order = orderOpt.get();
+        order.setStatus("PENDING");
         model.addAttribute("customer", customer.get());
         model.addAttribute("cartTotal", orderOpt.get().getGrandTotal());
 
@@ -130,12 +126,14 @@ public class CheckoutController {
     }
 
     @GetMapping("/checkout/success")
-    public String displaySuccess(Model model, HttpSession session) {
+    public String paymentSuccess(Model model, HttpSession session) {
         String username = (String) session.getAttribute("username");
-        if (username != null) {
-            customerService.findCustomerByUsername(username).ifPresent(c -> model.addAttribute("customer", c));
-            orderService.findTopOrderByUsername(username)
-                    .ifPresent(o -> model.addAttribute("cartTotal", o.getGrandTotal()));
+        // Unwrap Optional<Customer> before placing into the model
+        model.addAttribute("customer", customerService.findCustomerByUsername(username).get());
+        Optional<Order> order = orderService.findTopOrderByUsername(username);
+        if (order.isPresent()) {
+            order.get().setStatus("PAID");
+            cartService.clearCart(username);
         }
         return "paymentsuccess";
     }

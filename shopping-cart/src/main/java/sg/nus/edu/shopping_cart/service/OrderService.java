@@ -9,6 +9,7 @@ import sg.nus.edu.shopping_cart.interfaces.*;
 import sg.nus.edu.shopping_cart.repository.*;
 
 import java.util.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -30,6 +31,9 @@ public class OrderService implements OrderInterface {
     @Autowired
     OrderItemRepository orderItemRepo;
 
+    @Autowired
+    CartInterface cartInterface;
+
     @Override
     public Order findOrderById(int id) {
         return orderRepo.findById(id).get();
@@ -48,6 +52,7 @@ public class OrderService implements OrderInterface {
     @Override
     @Transactional(readOnly = false)
     public void updateShippingMethodForOrder(String username, String shippingMethod) {
+        // find top order made by customer
         Optional<Order> activeOrder = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
                 "ACTIVE");
         if (activeOrder.isPresent()) {
@@ -83,20 +88,18 @@ public class OrderService implements OrderInterface {
 
         // If customer checks out an empty cart, return an empty order
         List<CartItem> cartItems = cartItemRepo.findAllCartItemsByCustomer(username);
-        if (cartItems == null || cartItems.isEmpty())
+        if (cartItems == null || cartItems.isEmpty()) {
             return new Order();
+        }
 
-        // Creating a new order and setting prelim attributes
+        // Creating a new order and setting prelim attributes from cart
+        Cart cart = cartInterface.getCartByCustomer(username);
         Order order = new Order();
         order.setCustomer(customerRepo.findById(username).get());
         order.setStatus("ACTIVE");
+        order.setDiscountCode(cart.getDiscountCode());
         order.setCreatedAt(LocalDateTime.now());
-
-        double subTotal = 0.0;
-        for (CartItem cartItem : cartItems) {
-            subTotal += cartItem.getUnitPrice() * cartItem.getQuantity();
-        }
-        order.setGrandTotal(subTotal);
+        order.setGrandTotal(cart.getGrandTotal());
         order = orderRepo.save(order);
 
         // Building order Items with cartItems
@@ -105,9 +108,9 @@ public class OrderService implements OrderInterface {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(cartItem.getProduct());
-            orderItem.setUnitPrice(cartItem.getUnitPrice());
+            orderItem.setUnitPrice(cartItem.getProduct().getUnitPrice());
             orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setItemTotal(orderItem.getUnitPrice() * orderItem.getQuantity());
+            orderItem.setItemTotal(cartItem.getProduct().getUnitPrice() * orderItem.getQuantity());
 
             // persist new orderItem into entity and add to list of OrderItems
             orderItemRepo.save(orderItem);

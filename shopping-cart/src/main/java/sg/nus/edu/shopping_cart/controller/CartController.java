@@ -37,6 +37,7 @@ public class CartController {
         model.addAttribute("items", items);
         model.addAttribute("subtotal", subtotal);
         model.addAttribute("cart", cart);
+        // safeguard against grandtotal after computing discount
         if (!model.containsAttribute("grandTotal")) {
             model.addAttribute("grandTotal", grandTotal);
         }

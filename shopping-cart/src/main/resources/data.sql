@@ -37,47 +37,47 @@ VALUES
 (2, 2, 1, 89.00, 'add'),
 (3, 3, 1, 189.00, 'add');
 
--- ===== PAYMENT METHODS =====
-INSERT INTO `payment_method`
-(customer_username, expiry_month, expiry_year, card_type, card_holder_name, last_four_digits, is_default)
-VALUES
-('alice', 12, 27, 'VISA',       'ALICE TAN',   '4242', 1),
-('ben',   11, 26, 'MASTERCARD', 'BEN NG',      '1111', 1),
-('charlie', 6, 28,'AMEX',       'CHARLIE LIM', '2222', 0);
+-- -- ===== PAYMENT METHODS =====
+-- INSERT INTO `payment_method`
+-- (customer_username, expiry_month, expiry_year, card_type, card_holder_name, last_four_digits, is_default)
+-- VALUES
+-- ('alice', 12, 27, 'VISA',       'ALICE TAN',   '4242', 1),
+-- ('ben',   11, 26, 'MASTERCARD', 'BEN NG',      '1111', 1),
+-- ('charlie', 6, 28,'AMEX',       'CHARLIE LIM', '2222', 0);
 
--- ===== TRANSACTIONS =====
-INSERT INTO `transaction`
-(charged, created_at, currency, grand_total, idempotency_key, is_default, payment_type, provider, provider_product, provider_transaction_id, payment_method_id)
-VALUES
-('Y', NOW(6), 'SGD',  338.80, 'TXN001', 1, 'CARD', 'Stripe', 'VISA',       'TXN-1001', 1),
-('Y', NOW(6), 'SGD',   89.00, 'TXN002', 1, 'CARD', 'Stripe', 'MASTERCARD', 'TXN-1002', 2),
-('Y', NOW(6), 'SGD',  189.00, 'TXN003', 1, 'CARD', 'Stripe', 'AMEX',       'TXN-1003', 3);
+-- -- ===== TRANSACTIONS =====
+-- INSERT INTO `transaction`
+-- (charged, created_at, currency, grand_total, idempotency_key, is_default, payment_type, provider, provider_product, provider_transaction_id, payment_method_id)
+-- VALUES
+-- ('Y', NOW(6), 'SGD',  338.80, 'TXN001', 1, 'CARD', 'Stripe', 'VISA',       'TXN-1001', 1),
+-- ('Y', NOW(6), 'SGD',   89.00, 'TXN002', 1, 'CARD', 'Stripe', 'MASTERCARD', 'TXN-1002', 2),
+-- ('Y', NOW(6), 'SGD',  189.00, 'TXN003', 1, 'CARD', 'Stripe', 'AMEX',       'TXN-1003', 3);
 
--- ===== SHIPMENTS =====
-INSERT INTO `shipment`
-(courier_name, created_at, delivery_estimate, service_level, shipment_code, shipment_method)
-VALUES
-('SingPost', NOW(6), DATE_ADD(NOW(6), INTERVAL 3 DAY), 'Standard', 'SHIP001', 'Home Delivery'),
-('NinjaVan', NOW(6), DATE_ADD(NOW(6), INTERVAL 1 DAY), 'Express',  'SHIP002', 'Same Day'),
-('J&T',      NOW(6), DATE_ADD(NOW(6), INTERVAL 5 DAY), 'Economy',  'SHIP003', 'Pick up Point');
+-- -- ===== SHIPMENTS =====
+-- INSERT INTO `shipment`
+-- (courier_name, created_at, delivery_estimate, service_level, shipment_code, shipment_method)
+-- VALUES
+-- ('SingPost', NOW(6), DATE_ADD(NOW(6), INTERVAL 3 DAY), 'Standard', 'SHIP001', 'Home Delivery'),
+-- ('NinjaVan', NOW(6), DATE_ADD(NOW(6), INTERVAL 1 DAY), 'Express',  'SHIP002', 'Same Day'),
+-- ('J&T',      NOW(6), DATE_ADD(NOW(6), INTERVAL 5 DAY), 'Economy',  'SHIP003', 'Pick up Point');
 
--- ===== ORDERS =====
-INSERT INTO `orders`
-(created_at, grand_total, status, promo_codes, customer_username, shipment_id, transaction_id)
-VALUES
-(NOW(6), 338.80, 'Pending',   NULL, 'alice', 1, 1),
-(NOW(6),  84.00, 'Shipped',   NULL, 'ben',   2, 2),
-(NOW(6), 189.00, 'Completed', NULL, 'charlie',3, 3);
+-- -- ===== ORDERS =====
+-- INSERT INTO `orders`
+-- (created_at, grand_total, status, discount_code, customer_username, shipment_id, transaction_id)
+-- VALUES
+-- (NOW(6), 338.80, 'PENDING',   NULL, 'alice', 1, 1),
+-- (NOW(6),  84.00, 'SHIPPED',   NULL, 'ben',   2, 2),
+-- (NOW(6), 189.00, 'COMPLETED', NULL, 'charlie',3, 3);
 
--- ===== ORDER ITEMS =====
-INSERT INTO `order_item`
-(order_id, product_id, product_name, unit_price, quantity, item_total)
-VALUES
-(1, 1, 'Wireless Mouse',        29.90, 2,  59.80),
-(1, 2, 'Mechanical Keyboard',   89.00, 1,  89.00),
-(1, 3, '27-inch Monitor',      189.00, 3, 189.00),
-(2, 2, 'Mechanical Keyboard',   89.00, 1,  84.00),
-(3, 3, '27-inch Monitor',      189.00, 1, 189.00);
+-- -- ===== ORDER ITEMS =====
+-- INSERT INTO `order_item`
+-- (order_id, product_id, product_name, unit_price, quantity, item_total)
+-- VALUES
+-- (1, 1, 'Wireless Mouse',        29.90, 2,  59.80),
+-- (1, 2, 'Mechanical Keyboard',   89.00, 1,  89.00),
+-- (1, 3, '27-inch Monitor',      189.00, 3, 189.00),
+-- (2, 2, 'Mechanical Keyboard',   89.00, 1,  84.00),
+-- (3, 3, '27-inch Monitor',      189.00, 1, 189.00);
 
 -- ===== DISCOUNT CODE =====
 INSERT INTO `discount_code`

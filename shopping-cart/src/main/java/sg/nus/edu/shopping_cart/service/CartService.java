@@ -187,7 +187,7 @@ public class CartService implements CartInterface {
             int quantity = item.getQuantity();
             total = total.add(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity)));
         }
-
+        cart.setGrandTotal(total);
         return total;
     }
 
