@@ -107,7 +107,8 @@ public class CartController {
         } // if product is found inside cart, then does the combined qty exceed stock?
         if (existingItem != null && quantity + existingItem.getQuantity() > stock) {
             ra.addFlashAttribute("errorMsg",
-                    "Only " + stock + " left for " + product.getName() + ". You have " + quantity + " in your cart");
+                    "Only " + stock + " left for " + product.getName() + ". You have " + existingItem.getQuantity()
+                            + " in your cart");
             return "redirect:/catalogue/" + productId;
         }
 
