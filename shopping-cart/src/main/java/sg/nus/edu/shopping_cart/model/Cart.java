@@ -21,9 +21,10 @@ public class Cart {
     @OneToOne // owner of FK
     @JoinColumn(name = "customer_username")
     private Customer customer;
-
+    private BigDecimal subtotal;
     private BigDecimal grandTotal;
     private BigDecimal discountTotal;
+    private BigDecimal taxTotal;
     private String discountCode;
 
     public Cart() {

@@ -153,8 +153,8 @@ public class OrderService implements OrderInterface {
         }
     }
 
-    // lambda expression for finding order items in the active order. --> display
-    // inside cart UI view
+    // functional programming for finding order items in the active order. -->
+    // display inside cart UI view
     @Override
     public List<OrderItem> findOrderItemByUsername(String username) {
         return findTopOrderByUsername(username)

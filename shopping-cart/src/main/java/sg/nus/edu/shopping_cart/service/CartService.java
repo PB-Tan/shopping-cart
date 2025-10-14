@@ -177,18 +177,44 @@ public class CartService implements CartInterface {
     }
 
     @Override
-    public BigDecimal calculateCartTotal(String username) {
+    public BigDecimal calculateCartSubtotal(String username) {
         Cart cart = getCartByCustomer(username);
-
-        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal subtotal = BigDecimal.ZERO;
 
         for (CartItem item : cart.getCartItems()) {
             double price = item.getProduct().getUnitPrice();
             int quantity = item.getQuantity();
-            total = total.add(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity)));
+            subtotal = subtotal.add(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity)));
         }
-        cart.setGrandTotal(total);
-        return total;
+        cart.setSubtotal(subtotal);
+        return subtotal;
+    }
+
+    @Override
+    public BigDecimal calculateCartGrandTotal(String username) {
+        Cart cart = getCartByCustomer(username);
+        BigDecimal subtotal = calculateCartSubtotal(username);
+        BigDecimal gst = BigDecimal.valueOf(0.09);
+        // in the event of discount, discount subtotal, then add taxes
+        if (cart.getDiscountCode() != null) {
+            BigDecimal discountpercent = BigDecimal
+                    .valueOf(getPercentByCode(cart.getDiscountCode()).get());
+            cart.setDiscountTotal(subtotal.multiply(discountpercent).divide(BigDecimal.valueOf(100)));
+            BigDecimal afterDiscount = subtotal.subtract(cart.getDiscountTotal());
+            BigDecimal taxTotal = afterDiscount.multiply(gst);
+            BigDecimal grandTotal = afterDiscount.add(taxTotal);
+            cart.setGrandTotal(grandTotal);
+            cart.setTaxTotal(taxTotal);
+            return grandTotal;
+            // else simply add taxes to subtotal
+        } else {
+            BigDecimal taxTotal = subtotal.multiply(gst);
+            BigDecimal grandTotal = subtotal.add(taxTotal);
+            cart.setTaxTotal(taxTotal);
+            cart.setGrandTotal(grandTotal);
+            return grandTotal;
+        }
+
     }
 
     @Override

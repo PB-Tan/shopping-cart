@@ -131,11 +131,11 @@
 		</div>
 		</div>
 
-		<!-- 评价区域 -->
+		<!-- Review section -->
 		<div class="container mt-5 mb-5" th:each="p: ${productlist}" id="review-section">
 			<h4>Product Reviews</h4>
 
-			<!-- 平均评分显示 -->
+			<!-- Display average rating -->
 			<div class="mb-4">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
@@ -147,7 +147,7 @@
 				</div>
 			</div>
 
-			<!-- 提示信息 -->
+			<!-- Display alerts -->
 			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
 				<span th:text="${success}"></span>
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -157,7 +157,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 			</div>
 
-			<!-- 评价提交表单 - 只有已购买且未评价的用户可以提交 -->
+			<!-- Review input form - Only customers who have bought the product and have not left a review before -->
 			<div class="card mb-4" th:if="${session.username != null and hasPurchased and !hasReviewed}">
 				<div class="card-body">
 					<h5 class="card-title">Write a Review</h5>
@@ -191,22 +191,22 @@
 				</div>
 			</div>
 
-			<!-- 未登录提示 -->
+			<!-- Alert if user is not logged in -->
 			<div class="alert alert-info" th:if="${session.username == null}">
 				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
 			</div>
 
-			<!-- 未购买提示 -->
+			<!-- Alert if user have not bought product before -->
 			<div class="alert alert-warning" th:if="${session.username != null and !hasPurchased}">
 				Only users who have purchased this product can leave a review
 			</div>
 
-			<!-- 已评价提示 -->
+			<!-- Alert if user have left a review before -->
 			<div class="alert alert-secondary" th:if="${session.username != null and hasPurchased and hasReviewed}">
 				You have already reviewed this product
 			</div>
 
-			<!-- 评价列表 -->
+			<!-- display reviews -->
 			<div class="reviews-list mt-4">
 				<h5>All Reviews (<span th:text="${reviewCount}">0</span>)</h5>
 
@@ -238,31 +238,31 @@
 
 
 
-	    <!-- WhatsApp 分享功能 JavaScript -->
+<!-- WhatsApp share functionality JavaScript -->
    <script>
    function shareToWhatsApp() {
-       // 获取按钮上的商品信息
+       // Read product info from the button attributes
        const button = event.currentTarget;
        const productName = button.getAttribute('data-product-name');
        const productPrice = button.getAttribute('data-product-price');
        const productId = button.getAttribute('data-product-id');
 
-       // 获取当前页面完整 URL，并替换 localhost 为局域网 IP
+       // Get current page URL and replace localhost with LAN IP
        let currentUrl = window.location.href;
-       // 替换 localhost 或 127.0.0.1 为局域网 IP
+       // Replace localhost or 127.0.0.1 with the LAN IP
        currentUrl = currentUrl.replace('localhost', '172.20.10.8');
        currentUrl = currentUrl.replace('127.0.0.1', '172.20.10.8');
 
-       // 构建分享消息
+       // Build the message to share
        const message = `Check out this product!\n\nProduct: ${productName}\nPrice: ${productPrice}\n\nView details: ${currentUrl}`;
 
-       // 编码消息用于 URL
+       // Encode message for the URL
        const encodedMessage = encodeURIComponent(message);
 
-       // 构建 WhatsApp 分享链接
+       // Build the WhatsApp share link
        const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
 
-       // 打开 WhatsApp（在新窗口）
+       // Open WhatsApp in a new window
        window.open(whatsappUrl, '_blank');
    }
      </script>

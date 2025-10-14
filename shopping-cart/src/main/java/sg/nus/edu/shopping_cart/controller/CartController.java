@@ -27,20 +27,12 @@ public class CartController {
     public String viewCart(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         Cart cart = cartInterface.getCartByCustomer(username);
-        BigDecimal subtotal = cartInterface.calculateCartTotal(username);
+        BigDecimal subtotal = cartInterface.calculateCartSubtotal(username);
         List<CartItem> items = cartInterface.getCartItemsByCustomer(username);
-        // default before any manipulation
-        if (cart.getGrandTotal() == null) {
-            cart.setGrandTotal(subtotal); // swap subtotal here for anything after taxes
-        }
-        BigDecimal grandTotal = cart.getGrandTotal();
+        BigDecimal grandtotal = cartInterface.calculateCartGrandTotal(username);
+
         model.addAttribute("items", items);
-        model.addAttribute("subtotal", subtotal);
         model.addAttribute("cart", cart);
-        // safeguard against grandtotal after computing discount
-        if (!model.containsAttribute("grandTotal")) {
-            model.addAttribute("grandTotal", grandTotal);
-        }
         return "cart";
     }
 
@@ -54,23 +46,22 @@ public class CartController {
         discountCode = discountCode.toUpperCase().trim();
         String username = (String) session.getAttribute("username");
         Cart cart = cartInterface.getCartByCustomer(username);
-        BigDecimal subtotal = cartInterface.calculateCartTotal(username);
+        BigDecimal subtotal = cartInterface.calculateCartSubtotal(username);
         BigDecimal grandTotal;
         BigDecimal discountTotal = BigDecimal.ZERO;
+
+        // check if discount code is valid.
         if (cartInterface.getPercentByCode(discountCode).isPresent()) {
-            BigDecimal percent = BigDecimal.valueOf(cartInterface.getPercentByCode(discountCode).get());
-            grandTotal = subtotal.multiply(BigDecimal.valueOf(100).subtract(percent).divide(BigDecimal.valueOf(100)));
-            discountTotal = subtotal.subtract(grandTotal);
-            ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
-            ra.addFlashAttribute("grandTotal", grandTotal);
             cart.setDiscountCode(discountCode);
-            cart.setGrandTotal(grandTotal);
+            BigDecimal discountpercent = BigDecimal
+                    .valueOf(cartInterface.getPercentByCode(cart.getDiscountCode()).get());
+            cart.setDiscountTotal(subtotal.multiply(discountpercent).divide(BigDecimal.valueOf(100)));
+            ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
             cart.setDiscountTotal(discountTotal);
             cartInterface.saveCart(cart);
         } else {
             grandTotal = subtotal;
             ra.addFlashAttribute("invalidCode", "Discount code not found");
-            ra.addFlashAttribute("grandTotal", grandTotal);
             cart.setGrandTotal(grandTotal);
         }
 
