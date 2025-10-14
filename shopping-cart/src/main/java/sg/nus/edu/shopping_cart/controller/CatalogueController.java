@@ -46,7 +46,7 @@ public class CatalogueController {
         }
 
         // System.out.println("product Count: " + products.size()); // just for my test
-        // purpose
+        // purpose -->ov
 
         return "catalogue";
     }
