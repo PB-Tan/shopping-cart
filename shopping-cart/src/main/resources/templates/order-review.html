@@ -8,13 +8,14 @@
     />
   </head>
   <body>
+	    <div th:replace="fragments/layout :: siteHeader"></div>
     <h3 th:text="'Review for ' + ${product.name}"></h3>
 
-		<!-- 评价区域 -->
+		<!-- Review section -->
 		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
 			<h4>Product Reviews</h4>
 
-			<!-- 平均评分显示 -->
+			<!-- Average rating display -->
 			<div class="mb-4">
 				<div class="d-flex align-items-center">
 					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
@@ -26,7 +27,7 @@
 				</div>
 			</div>
 
-			<!-- 提示信息 -->
+			<!-- Flash messages -->
 			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
 				<span th:text="${success}"></span>
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -36,7 +37,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 			</div>
 
-			<!-- 评价提交表单 -->
+			<!-- Review submission form -->
 			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
 				<div class="card-body">
 					<h5 class="card-title">Write a Review</h5>
@@ -70,12 +71,12 @@
 				</div>
 			</div>
 
-			<!-- 未登录提示 -->
+			<!-- Login prompt -->
 			<div class="alert alert-info" th:if="${session.username == null}">
 				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
 			</div>
 
-			<!-- 已评价提示 -->
+			<!-- Already reviewed notice -->
 			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
 				You have already reviewed this product
 			</div>
