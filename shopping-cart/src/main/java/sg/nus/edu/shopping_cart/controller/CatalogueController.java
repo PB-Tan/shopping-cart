@@ -99,12 +99,14 @@ public class CatalogueController {
             // retrieve total count of reviews associated with product
             model.addAttribute("reviewCount", reviewService.getReviewCount(id));
 
-            // 检查当前用户是否已经评价过
+            // 检查当前用户是否已经评价过以及是否购买过该商品
             String username = (String) session.getAttribute("username");
             if (username != null) {
                 model.addAttribute("hasReviewed", reviewService.hasUserReviewed(id, username));
+                model.addAttribute("hasPurchased", reviewService.hasUserPurchasedProduct(id, username));
             } else {
                 model.addAttribute("hasReviewed", false);
+                model.addAttribute("hasPurchased", false);
             }
         }
 

@@ -24,6 +24,9 @@ public class OrderHistoryController {
     @Autowired
     OrderInterface orderInterface;
 
+    @Autowired
+    ReviewService reviewService;
+
     @GetMapping("")
     public String displayOrderHistory(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
@@ -38,6 +41,18 @@ public class OrderHistoryController {
         String username = (String) session.getAttribute("username");
         List<OrderItem> orderItems = orderInterface.findOrderItemByOrderId(id);
         model.addAttribute("orderItems", orderItems);
+
+        // Check review status for each product
+        Map<Integer, Boolean> reviewStatusMap = new HashMap<>();
+        if (username != null) {
+            for (OrderItem item : orderItems) {
+                int productId = item.getProduct().getId();
+                boolean hasReviewed = reviewService.hasUserReviewed(productId, username);
+                reviewStatusMap.put(productId, hasReviewed);
+            }
+        }
+        model.addAttribute("reviewStatusMap", reviewStatusMap);
+
         return "order-details";
     }
 

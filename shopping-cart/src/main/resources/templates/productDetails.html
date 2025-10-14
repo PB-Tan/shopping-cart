@@ -132,7 +132,7 @@
 		</div>
 
 		<!-- 评价区域 -->
-		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
+		<div class="container mt-5 mb-5" th:each="p: ${productlist}" id="review-section">
 			<h4>Product Reviews</h4>
 
 			<!-- 平均评分显示 -->
@@ -157,8 +157,8 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 			</div>
 
-			<!-- 评价提交表单 -->
-			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
+			<!-- 评价提交表单 - 只有已购买且未评价的用户可以提交 -->
+			<div class="card mb-4" th:if="${session.username != null and hasPurchased and !hasReviewed}">
 				<div class="card-body">
 					<h5 class="card-title">Write a Review</h5>
 					<form th:action="@{/review/add}" method="post">
@@ -196,8 +196,13 @@
 				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
 			</div>
 
+			<!-- 未购买提示 -->
+			<div class="alert alert-warning" th:if="${session.username != null and !hasPurchased}">
+				Only users who have purchased this product can leave a review
+			</div>
+
 			<!-- 已评价提示 -->
-			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
+			<div class="alert alert-secondary" th:if="${session.username != null and hasPurchased and hasReviewed}">
 				You have already reviewed this product
 			</div>
 

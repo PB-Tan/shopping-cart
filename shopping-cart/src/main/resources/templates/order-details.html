@@ -31,11 +31,11 @@
           <td th:text="${orderItem.quantity}" />
           <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.itemTotal,1,2)}" /> 
           <td>
-            <!-- <a
-              th:href="@{/order/review/{id}(id=${order.id})}"
+            <a
+              th:href="@{/catalogue/{id}#review-section(id=${orderItem.product.id})}"
               class="btn btn-sm btn-outline-primary"
-            > -->
-              Leave Review
+              th:text="${reviewStatusMap[orderItem.product.id] ? 'View Review' : 'Leave Review'}"
+            >
             </a>
           </td>
         </tr>
