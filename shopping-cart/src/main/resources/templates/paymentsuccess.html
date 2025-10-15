@@ -1,71 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-   
   <head>
-       
     <title>Payment Success</title>
-       
+
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-     
   </head>
-   
   <body>
-       
     <!--ov-->
-       
+
     <div
       class="container d-flex justify-content-center align-items-center vh-100"
     >
-           
       <div class="card" style="width: 18rem">
-               
         <img
           th:src="@{/img/checkmark.gif}"
           style="width: 120px; height: auto; display: block; margin: 20px auto"
           class="card-img-top"
           alt="Success"
         />
-               
+
         <div class="card-body">
-                   
           <h2 class="card-title" style="text-align: center">
-                        Payment Successful 🎉          
+            Payment Successful 🎉
           </h2>
-                   
+
           <p class="card-text" style="text-align: center">
-                        Thank you            
+            Thank you
             <span
               th:text="${customer.firstName + ' ' + customer.lastName}"
             ></span
-            >!          
+            >!
           </p>
-                   
+
           <p></p>
-                   
+
           <p style="text-align: center" class="card-text">
-                        Your payment has been received successfully.          
+            Your payment has been received successfully.
           </p>
-                   
+
           <p style="text-align: center" class="card-text">
-                        We've sent a receipt to: user@example.com          
+            We've sent a receipt to: user@example.com
           </p>
-                   
+
           <div class="text-center">
-                       
             <a th:href="@{/catalogue}" class="btn btn-primary"
               >Continue Shopping</a
             >
-                     
           </div>
-                 
         </div>
-             
       </div>
-         
     </div>
-     
   </body>
 </html>
