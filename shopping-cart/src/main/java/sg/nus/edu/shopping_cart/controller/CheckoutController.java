@@ -78,9 +78,12 @@ public class CheckoutController {
         } else {
             order = orderOpt.get();
         }
-        List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
+
+        // get cart
+        Cart cart = cartService.getCartByCustomer(username);
+
         // implement stripe starting here
-        StripeResponse stripeResponse = stripeService.payProducts(orderItems, order);
+        StripeResponse stripeResponse = stripeService.payProducts(cartItems, cart, order);
         System.out.println("[Order] stripe status=" + stripeResponse.getStatus() +
                 "url=" + stripeResponse.getSessionUrl() +
                 "msg=" + stripeResponse.getMessage());
