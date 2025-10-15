@@ -197,6 +197,7 @@ public class CartService implements CartInterface {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public BigDecimal calculateCartGrandTotal(String username) {
         Cart cart = getCartByCustomer(username);
         BigDecimal subtotal = calculateCartSubtotal(username);

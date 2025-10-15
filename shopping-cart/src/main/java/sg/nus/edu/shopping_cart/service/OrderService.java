@@ -80,30 +80,31 @@ public class OrderService implements OrderInterface {
     @Transactional(readOnly = false)
     public Order createOrderFromCart(String username) {
         // Check if an ACTIVE order already exists, reuse it
-        Optional<Order> existingActive = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
-                "ACTIVE");
-        if (existingActive.isPresent()) {
-            return existingActive.get();
-        }
+        // Optional<Order> existingActive =
+        // orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
+        // "ACTIVE");
+        // if (existingActive.isPresent()) {
+        // return existingActive.get();
+        // }
 
         // If customer cart does not exists, return empty order, controller will prevent
         // checkout
-        Optional<Cart> optCart = cartRepo.findCartByCustomerUsername(username);
-        if (optCart.isEmpty()) {
-            Cart cart = new Cart();
-            cart.setCustomer(customerRepo.findById(username).get());
-            return new Order();
-        }
+        // Optional<Cart> optCart = cartRepo.findCartByCustomerUsername(username);
+        // if (optCart.isEmpty()) {
+        // Cart cart = new Cart();
+        // cart.setCustomer(customerRepo.findById(username).get());
+        // return new Order();
+        // }
 
         // At this point, cart already exists
-        Cart cart = optCart.get();
+        Cart cart = cartRepo.findCartByCustomerUsername(username).get();
 
         // If customer checks out an empty cart, return an empty order, controller will
         // prevent checkout
         List<CartItem> cartItems = cartItemRepo.findAllCartItemsByCustomer(username);
-        if (cartItems == null || cartItems.isEmpty()) {
-            return new Order();
-        }
+        // if (cartItems == null || cartItems.isEmpty()) {
+        // return new Order();
+        // }
 
         // Creating a new order and setting prelim attributes from cart
         Order order = new Order();
@@ -111,8 +112,6 @@ public class OrderService implements OrderInterface {
         order.setStatus("ACTIVE");
         order.setDiscountCode(cart.getDiscountCode());
         order.setCreatedAt(LocalDateTime.now());
-        order.setGrandTotal(cart.getGrandTotal());
-        order = orderRepo.save(order);
 
         // Building order Items with cartItems
         List<OrderItem> orderItems = new ArrayList<>();
@@ -135,10 +134,10 @@ public class OrderService implements OrderInterface {
         // get cart from customer to get discountTotal attribute
         order.setDiscountCode(cart.getDiscountCode());
         order.setDiscountTotal(cart.getDiscountTotal());
+        order.setGrandTotal(cart.getGrandTotal());
 
         // finally save the newly created ordeer
         orderRepo.save(order);
-
         return order;
     }
 

@@ -69,15 +69,17 @@ public class CheckoutController {
             return "cart";
         }
 
+        Order order = orderService.createOrderFromCart(username);
+        System.out.println("Order Grandtotal: " + order.getGrandTotal());
         // if no active order made for current cart, persist new order with order items
         // from cart and its cart Items
-        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
-        Order order;
-        if (orderOpt.isEmpty()) {
-            order = orderService.createOrderFromCart(username);
-        } else {
-            order = orderOpt.get();
-        }
+        // Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
+        // Order order;
+        // if (orderOpt.isEmpty()) {
+        // order = orderService.createOrderFromCart(username);
+        // } else {
+        // order = orderOpt.get();
+        // }
 
         // get cart
         Cart cart = cartService.getCartByCustomer(username);
