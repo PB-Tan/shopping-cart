@@ -117,6 +117,8 @@ public class CartService implements CartInterface {
             CartItem newItem = new CartItem();
             newItem.setProduct(product);
             newItem.setQuantity(quantity); // the number of newitem is 1 (default)
+            // set unit price in cart item for new item added into cart
+            newItem.setUnitPrice(newItem.getProduct().getUnitPrice());
             newItem.setCart(cart);
             cart.getCartItems().add(newItem);
         }
