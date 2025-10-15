@@ -39,8 +39,15 @@ public class OrderHistoryController {
     public String displayOrderItems(HttpSession session, Model model,
             @PathVariable int id) {
         String username = (String) session.getAttribute("username");
+        Optional<Order> order = orderInterface.findOrderById(id);
+        // if order does not exist then rebound back to orders page
+        if (order.isEmpty()) {
+            return "redirect:/order/history";
+        }
+
         List<OrderItem> orderItems = orderInterface.findOrderItemByOrderId(id);
         model.addAttribute("orderItems", orderItems);
+        model.addAttribute("order", order.get());
 
         // Check review status for each product
         Map<Integer, Boolean> reviewStatusMap = new HashMap<>();

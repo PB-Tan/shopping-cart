@@ -49,10 +49,10 @@ public class CheckoutController {
         String username = (String) session.getAttribute("username");
         // assuming that customer has been validated, due to security interceptor
         Customer customer = customerService.findCustomerByUsername(username).get();
-        List<CartItem> cartItems = customer.getCart().getCartItems();
-        // Loop through cartitems to check if any item is out of stock
-        // , then prevent customer from going into payment
-        // page, and show error msg
+        List<CartItem> cartItems = cartService.getCartItemsByCustomer(username);
+        Cart cart = cartService.getCartByCustomer(username);
+
+        // Check if any cartItems are out of stock, and redirect if they are
         for (CartItem cartItem : cartItems) {
             int stock = cartItem.getProduct().getStock();
             int qty = cartItem.getQuantity();
@@ -63,26 +63,15 @@ public class CheckoutController {
             }
         }
 
-        // if order is empty, then prevent going into payment page and show error msg
+        // if cart is empty, then prevent going into payment page and show error msg
         if (cartItems.isEmpty()) {
-            model.addAttribute("errorMsg", "Cart cannot empty");
-            return "cart";
+            ra.addFlashAttribute("errorMsg", "Cart cannot be empty");
+            return "redirect:/cart";
         }
 
+        // create new order based on cart
         Order order = orderService.createOrderFromCart(username);
         System.out.println("Order Grandtotal: " + order.getGrandTotal());
-        // if no active order made for current cart, persist new order with order items
-        // from cart and its cart Items
-        // Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
-        // Order order;
-        // if (orderOpt.isEmpty()) {
-        // order = orderService.createOrderFromCart(username);
-        // } else {
-        // order = orderOpt.get();
-        // }
-
-        // get cart
-        Cart cart = cartService.getCartByCustomer(username);
 
         // implement stripe starting here
         StripeResponse stripeResponse = stripeService.payProducts(cartItems, cart, order);

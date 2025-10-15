@@ -7,7 +7,7 @@ import sg.nus.edu.shopping_cart.model.OrderItem;
 
 public interface OrderInterface {
 
-    public Order findOrderById(int id);
+    public Optional<Order> findOrderById(int id);
 
     public Optional<Order> findTopOrderByUsername(String username);
 
