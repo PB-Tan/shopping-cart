@@ -66,14 +66,16 @@
 				<!-- edit by serene -->
 		<a href="javascript:history.back()" id="backButton" class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
 		</div>
+		<!--edit ov-->
 		<div class="container mt-5 mb-5">
-		<div class="card" th:each="p: ${productlist}" style = "padding: 50px">	
-		<h3 class = "card-title text-center" th:text="${p.name}"/>
+		<div class="card" th:each="p: ${productlist}" style = "padding: 20px;">	
+		<div>
 		<img th:src="@{${p.imageUrl}}"
 					class="card-img-top" 
-					alt="watch"
-					style="width:150px ;height:150px; object-fit:cover;">
-		
+					alt="images"
+					style="width:200px ;height:200px;padding-left:50px; object-fit:contain;">
+		<u><h3 style ="display:inline ; margin-top:10px; margin-left: 25%;" class = "card-title" th:text="${p.name}"/></h3></u>
+		</div>
 	<table>		
 		    <!-- <tr>
 				<td style="width:20%; padding-left:50px;" >Name:</td>
@@ -89,7 +91,7 @@
 			</tr>
 			<tr>
 			 	<td style="width:20%; padding-left:50px;" >Details: </td>
-				<td><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				<td style=" text-align: justify; padding-right:40px;"><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 			  			Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 			  			Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 			  			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
@@ -98,7 +100,7 @@
 			</tr>
 			<tr>
 			  	<td style="width:20%; padding-left:50px;" >Remaining stock: </td>
-				<td><b><span th:text="${p.stock}"></span></b></td>
+				<td><b><span th:text="${p.stock}"></span></b> pcs</td>
 			</tr>
 			
 			</table>
@@ -138,9 +140,11 @@
 			<!-- Display average rating -->
 			<div class="mb-4">
 				<div class="d-flex align-items-center">
-					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
-					<span class="text-muted">(<span th:text="${reviewCount}">0</span> reviews)</span>
-				</div>
+
+					<!--edited &nbsp; --- just to leave a space - Non breaking space (&nbsp;) -->
+					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0 </h5>
+					 <span class="text-muted">&nbsp;(<span th:text="${reviewCount}">0</span> reviews)</span>
+				</div>  
 				<div class="rating-stars">
 					<span th:each="i : ${#numbers.sequence(1, 5)}"
 						  th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>

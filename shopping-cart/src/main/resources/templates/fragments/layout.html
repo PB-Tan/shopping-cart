@@ -38,6 +38,21 @@
         <div
           class="col-md-4 order-1 order-md-2 d-flex justify-content-end align-items-center"
         >
+          <div>
+            <a th:href="@{/cart}">
+              <img
+                th:src="@{\img\add-to-cart.png}"
+                class="card-img-top"
+                alt="cart"
+                style="
+                  width: 40px;
+                  height: 30px;
+                  object-fit: contain;
+                  margin-right: 12px;
+                "
+              />
+            </a>
+          </div>
           <div class="dropdown" th:if="${session.username != null}">
             <a
               href="#"
@@ -64,7 +79,7 @@
               class="dropdown-menu dropdown-menu-right"
               aria-labelledby="userMenuButton"
             >
-              <a class="dropdown-item" th:href="@{/cart}">Shopping cart</a>
+              <!-- <a class="dropdown-item" th:href="@{/cart}">Shopping cart</a> -->
               <a class="dropdown-item" href="#">Account Settings</a>
               <a class="dropdown-item" th:href="@{/order/history}">Orders</a>
               <a class="dropdown-item" th:href="@{/favorites}">Favourites</a>
@@ -91,7 +106,9 @@
     aria-label="Primary navigation"
   >
     <div class="container">
-      <a class="navbar-brand" th:href="@{/catalogue}">Shopping Cart</a>
+      <a class="navbar-brand" th:href="@{/catalogue}"
+        ><img th:src="@{\img\TEAM 08 logo.png}" style="width: 60px"
+      /></a>
       <button
         class="navbar-toggler"
         type="button"
@@ -123,9 +140,8 @@
             <div class="dropdown-menu" aria-labelledby="productsDropdown">
               <a class="dropdown-item" th:href="@{/catalogue}">All products</a>
               <a class="dropdown-item" href="#">Keyboards</a>
-              <a class="dropdown-item" href="#">Beverages</a>
-              <a class="dropdown-item" href="#">Fresh Meats</a>
-              <a class="dropdown-item" href="#">Frozen Products</a>
+              <a class="dropdown-item" href="#">Monitors</a>
+              <a class="dropdown-item" href="#">Speakers</a>
             </div>
           </li>
           <li class="nav-item">

@@ -14,19 +14,19 @@ VALUES ('alice'), ('ben'), ('charlie');
 INSERT INTO `product`
 (name, brand, category, collection, description, image_url, image_alt, stock, unit_price)
 VALUES
-('Wireless Mouse','Logi','Peripherals',NULL,'2.4GHz ergonomic mouse','https://img/mouse','Wireless Mouse',100,29.90),
-('Mechanical Keyboard','KeyCo','Peripherals',NULL,'Blue-switch keyboard','https://img/kb','Mechanical Keyboard',2,89.00),
-('27-inch Monitor','ViewBest','Display',NULL,'Full HD IPS monitor','https://img/monitor','27-inch Monitor',3,189.00),
-('USB-C Hub','Hubify','Peripherals',NULL,'6-in-1 USB-C hub','https://img/hub','USB-C Hub',50,49.90),
-('Gaming Headset','SoundMax','Audio',NULL,'Surround sound headset','https://img/headset','Gaming Headset',25,69.00),
-('Webcam 1080p','CamPro','Peripherals',NULL,'Full HD USB webcam','https://img/webcam','Webcam 1080p',40,39.90),
-('External SSD 1TB','FastDrive','Storage',NULL,'USB 3.2 NVMe SSD','https://img/ssd1tb','External SSD 1TB',15,129.00),
-('Laptop Stand','ErgoLift','Accessories',NULL,'Adjustable aluminum stand','https://img/stand','Laptop Stand',80,34.90),
-('Wireless Charger','ChargeIt','Accessories',NULL,'Qi-certified fast charging pad','https://img/charger','Wireless Charger',60,24.90),
-('Bluetooth Speaker','BeatGo','Audio',NULL,'Portable waterproof speaker','https://img/speaker','Bluetooth Speaker',30,59.00),
-('4K Monitor','ViewBest','Display',NULL,'27-inch 4K IPS monitor','https://img/monitor4k','4K Monitor',5,329.00),
-('Ergonomic Chair','SitWell','Furniture',NULL,'Lumbar support office chair','https://img/chair','Ergonomic Chair',12,199.00),
-('Graphics Tablet','StylusPro','Peripherals',NULL,'Drawing tablet with pen','https://img/tablet','Graphics Tablet',20,149.00);
+('Wireless Mouse','Logi','Peripherals',NULL,'2.4GHz ergonomic mouse','/img/mouse.png','Wireless Mouse',100,29.90),
+('Mechanical Keyboard','KeyCo','Peripherals',NULL,'Blue-switch keyboard','/img/kb.jpg','Mechanical Keyboard',2,89.00),
+('27-inch Monitor','ViewBest','Display',NULL,'Full HD IPS monitor','/img/monitor.jpg','27-inch Monitor',3,189.00),
+('USB-C Hub','Hubify','Peripherals',NULL,'6-in-1 USB-C hub','/img/hub.jpg','USB-C Hub',50,49.90),
+('Gaming Headset','SoundMax','Audio',NULL,'Surround sound headset','/img/headset.jpg','Gaming Headset',25,69.00),
+('Webcam 1080p','CamPro','Peripherals',NULL,'Full HD USB webcam','/img/webcam.jpg','Webcam 1080p',40,39.90),
+('External SSD 1TB','FastDrive','Storage',NULL,'USB 3.2 NVMe SSD','/img/ssd1tb.jpg','External SSD 1TB',15,129.00),
+('Laptop Stand','ErgoLift','Accessories',NULL,'Adjustable aluminum stand','/img/stand.jpg','Laptop Stand',80,34.90),
+('Wireless Charger','ChargeIt','Accessories',NULL,'Qi-certified fast charging pad','/img/charger.jpg','Wireless Charger',60,24.90),
+('Bluetooth Speaker','BeatGo','Audio',NULL,'Portable waterproof speaker','/img/speaker.jpg','Bluetooth Speaker',30,59.00),
+('4K Monitor','ViewBest','Display',NULL,'27-inch 4K IPS monitor','/img/monitor4k.jpg','4K Monitor',5,329.00),
+('Ergonomic Chair','SitWell','Furniture',NULL,'Lumbar support office chair','/img/cahir.jpg','Ergonomic Chair',12,199.00),
+('Graphics Tablet','StylusPro','Peripherals',NULL,'Drawing tablet with pen','/img/tablet.jpg','Graphics Tablet',20,149.00);
 
 -- ===== CART ITEMS =====
 INSERT INTO `cart_item` (cart_id, product_id, quantity, unit_price, method_type)
