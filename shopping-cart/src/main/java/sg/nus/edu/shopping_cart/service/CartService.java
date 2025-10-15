@@ -15,7 +15,7 @@ import sg.nus.edu.shopping_cart.model.*;
 import sg.nus.edu.shopping_cart.repository.*;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class CartService implements CartInterface {
 
     @Autowired

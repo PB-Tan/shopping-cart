@@ -75,7 +75,7 @@ public class CartController {
             HttpSession session) {
         String username = (String) session.getAttribute("username");
         Product product = cartInterface.findProduct(productId).get();
-        Cart cart = customerInterface.findCustomerByUsername(username).get().getCart();
+        Cart cart = cartInterface.getCartByCustomer(username);
         int stock = product.getStock();
 
         // check if item already exist inside cart, if not, set as null
