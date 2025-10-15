@@ -138,16 +138,14 @@
               >Products</a
             >
             <div class="dropdown-menu" aria-labelledby="productsDropdown">
-              <a class="dropdown-item" th:href="@{/catalogue}">All products</a>
-              <a class="dropdown-item" href="#">Keyboards</a>
-<<<<<<< HEAD
-              <a class="dropdown-item" href="#">Monitors</a>
-              <a class="dropdown-item" href="#">Speakers</a>
-=======
-              <a class="dropdown-item" href="#">Monitor</a>
-              <a class="dropdown-item" href="#">Speakers</a>
-              <a class="dropdown-item" href="#">Peripherals</a>
->>>>>>> 0f5d897738cd2471c55ffb1d249774b141d5da42
+              <a class="dropdown-item" th:href="@{/catalogue}">All Products</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Accessories')}">Accessories</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Audio')}">Audio</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Display')}">Display</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Furniture')}">Furniture</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Peripherals')}">Peripherals</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Storage')}">Storage</a>
             </div>
           </li>
           <li class="nav-item">
