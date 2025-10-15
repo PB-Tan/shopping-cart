@@ -92,7 +92,8 @@ public class CartService implements CartInterface {
             items = new ArrayList<>();
             cart.setCartItems(items);
         }
-        // assess if product exists
+
+        // assess if product exists in cartItems
         CartItem existingItem = items.stream()
                 .filter(item -> item.getProduct().getId() == productId)
                 .findFirst()
@@ -100,24 +101,27 @@ public class CartService implements CartInterface {
 
         Product product = productRepository.findById(productId).get();
 
+        // if product already exists inside cartitems
         if (existingItem != null) {
-            // the num cant > stock
+            // the combined cart qty cannot be more than stock
             if (existingItem.getQuantity() + quantity > product.getStock()) {
                 existingItem.setStatus("INSUFFICIENT STOCK");
             }
+            // update quantity inside cart
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
-            // if item does not exist yet
+            existingItem.setUnitPrice(product.getUnitPrice());
+            // if item does not exist inside cart yet
         } else {
             // if stock==0 cant add
             if (product.getStock() <= 0) {
                 existingItem.setStatus("INSUFFICIENT STOCK");
                 // throw new RuntimeException("Cannot add, no stock available");
-
             }
             CartItem newItem = new CartItem();
             newItem.setProduct(product);
             newItem.setQuantity(quantity); // the number of newitem is 1 (default)
             newItem.setCart(cart);
+            newItem.setUnitPrice(product.getUnitPrice());
             cart.getCartItems().add(newItem);
         }
 
@@ -230,6 +234,11 @@ public class CartService implements CartInterface {
 
         // delete all
         cart.getCartItems().clear();
+        cart.setSubtotal(BigDecimal.ZERO);
+        cart.setTaxTotal(BigDecimal.ZERO);
+        cart.setDiscountTotal(BigDecimal.ZERO);
+        cart.setGrandTotal(BigDecimal.ZERO);
+        cart.setDiscountCode(null);
 
         // save change
         cartRepository.save(cart);
