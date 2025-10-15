@@ -40,7 +40,7 @@ public class StripeService {
         // connect to stripe api payment gateway
         // -> will return sessionId and checkout url
 
-        public StripeResponse payProducts(List<CartItem> cartItems, Cart cart, Order order) {
+        public StripeResponse payProducts(List<CartItem> cartItems, Cart cart, String username) {
                 Stripe.apiKey = secretKey;
 
                 if (cartItems == null || cartItems.isEmpty()) {
@@ -83,7 +83,7 @@ public class StripeService {
                 // Create Stripe session
                 SessionCreateParams.Builder sessionBuilder = SessionCreateParams.builder()
                                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                                .putMetadata("orderId", String.valueOf(order.getId()))
+                                .putMetadata("username", username)
                                 .setSuccessUrl("http://localhost:8080/checkout/success?session-id={CHECKOUT_SESSION_ID}")
                                 .setCancelUrl("http://localhost:8080/cart")
                                 .addAllLineItem(lineItems)
