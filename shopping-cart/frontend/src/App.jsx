@@ -13,7 +13,7 @@ function App() {
     <Router>
       <div className="App">
         {/* 导航栏 */}
-        <nav className="navbar">
+        {/* <nav className="navbar">
           <div className="nav-container">
             <Link to="/" className="nav-logo">
               Product Management System
@@ -31,7 +31,7 @@ function App() {
               </li>
             </ul>
           </div>
-        </nav>
+        </nav> */}
 
         {/* 主要内容区域 */}
         <main className="main-content">

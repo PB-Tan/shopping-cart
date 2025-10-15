@@ -106,7 +106,7 @@ const ForgotPassword = () => {
             if (result.code === 200) {
                 setSuccess('Password reset successfully! Redirecting to login...');
                 setTimeout(() => {
-                    navigate('/login');
+                     window.location.href = 'http://localhost:8080/login';
                 }, 2000);
             } else {
                 setError(result.message || 'Failed to reset password');
@@ -301,7 +301,7 @@ const ForgotPassword = () => {
                 {renderStepContent()}
 
                 <div className="forgot-footer">
-                    <Link to="/login" className="link-button back-to-login">
+                    <Link to="http://localhost:8080/login" className="link-button back-to-login">
                         ← Back to Login
                     </Link>
                 </div>

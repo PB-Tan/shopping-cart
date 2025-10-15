@@ -42,7 +42,7 @@ public class LoginController {
         // By this point, customer exists and password matches
         // set attribute to session for future use
         session.setAttribute("username", username);
-        return "redirect:/test";
+        return "redirect:/catalogue";
     }
 
     @GetMapping("/logout")

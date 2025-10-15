@@ -32,15 +32,29 @@ public class CustomerController {
             String name = request.get("name");
             String password = request.get("password");
             String email = request.get("email");
+            String firstName = request.get("firstName");
+            String lastName = request.get("lastName");
+            String phoneNumber = request.get("phoneNumber");
+            String address = request.get("address");
+            String country = request.get("country");
+            String postalCode = request.get("postalCode");
 
-            if (name == null || password == null || email == null) {
-                return Result.error("Name, password, and email are required");
+            if (name == null || password == null || email == null || firstName == null
+                    || lastName == null || phoneNumber == null || address == null
+                    || country == null || postalCode == null) {
+                return Result.error("All customer fields are required");
             }
 
             Customer customer = new Customer();
             customer.setUsername(name);
             customer.setPassword(password);
             customer.setEmail(email);
+            customer.setFirstName(firstName);
+            customer.setLastName(lastName);
+            customer.setPhoneNumber(phoneNumber);
+            customer.setAddress(address);
+            customer.setCountry(country);
+            customer.setPostalCode(postalCode);
             customerService.createCustomer(customer);
             return Result.success("Customer created successfully");
 

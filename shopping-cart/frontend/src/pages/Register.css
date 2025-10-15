@@ -1,10 +1,14 @@
 .register-container {
-    min-height: 100vh;
+    min-height: calc(100vh + 80px);
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 60px 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -52,6 +56,16 @@
 }
 
 .form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
     margin-bottom: 20px;
 }
 
@@ -190,5 +204,10 @@
     
     .register-card {
         padding: 30px 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
     }
 }
