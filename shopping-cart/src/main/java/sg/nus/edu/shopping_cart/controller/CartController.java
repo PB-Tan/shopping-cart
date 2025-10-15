@@ -48,7 +48,6 @@ public class CartController {
         Cart cart = cartInterface.getCartByCustomer(username);
         BigDecimal subtotal = cartInterface.calculateCartSubtotal(username);
         BigDecimal grandTotal;
-        BigDecimal discountTotal = BigDecimal.ZERO;
 
         // check if discount code is valid.
         if (cartInterface.getPercentByCode(discountCode).isPresent()) {
@@ -57,7 +56,6 @@ public class CartController {
                     .valueOf(cartInterface.getPercentByCode(cart.getDiscountCode()).get());
             cart.setDiscountTotal(subtotal.multiply(discountpercent).divide(BigDecimal.valueOf(100)));
             ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
-            cart.setDiscountTotal(discountTotal);
             cartInterface.saveCart(cart);
         } else {
             grandTotal = subtotal;
