@@ -74,7 +74,7 @@ public class CheckoutController {
         System.out.println("Order Grandtotal: " + order.getGrandTotal());
 
         // implement stripe starting here
-        StripeResponse stripeResponse = stripeService.payProducts(cartItems, cart, order);
+        StripeResponse stripeResponse = stripeService.payProducts(cartItems, cart, username);
         System.out.println("[Order] stripe status=" + stripeResponse.getStatus() +
                 "url=" + stripeResponse.getSessionUrl() +
                 "msg=" + stripeResponse.getMessage());
