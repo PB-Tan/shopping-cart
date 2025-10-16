@@ -85,10 +85,10 @@ body.login-page .main-content {
     /* 回退色（不支持文本渐变的浏览器） */
     color: #D4AF37;
 
-    /* 金色渐变 */
-    background-image: linear-gradient(90deg, #D4AF37, #FFD700, #FFC107, #B8860B);
-    -webkit-background-clip: text;  /* Chrome/Safari */
-    background-clip: text;           /* 其他支持的浏览器 */
+    /* 黑金渐变 */
+    background-image: linear-gradient(90deg, #111111, #2b2b2b, #B8860B, #FFD700, #B8860B, #111111);
+    -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 
     /* 保留原有排版 */

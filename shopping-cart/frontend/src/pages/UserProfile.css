@@ -52,7 +52,7 @@ body.profile-page .navbar {
 
 /* Profile头部 - 黑色主题 */
 .profile-header {
-    background: #212529;
+    background: hsl(180, 1%, 84%);
     color: white;
     padding: 30px 40px;
     display: flex;

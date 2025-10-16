@@ -33,10 +33,10 @@ body {
   overflow-x: hidden;
 }
 
-/* 导航栏样式 - 渐变紫色主题 */
+/* 导航栏样式 - 渐变黑金主题 */
 .navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #000000 0%, #D4AF37 100%);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -44,7 +44,7 @@ body {
 }
 
 .navbar:hover {
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
 }
 
 .nav-container {
@@ -167,7 +167,7 @@ body {
 /* 响应式设计 - 手机 */
 @media (max-width: 768px) {
   .navbar {
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
   }
 
   .nav-container {
@@ -229,12 +229,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #000000 0%, #D4AF37 100%);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #D4AF37 0%, #000000 100%);
 }
 
 /* 通用动画 */
