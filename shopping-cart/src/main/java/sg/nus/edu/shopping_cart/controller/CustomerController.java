@@ -168,7 +168,7 @@ public class CustomerController {
 
             // write username into session and redirect to front-end profile
             session.setAttribute("username", entity.getUsername());
-                response.sendRedirect("https://localhost:5173/profile");
+                response.sendRedirect("http://localhost:8080/catalogue");
         } catch (Exception e) {
             try { response.sendRedirect("https://localhost:5173/login"); } catch (Exception ex) {}
         }

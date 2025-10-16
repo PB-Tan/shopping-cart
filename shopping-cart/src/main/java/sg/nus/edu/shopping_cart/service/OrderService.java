@@ -41,7 +41,7 @@ public class OrderService implements OrderInterface {
 
     @Override
     public Optional<Order> findTopOrderByUsername(String username) {
-        return orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username, "ACTIVE");
+        return orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username, "PENDING PAYMENT");
     }
 
     @Override
@@ -53,10 +53,10 @@ public class OrderService implements OrderInterface {
     @Transactional(readOnly = false)
     public void updateShippingMethodForOrder(String username, String shippingMethod) {
         // find top order made by customer
-        Optional<Order> activeOrder = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
-                "ACTIVE");
-        if (activeOrder.isPresent()) {
-            Order order = activeOrder.get();
+        Optional<Order> pendingOrder = orderRepo.findTopByCustomerUsernameAndStatusOrderByCreatedAtDesc(username,
+                "PENDING PAYMENT");
+        if (pendingOrder.isPresent()) {
+            Order order = pendingOrder.get();
             Shipment shipment = order.getShipment();
 
             // if no shipment has been found prior, then persist into

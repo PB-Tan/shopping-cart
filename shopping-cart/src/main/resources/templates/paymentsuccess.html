@@ -42,7 +42,8 @@
           </p>
 
           <p style="text-align: center" class="card-text">
-            We've sent a receipt to: user@example.com
+            We've sent a receipt to: 
+            <span th:text="${customer.email}"/>
           </p>
 
           <div class="text-center">
