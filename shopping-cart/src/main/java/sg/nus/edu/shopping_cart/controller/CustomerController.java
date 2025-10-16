@@ -251,6 +251,7 @@ public class CustomerController {
             String name = request.get("name");
             // support client-side hashed password
             String passwordHash = request.get("passwordHash");
+            String password = request.get("password");
             String passwordSalt = request.get("passwordSalt");
             String email = request.get("email");
             String firstName = request.get("firstName");
@@ -274,12 +275,30 @@ public class CustomerController {
 
             Customer customer = new Customer();
             customer.setUsername(name);
-            // store incoming hash/salt if provided, otherwise store raw password (legacy)
+            // store incoming hash/salt if provided
             if (passwordHash != null && !passwordHash.isEmpty() && passwordSalt != null && !passwordSalt.isEmpty()) {
                 customer.setPassword(passwordHash);
                 customer.setPasswordSalt(passwordSalt);
-            } else if (request.containsKey("password")) {
-                customer.setPassword(request.get("password"));
+            } else if (password != null && !password.isEmpty()) {
+                // Server-side: generate a random salt and compute SHA-256(salt + password)
+                try {
+                    byte[] saltBytes = new byte[16];
+                    new java.security.SecureRandom().nextBytes(saltBytes);
+                    StringBuilder sbSalt = new StringBuilder();
+                    for (byte b : saltBytes) sbSalt.append(String.format("%02x", b));
+                    String generatedSalt = sbSalt.toString();
+
+                    java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+                    byte[] digest = md.digest((generatedSalt + password).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    StringBuilder sb = new StringBuilder();
+                    for (byte b : digest) sb.append(String.format("%02x", b));
+                    String hashed = sb.toString();
+
+                    customer.setPassword(hashed);
+                    customer.setPasswordSalt(generatedSalt);
+                } catch (Exception ex) {
+                    return Result.error("Server error computing hash");
+                }
             } else {
                 return Result.error("Password is required");
             }

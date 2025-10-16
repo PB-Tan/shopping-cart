@@ -256,7 +256,7 @@
               </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenuButton">
-              <a class="dropdown-item" href="#">⚙️ Account Settings</a>
+              <a class="dropdown-item" th:href="@{https://localhost:5173/profile}">⚙️ Account Settings</a>
               <a class="dropdown-item" th:href="@{/order/history}">📦 Orders</a>
               <a class="dropdown-item" th:href="@{/favorites}">❤️ Favourites</a>
               <a class="dropdown-item" th:href="@{/review/my-reviews}">⭐ My Reviews</a>
@@ -267,7 +267,7 @@
           </div>
 
           <a
-            href="https://localhost:5173/login"
+            th:href="@{https://localhost:5173/login}"
             class="btn btn-primary btn-sm btn-login"
             th:if="${session.username == null}"
           >Login / Register</a>

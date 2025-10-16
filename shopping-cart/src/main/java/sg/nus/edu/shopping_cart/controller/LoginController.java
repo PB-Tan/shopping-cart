@@ -19,7 +19,7 @@ public class LoginController {
         // In this app, the React frontend handles the login UI/routing.
         // Redirect requests for /login to the frontend root so the React router
         // can display the client-side Login page.
-        return "redirect:/";
+        return "redirect:https://localhost:5173/login";
     }
 
     @PostMapping("/login")
@@ -42,10 +42,11 @@ public class LoginController {
             return "redirect:/login";
         }
 
-        // By this point, customer exists and password matches
-        // set attribute to session for future use
-        session.setAttribute("username", username.toLowerCase());
-        return "redirect:/catalogue";
+    // By this point, customer exists and password matches
+    // set attribute to session for future use
+    session.setAttribute("username", username.toLowerCase());
+    // After login, redirect to the frontend SPA catalogue
+    return "redirect:https://localhost:5173/catalogue";
     }
 
     @GetMapping("/logout")
