@@ -87,7 +87,7 @@ public class OrderService implements OrderInterface {
         // Creating an empty order and setting values from cart
         Order order = new Order();
         order.setCustomer(customer);
-        order.setStatus("ACTIVE");
+        order.setStatus("PENDING PAYMENT");
         order.setDiscountCode(cart.getDiscountCode());
         order.setCreatedAt(LocalDateTime.now());
 
