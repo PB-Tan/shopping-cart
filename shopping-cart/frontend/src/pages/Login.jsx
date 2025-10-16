@@ -105,7 +105,7 @@ const Login = () => {
                 // 使用 session 进行登录状态管理；前端无需写 cookie
                 localStorage.setItem('user', JSON.stringify(result.data));
                 console.log('Login successful (session), redirecting to profile');
-                navigate('/profile');
+                navigate(window.location.href = 'http://localhost:8080/catalogue');
             } else {
                 setError(result.message || 'Invalid username or password');
             }
