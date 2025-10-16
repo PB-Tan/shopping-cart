@@ -237,20 +237,29 @@
   <div class="sc-topbar">
     <div class="sc-topbar-left">FREE SHIPPING ON ORDERS OVER $99</div>
     <div class="sc-topbar-right">
-      <div class="sc-dropdown">
+      <div class="sc-dropdown" th:with="u=${session.username}">
         <a
           href="#"
           class="sc-dropdown-toggle"
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          >My Account</a
-        >
+          th:if="${u != null}"
+          th:text="${'Hi ' + u + '!!'}">My Account</a>
+        <a
+          href="#"
+          class="sc-dropdown-toggle"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          th:if="${u == null}">My Account</a>
         <ul class="sc-dropdown-menu" role="menu">
+       
           <li><a th:href="@{/cart}">Shopping cart</a></li>
           <li><a href="#">Account Settings</a></li>
           <li><a th:href="@{/order/history}">Orders</a></li>
           <li><a th:href="@{/favorites}">Favourites</a></li>
+          <li th:if="${u != null}"><a th:href="@{/search/history}">Recently viewed</a></li>
           <li><a href="#">Notifications</a></li>
           <li><a th:href="@{/review/my-reviews}">My reviews</a></li>
           <li><a th:href="@{/logout}">Logout</a></li>

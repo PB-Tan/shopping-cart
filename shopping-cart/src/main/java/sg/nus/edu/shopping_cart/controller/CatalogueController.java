@@ -1,15 +1,26 @@
 package sg.nus.edu.shopping_cart.controller;
 
-import jakarta.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.*;
-import sg.nus.edu.shopping_cart.interfaces.*;
-import sg.nus.edu.shopping_cart.model.*;
-import sg.nus.edu.shopping_cart.service.*;
+import jakarta.servlet.http.HttpSession;
+import sg.nus.edu.shopping_cart.interfaces.ProductInterface;
+import sg.nus.edu.shopping_cart.model.Product;
+import sg.nus.edu.shopping_cart.service.FavoriteService;
+import sg.nus.edu.shopping_cart.service.ReviewService;
+import sg.nus.edu.shopping_cart.model.ProductViewLog;
+import sg.nus.edu.shopping_cart.service.ProductViewLogService;
+import sg.nus.edu.shopping_cart.model.SearchLog;
+import sg.nus.edu.shopping_cart.service.SearchLogService;
 
 @Controller
 @RequestMapping("/catalogue")
@@ -23,6 +34,12 @@ public class CatalogueController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ProductViewLogService productViewLogService;
+
+    @Autowired
+    private SearchLogService searchLogService;
 
     @GetMapping("")
     // 1. list all the products
@@ -55,7 +72,8 @@ public class CatalogueController {
     public String search(
             @RequestParam("searchby") String searchby,
             @RequestParam("keyword") String keyword,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
         String name = new String("name");
         String category = new String("category");
@@ -69,6 +87,8 @@ public class CatalogueController {
         } else {
             return "home";
         }
+
+  
 
         return "searchResults";
 
@@ -84,6 +104,27 @@ public class CatalogueController {
                 .orElse(null);
 
         model.addAttribute("productlist", pro);
+        // persist a product view log (user or guest) only if product exists
+        if (pro != null) {
+            String viewer = (String) session.getAttribute("username");
+            // persist product view log
+            ProductViewLog viewLog = new ProductViewLog();
+            viewLog.setUsername(viewer);
+            viewLog.setProductId(pro.getId());
+            viewLog.setProductName(pro.getName());
+            productViewLogService.save(viewLog);
+
+            // also store in SearchLog so it appears in search history
+            if (viewer != null) {
+                SearchLog searchLog = new SearchLog();
+                searchLog.setUsername(viewer);
+                searchLog.setSearchby("product");
+                searchLog.setKeyword(pro.getName());
+                searchLog.setCartSnapshot("view details");
+                searchLog.setResultCount(1);
+                searchLogService.save(searchLog);
+            }
+        }
         int stock = pro.getStock();
         if (stock <= 0) {
             model.addAttribute("errorMsg", pro.getName() + " is out of stock");
@@ -112,3 +153,5 @@ public class CatalogueController {
     }
 
 }
+
+ 
