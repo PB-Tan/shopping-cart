@@ -17,7 +17,7 @@
               <th>Search By</th>
               <th>Keyword</th>
               <th>Results</th>
-              <th>Cart Snapshot</th>
+              <!-- <th>Cart Snapshot</th> -->
             </tr>
           </thead>
           <tbody>
@@ -29,7 +29,7 @@
                    th:text="${log.keyword}"></a>
               </td>
               <td th:text="${log.resultCount != null && log.resultCount > 0 ? 'Found ' + log.resultCount : 'Not found'}" />
-              <td th:text="${log.cartSnapshot}" />
+              <!-- <td th:text="${log.cartSnapshot}" /> -->
             </tr>
           </tbody>
         </table>
