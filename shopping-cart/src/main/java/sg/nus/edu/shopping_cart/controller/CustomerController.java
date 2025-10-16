@@ -253,13 +253,17 @@ public class CustomerController {
             String passwordHash = request.get("passwordHash");
             String passwordSalt = request.get("passwordSalt");
             String email = request.get("email");
+            String firstName = request.get("firstName");
+            String lastName = request.get("lastName");
+            String phoneNumber = request.get("phoneNumber");
+            String address = request.get("address");
+            String country = request.get("country");
+            String postalCode = request.get("postalCode");
 
-            // require name and email; require either client-side hash+salt or legacy password
-            if (name == null || email == null || (
-                    (passwordHash == null || passwordHash.isEmpty() || passwordSalt == null || passwordSalt.isEmpty())
-                    && !request.containsKey("password")
-            )) {
-                return Result.error("Name, password, and email are required");
+            if (name == null || password == null || email == null || firstName == null
+                    || lastName == null || phoneNumber == null || address == null
+                    || country == null || postalCode == null) {
+                return Result.error("All customer fields are required");
             }
 
             // 检查用户名是否已存在，防止重复创建
@@ -281,6 +285,12 @@ public class CustomerController {
             }
 
             customer.setEmail(email);
+            customer.setFirstName(firstName);
+            customer.setLastName(lastName);
+            customer.setPhoneNumber(phoneNumber);
+            customer.setAddress(address);
+            customer.setCountry(country);
+            customer.setPostalCode(postalCode);
             customerService.createCustomer(customer);
             return Result.success("Customer created successfully");
 

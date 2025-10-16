@@ -15,7 +15,7 @@ import sg.nus.edu.shopping_cart.model.*;
 import sg.nus.edu.shopping_cart.repository.*;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class CartService implements CartInterface {
 
     @Autowired
@@ -29,6 +29,9 @@ public class CartService implements CartInterface {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private DiscountCodeRepository discountCodeRepository;
 
     @Override
     public List<Product> findAllProduct() {
@@ -89,7 +92,8 @@ public class CartService implements CartInterface {
             items = new ArrayList<>();
             cart.setCartItems(items);
         }
-        // assess if product exists
+
+        // assess if product exists in cartItems
         CartItem existingItem = items.stream()
                 .filter(item -> item.getProduct().getId() == productId)
                 .findFirst()
@@ -97,24 +101,29 @@ public class CartService implements CartInterface {
 
         Product product = productRepository.findById(productId).get();
 
+        // if product already exists inside cartitems
         if (existingItem != null) {
-            // the num cant > stock
+            // the combined cart qty cannot be more than stock
             if (existingItem.getQuantity() + quantity > product.getStock()) {
                 existingItem.setStatus("INSUFFICIENT STOCK");
             }
+            // update quantity inside cart
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
-            // if item does not exist yet
+            existingItem.setUnitPrice(product.getUnitPrice());
+            // if item does not exist inside cart yet
         } else {
             // if stock==0 cant add
             if (product.getStock() <= 0) {
                 existingItem.setStatus("INSUFFICIENT STOCK");
                 // throw new RuntimeException("Cannot add, no stock available");
-
             }
             CartItem newItem = new CartItem();
             newItem.setProduct(product);
             newItem.setQuantity(quantity); // the number of newitem is 1 (default)
+            // set unit price in cart item for new item added into cart
+            newItem.setUnitPrice(newItem.getProduct().getUnitPrice());
             newItem.setCart(cart);
+            newItem.setUnitPrice(product.getUnitPrice());
             cart.getCartItems().add(newItem);
         }
 
@@ -174,18 +183,45 @@ public class CartService implements CartInterface {
     }
 
     @Override
-    public BigDecimal calculateCartTotal(String username) {
+    public BigDecimal calculateCartSubtotal(String username) {
         Cart cart = getCartByCustomer(username);
-
-        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal subtotal = BigDecimal.ZERO;
 
         for (CartItem item : cart.getCartItems()) {
             double price = item.getProduct().getUnitPrice();
             int quantity = item.getQuantity();
-            total = total.add(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity)));
+            subtotal = subtotal.add(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity)));
+        }
+        cart.setSubtotal(subtotal);
+        return subtotal;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public BigDecimal calculateCartGrandTotal(String username) {
+        Cart cart = getCartByCustomer(username);
+        BigDecimal subtotal = calculateCartSubtotal(username);
+        BigDecimal gst = BigDecimal.valueOf(0.09);
+        // in the event of discount, discount subtotal, then add taxes
+        if (cart.getDiscountCode() != null) {
+            BigDecimal discountpercent = BigDecimal
+                    .valueOf(getPercentByCode(cart.getDiscountCode()).get());
+            cart.setDiscountTotal(subtotal.multiply(discountpercent).divide(BigDecimal.valueOf(100)));
+            BigDecimal afterDiscount = subtotal.subtract(cart.getDiscountTotal());
+            BigDecimal taxTotal = afterDiscount.multiply(gst);
+            BigDecimal grandTotal = afterDiscount.add(taxTotal);
+            cart.setGrandTotal(grandTotal);
+            cart.setTaxTotal(taxTotal);
+            return grandTotal;
+            // else simply add taxes to subtotal
+        } else {
+            BigDecimal taxTotal = subtotal.multiply(gst);
+            BigDecimal grandTotal = subtotal.add(taxTotal);
+            cart.setTaxTotal(taxTotal);
+            cart.setGrandTotal(grandTotal);
+            return grandTotal;
         }
 
-        return total;
     }
 
     @Override
@@ -201,8 +237,23 @@ public class CartService implements CartInterface {
 
         // delete all
         cart.getCartItems().clear();
+        cart.setSubtotal(BigDecimal.ZERO);
+        cart.setTaxTotal(BigDecimal.ZERO);
+        cart.setDiscountTotal(BigDecimal.ZERO);
+        cart.setGrandTotal(BigDecimal.ZERO);
+        cart.setDiscountCode(null);
 
         // save change
         cartRepository.save(cart);
+    }
+
+    @Override
+    public Optional<Double> getPercentByCode(String code) {
+        return discountCodeRepository.findPercentByCode(code);
+    }
+
+    @Override
+    public Cart saveCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 }

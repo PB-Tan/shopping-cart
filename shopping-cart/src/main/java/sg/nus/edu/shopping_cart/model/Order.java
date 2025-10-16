@@ -2,6 +2,7 @@ package sg.nus.edu.shopping_cart.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,9 +29,12 @@ public class Order {
     private Shipment shipment;
 
     private String status; // PENDING, PAID, FAILED, CANCELLED
-    private String promoCodes;
+    private String discountCode;
     private LocalDateTime createdAt;
-    private double grandTotal;
+    private BigDecimal subtotal;
+    private BigDecimal grandTotal;
+    private BigDecimal discountTotal = BigDecimal.ZERO;
+    private BigDecimal taxTotal;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;

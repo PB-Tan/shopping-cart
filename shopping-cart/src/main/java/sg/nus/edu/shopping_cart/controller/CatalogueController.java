@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import sg.nus.edu.shopping_cart.interfaces.*;
 import sg.nus.edu.shopping_cart.model.*;
-import sg.nus.edu.shopping_cart.service.FavoriteService;
+import sg.nus.edu.shopping_cart.service.*;
 
 @Controller
 @RequestMapping("/catalogue")
@@ -22,14 +22,32 @@ public class CatalogueController {
     private FavoriteService favoriteService;
 
     @Autowired
-    private sg.nus.edu.shopping_cart.service.ReviewService reviewService;
+    private ReviewService reviewService;
 
     @GetMapping("")
     // 1. list all the products
-    public String home(Model model, HttpSession session) {
+    public String home(@RequestParam(value = "category", required = false) String category,
+                      Model model, HttpSession session) {
 
-        List<Product> products = pi.findAll(); // it will take all the products from the DB through repos
+        List<Product> products;
+
+        // Filter by category if provided, otherwise show all products
+        if (category != null && !category.isEmpty() && !category.equals("All")) {
+            products = pi.findProductByCategoryContainingIgnoreCase(category);
+        } else {
+            products = pi.findAll(); // it will take all the products from the DB through repos
+        }
+
         model.addAttribute("productlist", products);
+        model.addAttribute("selectedCategory", category != null ? category : "All");
+
+        // Get all unique categories for the filter buttons
+        List<String> categories = pi.findAll().stream()
+            .map(Product::getCategory)
+            .distinct()
+            .sorted()
+            .toList();
+        model.addAttribute("categories", categories);
 
         // Add favorite status for each product
         // edit by serene
@@ -46,7 +64,7 @@ public class CatalogueController {
         }
 
         // System.out.println("product Count: " + products.size()); // just for my test
-        // purpose
+        // purpose -->ov
 
         return "catalogue";
     }
@@ -89,21 +107,24 @@ public class CatalogueController {
             model.addAttribute("errorMsg", pro.getName() + " is out of stock");
         }
 
-        // 添加评价相关数据
+        // populate thymeleaf tags in HTML with attributes regarding products'
+        // attributes
         if (pro != null) {
-            // 获取商品的所有评价
+            // retrieve all product reviews associated with the product
             model.addAttribute("reviews", reviewService.getProductReviews(id));
-            // 获取平均评分
+            // retrieve average rating across all ratings asssociated with product
             model.addAttribute("averageRating", reviewService.getAverageRating(id));
-            // 获取评价总数
+            // retrieve total count of reviews associated with product
             model.addAttribute("reviewCount", reviewService.getReviewCount(id));
 
-            // 检查当前用户是否已经评价过
+            // 检查当前用户是否已经评价过以及是否购买过该商品
             String username = (String) session.getAttribute("username");
             if (username != null) {
                 model.addAttribute("hasReviewed", reviewService.hasUserReviewed(id, username));
+                model.addAttribute("hasPurchased", reviewService.hasUserPurchasedProduct(id, username));
             } else {
                 model.addAttribute("hasReviewed", false);
+                model.addAttribute("hasPurchased", false);
             }
         }
 

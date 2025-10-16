@@ -9,6 +9,7 @@ import sg.nus.edu.shopping_cart.model.Review;
 import sg.nus.edu.shopping_cart.repository.CustomerRepository;
 import sg.nus.edu.shopping_cart.repository.ProductRepository;
 import sg.nus.edu.shopping_cart.repository.ReviewRepository;
+import sg.nus.edu.shopping_cart.repository.OrderItemRepository;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class ReviewService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     // 添加评价
     public Review addReview(int productId, String username, Integer rating, String comment) {
@@ -82,5 +86,13 @@ public class ReviewService {
     // 删除评价
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
+    }
+
+    // Check if user has purchased the product
+    public boolean hasUserPurchasedProduct(int productId, String username) {
+        if (username == null) {
+            return false;
+        }
+        return orderItemRepository.hasUserPurchasedProduct(productId, username);
     }
 }

@@ -5,7 +5,13 @@ import './Register.css';
 const Register = () => {
     const [formData, setFormData] = useState({
         name: '',
+        firstName: '',
+        lastName: '',
         email: '',
+        phoneNumber: '',
+        address: '',
+        country: '',
+        postalCode: '',
         password: '',
         confirmPassword: ''
     });
@@ -34,12 +40,36 @@ const Register = () => {
             setError('Username is required');
             return false;
         }
+        if (!formData.firstName.trim()) {
+            setError('First name is required');
+            return false;
+        }
+        if (!formData.lastName.trim()) {
+            setError('Last name is required');
+            return false;
+        }
         if (!formData.email.trim()) {
             setError('Email is required');
             return false;
         }
         if (!/\S+@\S+\.\S+/.test(formData.email)) {
             setError('Please enter a valid email address');
+            return false;
+        }
+        if (!formData.phoneNumber.trim()) {
+            setError('Phone number is required');
+            return false;
+        }
+        if (!formData.address.trim()) {
+            setError('Address is required');
+            return false;
+        }
+        if (!formData.country.trim()) {
+            setError('Country is required');
+            return false;
+        }
+        if (!formData.postalCode.trim()) {
+            setError('Postal code is required');
             return false;
         }
         if (formData.password.length < 6) {
@@ -126,9 +156,14 @@ const Register = () => {
                 credentials: 'include',
                 body: JSON.stringify({
                     name: formData.name,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
                     email: formData.email,
-                    passwordHash: hash,
-                    passwordSalt: salt
+                    phoneNumber: formData.phoneNumber,
+                    address: formData.address,
+                    country: formData.country,
+                    postalCode: formData.postalCode,
+                    password: formData.password
                 })
             });
 
@@ -141,7 +176,7 @@ const Register = () => {
             if (result.code === 200) {
                 setSuccess('Account created successfully! Redirecting to login...');
                 setTimeout(() => {
-                    navigate('/login');
+                    window.location.href = 'http://localhost:8080/login';
                 }, 2000);
             } else {
                 setError(result.message || 'Registration failed');
@@ -195,6 +230,33 @@ const Register = () => {
                         </div>
                     </div>
 
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="firstName">First Name</label>
+                            <input
+                                type="text"
+                                id="firstName"
+                                name="firstName"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
+                                placeholder="Enter your first name"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="lastName">Last Name</label>
+                            <input
+                                type="text"
+                                id="lastName"
+                                name="lastName"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
+                                placeholder="Enter your last name"
+                                required
+                            />
+                        </div>
+                    </div>
+
                     <div className="form-group">
                         <label htmlFor="email">Email Address</label>
                         <input
@@ -206,6 +268,59 @@ const Register = () => {
                             placeholder="Enter your email address"
                             required
                         />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="phoneNumber">Phone Number</label>
+                        <input
+                            type="tel"
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleInputChange}
+                            placeholder="Enter your phone number"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="address">Address</label>
+                        <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            placeholder="Enter your mailing address"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="country">Country</label>
+                            <input
+                                type="text"
+                                id="country"
+                                name="country"
+                                value={formData.country}
+                                onChange={handleInputChange}
+                                placeholder="Enter your country"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="postalCode">Postal Code</label>
+                            <input
+                                type="text"
+                                id="postalCode"
+                                name="postalCode"
+                                value={formData.postalCode}
+                                onChange={handleInputChange}
+                                placeholder="Enter your postal code"
+                                required
+                            />
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -252,7 +367,7 @@ const Register = () => {
 
                 <div className="register-footer">
                     <span>Already have an account? </span>
-                    <Link to="/login" className="link-button back-to-login">
+                    <Link to="http://localhost:8080/login" className="link-button back-to-login">
                         Back to Login
                     </Link>
                 </div>

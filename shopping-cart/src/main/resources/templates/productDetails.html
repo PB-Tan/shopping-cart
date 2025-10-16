@@ -35,6 +35,28 @@
 	.rating-input label:hover ~ label {
 		color: #ffc107;
 	}
+
+	/* WhatsApp 分享按钮样式 */
+	.btn-whatsapp {
+		background-color: #25D366;
+		color: white;
+		border: none;
+		transition: background-color 0.3s;
+	}
+
+	.btn-whatsapp:hover {
+		background-color: #128C7E;
+		color: white;
+	}
+
+	.share-section {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-left: 20px;
+		margin-top: 10px;
+	}
+
 </style>
 </head>
 <body> 
@@ -42,25 +64,26 @@
 	<!-- Back button -->
 		<div>
 				<!-- edit by serene -->
-			<a href="javascript:history.back()" id="backButton" class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
-			<h3 style="padding-left:20px;">Product Details<h3>
+		<a href="javascript:history.back()" id="backButton" class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
 		</div>
-		
-		
-	<div class="card" style="margin-left:20px; margin-right:20px;"  th:each="p: ${productlist}">	
-			<img th:src="@{${p.imageUrl}}"
+		<!--edit ov-->
+		<div class="container mt-5 mb-5">
+		<div class="card" th:each="p: ${productlist}" style = "padding: 20px;">	
+		<div>
+		<img th:src="@{${p.imageUrl}}"
 					class="card-img-top" 
-					alt="watch"
-					style="width:150px ;height:150px; object-fit:cover;">
-		
+					alt="images"
+					style="width:200px ;height:200px;padding-left:50px; object-fit:contain;">
+		<u><h3 style ="display:inline ; margin-top:10px; margin-left: 25%;" class = "card-title" th:text="${p.name}"/></h3></u>
+		</div>
 	<table>		
-		    <tr>
+		    <!-- <tr>
 				<td style="width:20%; padding-left:50px;" >Name:</td>
 				<td> <b><span th:text="${p.name}"></span></b> </td>
-			</tr>
+			</tr> -->
 			<tr>
-			  	<td style="width:20%; padding-left:50px;" >Price:</td>
-				<td> <b><span th:text="${p.unitPrice}"></span></td>
+			  	<td style="width:20%; padding-left:50px;" >Prices:</td>
+				<td> <b><span th:text="${'$'+ #numbers.formatDecimal(p.unitPrice,0,2)}"></span></td>
 			</tr>
 			<tr>
 			 	<td style="width:20%; padding-left:50px;" >Description: </td>
@@ -68,7 +91,7 @@
 			</tr>
 			<tr>
 			 	<td style="width:20%; padding-left:50px;" >Details: </td>
-				<td><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				<td style=" text-align: justify; padding-right:40px;"><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 			  			Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 			  			Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 			  			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
@@ -76,41 +99,59 @@
 				</td>
 			</tr>
 			<tr>
-			  	<td style="width:20%; padding-left:50px;" >Stock: </td>
-				<td><b><span th:text="${p.stock}"></span></b></td>
+			  	<td style="width:20%; padding-left:50px;" >Remaining stock: </td>
+				<td><b><span th:text="${p.stock}"></span></b> pcs</td>
 			</tr>
+			
 			</table>
 				
-			 <div>
+			 <div class="card-body text-center">
 				<form th:action = "@{/cart/add}" method = "post">
+					<span>Quantity to add: &nbsp;
 					<input type="hidden" name="productId" th:value="${p.id}"/>
-					<input type="number" name="quantity" min="1" value="1"/>
+					<input type="number" name="quantity" min="1" value="1" style="width: 100px"/>
+					</span>
 				 <button type="submit" class="btn btn-primary mt-4 mb-4 ms-4" style="margin-left:20px;">Add To Cart</button>
 			 </form>
-			</div>
 
-			<div class="alert alert-danger" th:if="${errorMsg}" th:text="${errorMsg}"></div>
-			<div class="alert alert-success" th:if="${statusMsg}" th:text="${statusMsg}"></div>
-
+			 <!-- WhatsApp 分享按钮 -->
+		<div class="share-section mb-4">
+			<button onclick="shareToWhatsApp()" class="btn btn-whatsapp"
+					th:attr="data-product-name=${p.name}, data-product-price=${p.unitPrice}, data-product-id=${p.id}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16" style="margin-right: 5px;">
+					<path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+				</svg>
+				Share on WhatsApp
+			</button>
 		</div>
 
-		<!-- 评价区域 -->
-		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
+			 
+			
+			<div style = "width: 500px" class="alert alert-warning" th:if="${errorMsg}" th:text="${errorMsg}"/>
+			<div style = "width: 500px" class="alert alert-success" th:if="${statusMsg}" th:text="${statusMsg}"/>
+			</div>
+		</div>
+		</div>
+
+		<!-- Review section -->
+		<div class="container mt-5 mb-5" th:each="p: ${productlist}" id="review-section">
 			<h4>Product Reviews</h4>
 
-			<!-- 平均评分显示 -->
+			<!-- Display average rating -->
 			<div class="mb-4">
 				<div class="d-flex align-items-center">
-					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
-					<span class="text-muted">(<span th:text="${reviewCount}">0</span> reviews)</span>
-				</div>
+
+					<!--edited &nbsp; --- just to leave a space - Non breaking space (&nbsp;) -->
+					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0 </h5>
+					 <span class="text-muted">&nbsp;(<span th:text="${reviewCount}">0</span> reviews)</span>
+				</div>  
 				<div class="rating-stars">
 					<span th:each="i : ${#numbers.sequence(1, 5)}"
 						  th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>
 				</div>
 			</div>
 
-			<!-- 提示信息 -->
+			<!-- Display alerts -->
 			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
 				<span th:text="${success}"></span>
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -120,8 +161,8 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 			</div>
 
-			<!-- 评价提交表单 -->
-			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
+			<!-- Review input form - Only customers who have bought the product and have not left a review before -->
+			<div class="card mb-4" th:if="${session.username != null and hasPurchased and !hasReviewed}">
 				<div class="card-body">
 					<h5 class="card-title">Write a Review</h5>
 					<form th:action="@{/review/add}" method="post">
@@ -154,17 +195,22 @@
 				</div>
 			</div>
 
-			<!-- 未登录提示 -->
+			<!-- Alert if user is not logged in -->
 			<div class="alert alert-info" th:if="${session.username == null}">
 				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
 			</div>
 
-			<!-- 已评价提示 -->
-			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
+			<!-- Alert if user have not bought product before -->
+			<div class="alert alert-warning" th:if="${session.username != null and !hasPurchased}">
+				Only users who have purchased this product can leave a review
+			</div>
+
+			<!-- Alert if user have left a review before -->
+			<div class="alert alert-secondary" th:if="${session.username != null and hasPurchased and hasReviewed}">
 				You have already reviewed this product
 			</div>
 
-			<!-- 评价列表 -->
+			<!-- display reviews -->
 			<div class="reviews-list mt-4">
 				<h5>All Reviews (<span th:text="${reviewCount}">0</span>)</h5>
 
@@ -191,14 +237,39 @@
 				</div>
 			</div>
 		</div>
-	
-	
 
-	 
-	 
-	   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-	   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+<!-- WhatsApp share functionality JavaScript -->
+   <script>
+   function shareToWhatsApp() {
+       // Read product info from the button attributes
+       const button = event.currentTarget;
+       const productName = button.getAttribute('data-product-name');
+       const productPrice = button.getAttribute('data-product-price');
+       const productId = button.getAttribute('data-product-id');
+
+       // Get current page URL and replace localhost with LAN IP
+       let currentUrl = window.location.href;
+       // Replace localhost or 127.0.0.1 with the LAN IP
+       currentUrl = currentUrl.replace('localhost', '172.20.10.8');
+       currentUrl = currentUrl.replace('127.0.0.1', '172.20.10.8');
+
+       // Build the message to share
+       const message = `Check out this product!\n\nProduct: ${productName}\nPrice: ${productPrice}\n\nView details: ${currentUrl}`;
+
+       // Encode message for the URL
+       const encodedMessage = encodeURIComponent(message);
+
+       // Build the WhatsApp share link
+       const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+
+       // Open WhatsApp in a new window
+       window.open(whatsappUrl, '_blank');
+   }
+     </script>
 
 </body>
 </html>

@@ -18,46 +18,46 @@ public class PaymentMethod {
     @JoinColumn(name = "customer_username")
     private Customer customer;
 
-    @Min(24)
-    @Max(99)
-    private int expiryYear;
+    // @Min(24)
+    // @Max(99)
+    // private int expiryYear;
 
-    @Min(1)
-    @Max(12)
-    private int expiryMonth;
-    private String cardType;
+    // @Min(1)
+    // @Max(12)
+    // private int expiryMonth;
+    // private String cardType;
 
     @NotBlank(message = "Name is required")
     private String cardHolderName;
 
-    @NotBlank(message = "Card number is required")
-    @Transient
-    @Pattern(regexp = "\\d{16}", message = "16-digit number is required")
-    private String cardNumber;
-    private String lastFourDigits;
+    // @NotBlank(message = "Card number is required")
+    // @Transient
+    // @Pattern(regexp = "\\d{16}", message = "16-digit number is required")
+    // private String cardNumber;
+    // private String lastFourDigits;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    @Column(name = "is_default")
-    private boolean isDefault;
+    // @Getter(AccessLevel.NONE)
+    // @Setter(AccessLevel.NONE)
+    // @Column(name = "is_default")
+    // private boolean isDefault;
 
     public PaymentMethod() {
     }
 
-    public boolean getIsDefault() {
-        return isDefault;
-    }
+    // public boolean getIsDefault() {
+    // return isDefault;
+    // }
 
-    public void setIsDefault(boolean isDefault) {
-        this.isDefault = isDefault;
-    }
+    // public void setIsDefault(boolean isDefault) {
+    // this.isDefault = isDefault;
+    // }
 
-    public void setLastFourDigits(String cardNumber) {
-        if (cardNumber != null && cardNumber.length() == 16) {
-            this.cardNumber = cardNumber;
-            this.lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
-        }
-    }
+    // public void setLastFourDigits(String cardNumber) {
+    // if (cardNumber != null && cardNumber.length() == 16) {
+    // this.cardNumber = cardNumber;
+    // this.lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
+    // }
+    // }
 
     // @Id
     // @GeneratedValue(strategy = GenerationType.IDENTITY)
