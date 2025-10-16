@@ -148,13 +148,12 @@ public class CartService implements CartInterface {
 
         // check quantity
         int stock = item.getProduct().getStock(); // product 的inventory
-        if (quantity > stock) {
+        if (stock < quantity) {
             item.setStatus("INSUFFICIENT STOCK");
-        } else if (quantity > stock + 5) {
+        }else if (stock - quantity < 5) {
             item.setStatus("LIMITED STOCK");
             item.setQuantity(quantity);
-        } else {
-            // update number
+        }else {
             item.setQuantity(quantity);
         }
         return cartRepository.save(cart);
