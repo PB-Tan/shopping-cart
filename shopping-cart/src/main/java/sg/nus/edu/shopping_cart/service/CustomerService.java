@@ -60,4 +60,17 @@ public class CustomerService implements CustomerInterface {
         customer.setPaymentMethods(null);
         return customer;
     }
+
+    public java.util.List<Customer> findByProviderCustomerId(String providerId) {
+        java.util.Optional<Customer> opt = customerDAO.findByProviderCustomerId(providerId);
+        if (opt.isPresent()) {
+            return java.util.Collections.singletonList(opt.get());
+        }
+        return java.util.Collections.emptyList();
+    }
+
+    public Customer getCustomerByEmail(String email) {
+        java.util.Optional<Customer> opt = customerDAO.findByEmail(email);
+        return opt.orElse(null);
+    }
 }

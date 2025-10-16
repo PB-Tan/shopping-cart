@@ -234,6 +234,33 @@
     }
   </style>
 
+  <script type="text/javascript">
+    // Called from the 'User Profile' menu item. Checks server session and redirects
+    // to the React front-end profile or login page accordingly.
+    async function goToProfile(evt) {
+      if (evt && evt.preventDefault) evt.preventDefault();
+      try {
+        const resp = await fetch('/api/customers/session', { credentials: 'include' });
+        if (!resp.ok) {
+          // If server returns non-2xx, send user to login page on the front-end
+          window.location.href = 'https://localhost:5173/login';
+          return;
+        }
+        const body = await resp.json();
+        if (body && body.code === 200 && body.data) {
+          // session valid
+          window.location.href = 'https://localhost:5173/profile';
+        } else {
+          window.location.href = 'https://localhost:5173/login';
+        }
+      } catch (e) {
+        // On network error, fallback to front-end login
+        console.error('goToProfile session check failed:', e);
+        window.location.href = 'https://localhost:5173/login';
+      }
+    }
+  </script>
+
   <div class="sc-topbar">
     <div class="sc-topbar-left">FREE SHIPPING ON ORDERS OVER $99</div>
     <div class="sc-topbar-right">
@@ -248,7 +275,8 @@
         >
         <ul class="sc-dropdown-menu" role="menu">
           <li><a th:href="@{/cart}">Shopping cart</a></li>
-          <li><a href="#">Account Settings</a></li>
+          <!-- User Profile: will call goToProfile() which checks session and redirects to the React app -->
+          <li><a href="#" onclick="goToProfile(event);">User Profile</a></li>
           <li><a th:href="@{/order/history}">Orders</a></li>
           <li><a th:href="@{/favorites}">Favourites</a></li>
           <li><a href="#">Notifications</a></li>

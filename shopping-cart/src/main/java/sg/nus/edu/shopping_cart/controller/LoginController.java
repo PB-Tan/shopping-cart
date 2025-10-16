@@ -16,7 +16,10 @@ public class LoginController {
 
     @GetMapping("/login")
     public String displayLogin() {
-        return "login";
+        // In this app, the React frontend handles the login UI/routing.
+        // Redirect requests for /login to the frontend root so the React router
+        // can display the client-side Login page.
+        return "redirect:/";
     }
 
     @PostMapping("/login")
@@ -24,25 +27,11 @@ public class LoginController {
             @RequestParam String username,
             @RequestParam String password,
             HttpSession session) {
-
-        // check username, if customer exists
-        Customer customer = customerService.getCustomerByUsername(username);
-        if (customer == null) {
-            // If no customer found associated with the username, bounce back to login page
-            return "redirect:/login";
-        }
-
-        // check password, retrieve stored password inside database
-        String storedPassword = customer.getPassword();
-        if (!storedPassword.equals(password)) {
-            // if store password != input password, bounce back to login page
-            return "redirect:/login";
-        }
-
-        // By this point, customer exists and password matches
-        // set attribute to session for future use
-        session.setAttribute("username", username);
-        return "redirect:/test";
+        // Server-side Thymeleaf form-login is deprecated in this project.
+        // The React frontend should call the REST endpoint
+        // POST /api/customers/customerlogin to perform authentication.
+        // Redirect to frontend root (React app) so client-side login flow runs.
+        return "redirect:/";
     }
 
     @GetMapping("/logout")

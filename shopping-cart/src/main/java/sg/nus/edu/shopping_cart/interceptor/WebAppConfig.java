@@ -12,10 +12,11 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(securityInterceptor)
-                .addPathPatterns(
-                        "/checkout/*", "/checkout",
-                        "/cart/*", "/cart",
-                        "/order/*", "/order");
+    registry.addInterceptor(securityInterceptor)
+        .addPathPatterns(
+            "/checkout/**", "/cart/**", "/order/**",
+            // protect favourites endpoints (correct path is /favorites)
+            "/favorites", "/favorites/**")
+        .excludePathPatterns("/api/**", "/static/**", "/favicon.ico");
     }
 }

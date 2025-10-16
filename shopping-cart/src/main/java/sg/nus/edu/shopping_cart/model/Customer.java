@@ -33,7 +33,8 @@ public class Customer {
     private String address;
     private String country;
     private String postalCode;
-    private String password;
+    private String password; // stores password hash (SHA-256 hex)
+    private String passwordSalt; // hex string salt used to compute hash on client
     private String providerCustomerId;
 
     public Customer() {

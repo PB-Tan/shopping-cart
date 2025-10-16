@@ -31,31 +31,50 @@ const UserProfile = () => {
     const [modalLastName, setModalLastName] = useState('');
     const [modalCountry, setModalCountry] = useState('');
 
-    // 从cookie获取用户信息
-    const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    };
-
-    // 加载用户信息
+    // 使用 session 加载用户信息
     useEffect(() => {
-        const username = getCookie('username');
-        const userId = getCookie('userId');
-        
-        if (!username) {
-            navigate('/login');
-            return;
-        }
+        // when on profile page, add a class so global nav can be hidden
+        document.body.classList.add('profile-page');
 
-        // 从后端获取完整用户信息
-        fetchUserInfo(username);
+        (async () => {
+            try {
+                const res = await fetch('/api/customers/session', { credentials: 'include' });
+                if (!res.ok) {
+                    navigate('/login');
+                    return;
+                }
+                const body = await res.json();
+                if (body.code === 200 && body.data) {
+                    const d = body.data;
+                    setUserInfo({
+                        id: d.username || '',
+                        name: d.username || '',
+                        firstName: d.firstName || '',
+                        lastName: d.lastName || '',
+                        address: d.address || '',
+                        country: d.country || '',
+                        email: d.email || '',
+                        phone: d.phoneNumber || ''
+                    });
+                } else {
+                    navigate('/login');
+                }
+            } catch (e) {
+                console.error('Session check failed:', e);
+                navigate('/login');
+            } finally {
+                setLoading(false);
+            }
+        })();
+
+        return () => {
+            document.body.classList.remove('profile-page');
+        };
     }, [navigate]);
 
     const fetchUserInfo = async (username) => {
         try {
-        const response = await fetch(`/api/customers/name/${username}`);
+            const response = await fetch(`/api/customers/name/${username}`, { credentials: 'include' });
             if (!response.ok) {
                 throw new Error('Failed to fetch user info');
             }
@@ -147,6 +166,7 @@ const UserProfile = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ 
                     email: newEmail 
                 })
@@ -181,6 +201,7 @@ const UserProfile = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     name: userInfo.name,
                     address: modalValue
@@ -210,6 +231,7 @@ const UserProfile = () => {
             const response = await fetch('/api/customers/updateprofile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(payload)
             });
             const result = await response.json();
@@ -240,6 +262,7 @@ const UserProfile = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     name: userInfo.name,
                     phone: modalValue
@@ -287,6 +310,7 @@ const UserProfile = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     name: userInfo.name,
                     email: newEmail
@@ -330,24 +354,17 @@ const UserProfile = () => {
         }
     };
 
-    // 删除cookie
-    const deleteCookie = (name) => {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    };
+    // 登出 - 调用后端注销 session 并清理本地缓存
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/customers/logout', { method: 'POST', credentials: 'include' });
+        } catch (e) {
+            console.warn('Logout request failed:', e);
+        }
 
-    // 登出 - 删除当前用户的cookie
-    const handleLogout = () => {
         const currentUsername = userInfo.name;
-        
-        // 删除与当前用户相关的cookie
-        deleteCookie('username');
-        deleteCookie('userId');
-        deleteCookie(`user_${currentUsername}`);
-        
-        // 清除localStorage
         localStorage.removeItem('user');
         localStorage.removeItem(`user_${currentUsername}`);
-        
         console.log(`Logged out user: ${currentUsername}`);
         navigate('/login');
     };
@@ -363,11 +380,9 @@ const UserProfile = () => {
     return (
         <div className="profile-container">
             <div className="profile-card">
-                <div className="profile-header">
-                    <h1>👤 User Profile</h1>
-                    <button onClick={handleLogout} className="logout-btn">
-                        Logout
-                    </button>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                    <button onClick={() => { window.location.href = 'http://localhost:8080/catalogue'; }} style={{ marginRight: 'auto', padding: '6px 16px', borderRadius: '6px', border: 'none', background: '#eee', cursor: 'pointer' }}>← 返回</button>
+                    <button onClick={handleLogout} className="logout-btn">Logout</button>
                 </div>
 
                 <div className="profile-content">

@@ -10,12 +10,45 @@
 
 .login-card {
     background: white;
-    padding: 40px;
+    padding: 36px 28px;
     border-radius: 16px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 480px;
     animation: fadeInUp 0.6s ease-out;
+}
+
+/* Back button and login description */
+.back-button {
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+.login-description {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.95);
+    font-size: 18px;
+    z-index: 2000;
+}
+
+/* If on login page, hide nav menu and let background fill whole viewport */
+body.login-page .navbar {
+    display: none;
+}
+
+body.login-page .main-content {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 @keyframes fadeInUp {
@@ -154,6 +187,47 @@
     font-size: 14px;
 }
 
+.google-row {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Full-width Google button that visually matches the primary Sign In button */
+.google-button {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff; /* white background with border to contrast */
+    color: #333;
+    border: 1px solid #e6e6e6;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.google-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+}
+
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.google-row-inline {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .footer-left {
     display: flex;
 }
@@ -182,6 +256,32 @@
 
 .register-link {
     font-weight: 600;
+}
+
+/* Make the Sign Up link look like the main Sign In button */
+
+/* register-link removed per design - no styling required */
+
+/* Small right-aligned Sign Up button shown in the footer */
+.register-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(102,126,234,0.18);
+    background: rgba(255,255,255,0.86);
+    color: #333;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.register-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(102,126,234,0.08);
+    background: linear-gradient(135deg, rgba(102,126,234,0.06), rgba(118,75,162,0.06));
 }
 
 /* Responsive Design */
