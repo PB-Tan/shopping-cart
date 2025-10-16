@@ -22,7 +22,9 @@ public interface CartInterface {
 
     public Cart deleteCartItem(String username, int productId);
 
-    public BigDecimal calculateCartTotal(String username);
+    public BigDecimal calculateCartSubtotal(String username);
+
+    public BigDecimal calculateCartGrandTotal(String username);
 
     public void clearCart(String username);
 

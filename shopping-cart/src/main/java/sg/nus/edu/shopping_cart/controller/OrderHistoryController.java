@@ -24,6 +24,9 @@ public class OrderHistoryController {
     @Autowired
     OrderInterface orderInterface;
 
+    @Autowired
+    ReviewService reviewService;
+
     @GetMapping("")
     public String displayOrderHistory(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
@@ -36,8 +39,27 @@ public class OrderHistoryController {
     public String displayOrderItems(HttpSession session, Model model,
             @PathVariable int id) {
         String username = (String) session.getAttribute("username");
+        Optional<Order> order = orderInterface.findOrderById(id);
+        // if order does not exist then rebound back to orders page
+        if (order.isEmpty()) {
+            return "redirect:/order/history";
+        }
+
         List<OrderItem> orderItems = orderInterface.findOrderItemByOrderId(id);
         model.addAttribute("orderItems", orderItems);
+        model.addAttribute("order", order.get());
+
+        // Check review status for each product
+        Map<Integer, Boolean> reviewStatusMap = new HashMap<>();
+        if (username != null) {
+            for (OrderItem item : orderItems) {
+                int productId = item.getProduct().getId();
+                boolean hasReviewed = reviewService.hasUserReviewed(productId, username);
+                reviewStatusMap.put(productId, hasReviewed);
+            }
+        }
+        model.addAttribute("reviewStatusMap", reviewStatusMap);
+
         return "order-details";
     }
 

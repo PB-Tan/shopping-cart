@@ -9,81 +9,257 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <style>
+      body {
+        background: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      .catalogue-container {
+        padding: 40px 50px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .catalogue-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        letter-spacing: -0.5px;
+      }
+
+      .product-card {
+        position: relative;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 1px solid #e8e8e8;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+
       .favorite-form {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 16px;
+        right: 16px;
         z-index: 10;
       }
+
       .favorite-btn {
-        background: white;
+        background: rgba(255, 255, 255, 0.95);
         border: none;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         transition: all 0.3s ease;
         padding: 0;
+        backdrop-filter: blur(10px);
       }
+
       .favorite-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        background: white;
       }
+
       .favorite-btn svg {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
       }
+
       .favorite-btn.favorited svg {
         fill: #ff4d4d;
         stroke: #ff4d4d;
       }
+
       .favorite-btn:not(.favorited) svg {
         fill: none;
-        stroke: #666;
+        stroke: #555;
+        stroke-width: 2.5;
       }
-      .card {
-        position: relative;
+
+      .product-image-container {
+        width: 100%;
+        height: 300px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        border-bottom: 1px solid #f0f0f0;
       }
-      .empty-message {
+
+      .product-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+      }
+
+      .product-card:hover img {
+        transform: scale(1.05);
+      }
+
+      .product-body {
+        padding: 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        min-height: 60px;
+      }
+
+      .product-description {
+        font-size: 0.95rem;
+        color: #7f8c8d;
+        margin-bottom: 16px;
+        line-height: 1.6;
+        flex: 1;
+      }
+
+      .product-price {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        letter-spacing: -0.5px;
+      }
+
+      .btn-view-detail {
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 28px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
         text-align: center;
-        padding: 50px 20px;
-        color: #666;
+        text-decoration: none;
+        display: inline-block;
+        width: 100%;
       }
-      .empty-message h3 {
-        margin-bottom: 20px;
+
+      .btn-view-detail:hover {
+        background: #34495e;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+        text-decoration: none;
       }
+
       .sort-section {
-        margin-bottom: 20px;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e8e8e8;
       }
+
       .sort-section label {
         font-weight: 600;
         margin-right: 10px;
+        color: #2c3e50;
       }
+
       .sort-section select {
-        padding: 5px 10px;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
+        padding: 8px 15px;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
         background-color: white;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        color: #2c3e50;
       }
+
+      .sort-section select:focus {
+        outline: none;
+        border-color: #2c3e50;
+        box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+      }
+
       .sort-section button {
         margin-left: 10px;
-        padding: 5px 15px;
+        padding: 8px 20px;
+        background: #2c3e50;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .sort-section button:hover {
+        background: #34495e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+      }
+
+      .empty-message {
+        text-align: center;
+        padding: 80px 20px;
+        color: #7f8c8d;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e8e8e8;
+      }
+
+      .empty-message h3 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      .empty-message a {
+        color: #2c3e50;
+        font-weight: 600;
+        text-decoration: underline;
+      }
+
+      .empty-message a:hover {
+        color: #34495e;
+      }
+
+      @media (max-width: 992px) {
+        .catalogue-container {
+          padding: 30px 20px;
+        }
+
+        .catalogue-title {
+          font-size: 2rem;
+        }
       }
     </style>
   </head>
 
   <body>
     <div th:replace="fragments/layout :: siteHeader"></div>
-
-    <div class="container mt-4">
-      <h2 class="mb-4">My Favorites</h2>
+    <div class="catalogue-container">
+      <h2 class="catalogue-title">My Favorites</h2>
 
       <div th:if="${productlist != null and !productlist.isEmpty()}">
         <!-- Sorting Section -->
@@ -102,8 +278,8 @@
         </div>
 
         <div class="row">
-          <div class="col-4 mt-4" th:each="p : ${productlist}">
-            <div class="card">
+          <div class="col-lg-4 col-md-6 col-sm-12 mb-4" th:each="p : ${productlist}">
+            <div class="product-card">
               <form th:action="@{/favorites/toggle}" method="post" class="favorite-form">
                 <input type="hidden" name="productId" th:value="${p.id}" />
                 <input type="hidden" name="returnUrl" value="/favorites" />
@@ -113,19 +289,14 @@
                   </svg>
                 </button>
               </form>
-              <img
-                th:src="@{${p.imageUrl}}"
-                class="card-img-top"
-                alt="product"
-                style="width: 200px; height: 200px; object-fit: cover"
-              />
-              <div class="card-body">
-                <h5 class="card-title" th:text="${p.name}"></h5>
-                <p class="card-text" th:text="${p.description}"></p>
-                <p class="card-text" th:text="${p.unitPrice}"></p>
-                <a th:href="@{/catalogue/{id}(id=${p.id})}" class="btn btn-primary"
-                  >View detail</a
-                >
+              <div class="product-image-container">
+                <img th:src="@{${p.imageUrl}}" alt="product" />
+              </div>
+              <div class="product-body">
+                <h5 class="product-name" th:text="${p.name}"></h5>
+                <p class="product-description" th:text="${p.description}"></p>
+                <p class="product-price" th:text="${'$' + #numbers.formatDecimal(p.unitPrice,0,'COMMA',2, 'POINT')}"></p>
+                <a th:href="@{/catalogue/{id}(id=${p.id})}" class="btn-view-detail">View Detail</a>
               </div>
             </div>
           </div>
@@ -137,9 +308,5 @@
         <p>Go to <a href="/catalogue">product catalog</a> to favorite your favorite products!</p>
       </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>

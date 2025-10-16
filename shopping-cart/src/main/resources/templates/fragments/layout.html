@@ -1,328 +1,337 @@
-<header
-  class="sc-shop"
-  xmlns:th="http://www.thymeleaf.org"
-  th:fragment="siteHeader"
->
+<header xmlns:th="http://www.thymeleaf.org" th:fragment="siteHeader">
   <style>
-    /*
-      Scoped styles: all selectors are prefixed with .sc-shop
-      to avoid conflicts with Bootstrap or any host page styles.
-    */
-    .sc-shop,
-    .sc-shop * {
-      box-sizing: border-box;
-    }
-    .sc-shop {
-      --sc-accent: #2c7a7b;
-      --sc-bg-dark: #2c3e50;
-      --sc-bg-light: #ffffff;
-      --sc-border: #e5e7eb;
-      --sc-text: #111827;
-      --sc-muted: #6b7280;
-      --sc-dd-gap: 6px;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial,
-        sans-serif;
-      color: var(--sc-text);
-    }
-    .sc-shop a {
-      color: inherit;
-      text-decoration: none;
+    /* Header Styling */
+    .top-header {
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
-    /* Top bar */
-    .sc-shop .sc-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 8px 12px;
-      background: #f8fafc;
-      border-bottom: 1px solid var(--sc-border);
-      font-size: 12px;
+    .search-form .form-control,
+    .search-form .form-control:focus {
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      color: #2c3e50;
+      background: white;
+      height: 45px;
     }
-    .sc-shop .sc-topbar-left {
+
+    .search-form .form-control::placeholder {
+      color: #95a5a6;
+      opacity: 1;
+    }
+
+    .search-form .form-control:focus {
+      border-color: #2c3e50;
+      box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+      outline: none;
+    }
+
+    .search-form label {
+      color: #2c3e50;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: block;
+    }
+
+    .search-form .btn-primary {
+      background: #2c3e50;
+      border: none;
+      border-radius: 8px;
       font-weight: 600;
-      color: var(--sc-accent);
+      transition: all 0.3s ease;
+      padding: 0.65rem 1.5rem;
     }
-    .sc-shop .sc-topbar-right {
+
+    .search-form .btn-primary:hover {
+      background: #34495e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+    }
+
+    .cart-icon {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .cart-icon:hover {
+      transform: scale(1.05);
+    }
+
+    .cart-icon img {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+    }
+
+    .user-dropdown .btn {
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .user-dropdown .btn:hover {
+      border-color: #2c3e50;
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    .user-dropdown .badge {
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      background: #2c3e50;
     }
 
-    /* Dropdown (no Bootstrap classes used) */
-    .sc-shop .sc-dropdown {
-      position: relative;
-      padding-bottom: var(--sc-dd-gap);
+    .user-dropdown .dropdown-menu {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem;
+      margin-top: 0.5rem;
     }
-    .sc-shop .sc-dropdown-toggle {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      color: var(--sc-text);
-    }
-    .sc-shop .sc-dropdown-toggle:focus {
-      outline: 2px solid var(--sc-accent);
-      outline-offset: 2px;
-    }
-    .sc-shop .sc-dropdown-menu {
-      position: absolute;
-      right: 0;
-      top: calc(100% + var(--sc-dd-gap));
-      min-width: 200px;
-      background: var(--sc-bg-light);
-      border: 1px solid var(--sc-border);
+
+    .user-dropdown .dropdown-item {
       border-radius: 6px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-      list-style: none;
-      margin: 0;
-      padding: 6px 0;
-      display: none;
-      z-index: 1000;
-    }
-    /* Hover bridge to prevent closing when traversing the gap */
-    .sc-shop .sc-dropdown-menu::before {
-      content: "";
-      position: absolute;
-      top: calc(-1 * var(--sc-dd-gap));
-      left: 0;
-      right: 0;
-      height: var(--sc-dd-gap);
-    }
-    .sc-shop .sc-dropdown:hover .sc-dropdown-menu,
-    .sc-shop .sc-dropdown:focus-within .sc-dropdown-menu {
-      display: block;
-    }
-    .sc-shop .sc-dropdown-menu li {
-      margin: 0;
-    }
-    .sc-shop .sc-dropdown-menu a {
-      display: block;
-      padding: 8px 12px;
-      color: var(--sc-text);
-    }
-    .sc-shop .sc-dropdown-menu a:hover {
-      background: #f3f4f6;
+      padding: 0.6rem 1rem;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
     }
 
-    .sc-shop .sc-create-account {
-      padding: 6px 10px;
-      border-radius: 4px;
-      background: var(--sc-accent);
-      color: #fff;
+    .user-dropdown .dropdown-item:hover {
+      background: #f5f5f5;
+      color: #2c3e50;
+      transform: translateX(4px);
+    }
+
+    /* Navigation Bar Styling */
+    .main-navbar {
+      background: #2c3e50 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem 0;
+    }
+
+    .navbar-brand {
+      transition: all 0.3s ease;
+      margin-left: 80px;
+    }
+
+    .navbar-brand:hover {
+      transform: scale(1.05);
+    }
+
+    .navbar-brand img {
+      filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+    }
+
+    .main-navbar .nav-link {
+      color: white !important;
+      font-weight: 500;
+      padding: 0.6rem 1rem !important;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      margin: 0 0.2rem;
+      font-size: 0.95rem;
+    }
+
+    .main-navbar .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .main-navbar .dropdown-menu {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .main-navbar .dropdown-item {
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .main-navbar .dropdown-item:hover {
+      background: #2c3e50;
+      color: white;
+      transform: translateX(4px);
+    }
+
+    .main-navbar .dropdown-divider {
+      margin: 0.5rem 0;
+      border-color: #e8e8e8;
+    }
+
+    .btn-login {
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1.5rem;
       font-weight: 600;
-    }
-    .sc-shop .sc-create-account:hover {
-      filter: brightness(0.95);
+      transition: all 0.3s ease;
     }
 
-    /* Banner with search and logo */
-    .sc-shop .sc-banner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 16px 12px;
-      border-bottom: 1px solid var(--sc-border);
-      background: var(--sc-bg-light);
-    }
-    .sc-shop .sc-search {
-      display: flex;
-      align-items: stretch;
-      flex: 1 1 520px;
-      max-width: 640px;
-    }
-    .sc-shop .sc-search input {
-      flex: 1 1 auto;
-      padding: 10px 12px;
-      border: 1px solid #d1d5db;
-      border-right: none;
-      border-radius: 8px 0 0 8px;
-      font-size: 14px;
-    }
-    .sc-shop .sc-search button {
-      width: 44px;
-      border: 1px solid #d1d5db;
-      border-left: none;
-      border-radius: 0 8px 8px 0;
-      background: #ffffff;
-      cursor: pointer;
-    }
-    .sc-shop .sc-search button::before {
-      content: "";
-      display: block;
-      width: 20px;
-      height: 20px;
-      margin: 0 auto;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 20px;
-      background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Ccircle cx="11" cy="11" r="7"/%3E%3Cline x1="21" y1="21" x2="16.65" y2="16.65"/%3E%3C/svg%3E');
-    }
-    .sc-shop .sc-logo img {
-      display: block;
-      height: 48px;
-      width: auto;
-      border-radius: 4px;
+    .btn-login:hover {
+      background: #34495e;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
     }
 
-    /* Primary nav */
-    .sc-shop .sc-nav {
-      background: var(--sc-bg-dark);
-    }
-    .sc-shop .sc-nav > ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .sc-shop .sc-nav > ul > li {
-      position: relative;
-    }
-    .sc-shop .sc-nav a {
-      color: #fff;
-      display: block;
-      padding: 12px 16px;
-    }
-    .sc-shop .sc-nav > ul > li:hover > a {
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .sc-shop .sc-nav li ul {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      min-width: 220px;
-      background: var(--sc-bg-light);
-      color: var(--sc-text);
-      border: 1px solid var(--sc-border);
-      border-radius: 6px;
-      list-style: none;
-      padding: 8px 0;
-      margin: 0;
-      display: none;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
-      z-index: 900;
-    }
-    .sc-shop .sc-nav li:hover > ul {
-      display: block;
-    }
-    .sc-shop .sc-nav li ul li a {
-      color: var(--sc-text);
-      padding: 10px 14px;
-    }
-    .sc-shop .sc-nav li ul li a:hover {
-      background: #f6f7f9;
-    }
-    .sc-shop .sc-nav li ul li ul {
-      left: 100%;
-      top: 0;
-    }
-
-    /* Small screens */
-    @media (max-width: 640px) {
-      .sc-shop .sc-banner {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .sc-shop .sc-topbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+    @media (max-width: 768px) {
+      .top-header {
+        padding: 1rem 0 !important;
       }
     }
   </style>
 
-  <div class="sc-topbar">
-    <div class="sc-topbar-left">FREE SHIPPING ON ORDERS OVER $99</div>
-    <div class="sc-topbar-right">
-      <div class="sc-dropdown" th:with="u=${session.username}">
-        <a
-          href="#"
-          class="sc-dropdown-toggle"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          th:if="${u != null}"
-          th:text="${'Hi ' + u + '!!'}">My Account</a>
-        <a
-          href="#"
-          class="sc-dropdown-toggle"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          th:if="${u == null}">My Account</a>
-        <ul class="sc-dropdown-menu" role="menu">
-       
-          <li><a th:href="@{/cart}">Shopping cart</a></li>
-          <li><a href="#">Account Settings</a></li>
-          <li><a th:href="@{/order/history}">Orders</a></li>
-          <li><a th:href="@{/favorites}">Favourites</a></li>
-          <li th:if="${u != null}"><a th:href="@{/search/history}">Recently viewed</a></li>
-          <li><a href="#">Notifications</a></li>
-          <li><a th:href="@{/review/my-reviews}">My reviews</a></li>
-          <li><a th:href="@{/logout}">Logout</a></li>
-        </ul>
+  <div class="top-header">
+    <div class="container py-4">
+      <div class="row align-items-center">
+        <div class="col-md-8 order-2 order-md-1">
+          <form th:action="@{/catalogue/search}" method="GET" class="search-form">
+            <div class="form-row align-items-end">
+              <div class="form-group col-12 col-md-3 mb-md-0">
+                <label for="searchBy" class="mb-2">Search By:</label>
+                <select class="form-control" id="searchBy" name="searchby">
+                  <option value="name">Product Name</option>
+                  <option value="category">Product Category</option>
+                </select>
+              </div>
+              <div class="form-group col-12 col-md-6 mb-md-0">
+                <label for="keyword" class="mb-2">Enter Keyword:</label>
+                <input
+                  type="text"
+                  id="keyword"
+                  name="keyword"
+                  class="form-control"
+                  placeholder="Search for products..."
+                />
+              </div>
+              <div class="form-group col-12 col-md-3 mb-md-0">
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 32px;">
+                  🔍 Search
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-4 order-1 order-md-2 d-flex justify-content-end align-items-center">
+          <div class="cart-icon">
+            <a th:href="@{/cart}">
+              <img
+                th:src="@{\img\add-to-cart.png}"
+                alt="cart"
+                style="width: 40px; height: 30px; object-fit: contain; margin-right: 12px;"
+              />
+            </a>
+          </div>
+
+          <div class="dropdown user-dropdown" th:if="${session.username != null}">
+            <a
+              href="#"
+              class="btn btn-outline-secondary btn-sm dropdown-toggle d-inline-flex align-items-center"
+              id="userMenuButton"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span class="badge badge-success text-uppercase mr-2" th:text="${#strings.substring(session.username,0,1)}">U</span>
+              <span class="text-left">
+                <span class="d-block">
+                  Hello, <span th:text="${session.username}">User</span>
+                </span>
+              </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenuButton">
+              <a class="dropdown-item" href="#">⚙️ Account Settings</a>
+              <a class="dropdown-item" th:href="@{/order/history}">📦 Orders</a>
+              <a class="dropdown-item" th:href="@{/favorites}">❤️ Favourites</a>
+              <a class="dropdown-item" th:href="@{/review/my-reviews}">⭐ My Reviews</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/logout}">🚪 Logout</a>
+            </div>
+          </div>
+
+          <a
+            th:href="@{/login}"
+            class="btn btn-primary btn-sm btn-login"
+            th:if="${session.username == null}"
+          >Login / Register</a>
+        </div>
       </div>
-      <a href="#" class="sc-create-account">Create An Account</a>
     </div>
   </div>
 
-  <div class="sc-banner">
-    <form th:action="@{/catalogue/search}" method="GET">
-      <div class="row mt-4">
-        <div class="col-auto">
-          <b>Search By:</b>
+  <nav class="navbar navbar-expand-lg navbar-dark main-navbar" aria-label="Primary navigation">
+    <div class="container-fluid px-5">
+      <a class="navbar-brand" th:href="@{/catalogue}">
+        <img th:src="@{\img\TEAM 08 logo.png}" style="width: 60px" alt="Logo" />
+      </a>
 
-          <select name="searchby">
-            <option value="name">Product Name</option>
-            <option value="category">Product Category</option>
-          </select>
-        </div>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#primaryNav"
+        aria-controls="primaryNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <div class="col-auto">
-          <label for="keyword"><b>Enter Keyword: </b></label>
-          <input type="text" name="keyword" placeholder="Enter Keyword" />
-        </div>
-
-        <div class="col-auto">
-          <input type="submit" value="Search" />
-        </div>
-      </div>
-    </form>
-    <div class="sc-logo" style="text-align: center">
-      <img th:src="@{/img/random-company-logo.jpg}" alt="Company logo" />
-    </div>
-  </div>
-
-  <nav class="sc-nav" aria-label="Primary">
-    <ul>
-      <li>
-        <a th:href="@{/catalogue}">Home</a>
-      </li>
-      <li>
-        <a href="#">Products</a>
-        <ul>
-          <li>
-            <a th:href="@{/catalogue}">All products</a>
+      <div class="collapse navbar-collapse" id="primaryNav">
+        <div class="flex-grow-1"></div>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/catalogue}">🏠 Home</a>
           </li>
-          <li>
-            <a href="#">Keyboards</a>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="productsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >🛍️ Products</a>
+            <div class="dropdown-menu" aria-labelledby="productsDropdown">
+              <a class="dropdown-item" th:href="@{/catalogue}">All Products</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Accessories')}">Accessories</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Audio')}">Audio</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Display')}">Display</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Furniture')}">Furniture</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Peripherals')}">Peripherals</a>
+              <a class="dropdown-item" th:href="@{/catalogue(category='Storage')}">Storage</a>
+            </div>
           </li>
-          <li>
-            <a href="#">Beverages</a>
+          <li class="nav-item">
+            <a class="nav-link" href="#">🎁 Promotions</a>
           </li>
-          <li>
-            <a href="#">Fresh Meats</a>
-          </li>
-          <li>
-            <a href="#">Frozen Products</a>
+          <li class="nav-item">
+            <a class="nav-link" href="#">📞 Contact</a>
           </li>
         </ul>
-      </li>
-      <li><a href="#">Promotions</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
+      </div>
+    </div>
   </nav>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </header>

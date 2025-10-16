@@ -34,8 +34,8 @@ public class FavoriteController {
         String username = (String) session.getAttribute("username");
 
         if (username == null) {
-            // User not logged in, redirect to login
-            return "redirect:/login";
+            // User not logged in, redirect to login (frontend dev server over HTTPS)
+            return "redirect:https://localhost:5173/login";
         }
 
         // Toggle the favorite

@@ -27,19 +27,12 @@ public class CartController {
     public String viewCart(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         Cart cart = cartInterface.getCartByCustomer(username);
-        BigDecimal subtotal = cartInterface.calculateCartTotal(username);
+        BigDecimal subtotal = cartInterface.calculateCartSubtotal(username);
         List<CartItem> items = cartInterface.getCartItemsByCustomer(username);
-        // default before any manipulation
-        if (cart.getGrandTotal() == null) {
-            cart.setGrandTotal(subtotal); // swap subtotal here for anything after taxes
-        }
-        BigDecimal grandTotal = cart.getGrandTotal();
+        BigDecimal grandtotal = cartInterface.calculateCartGrandTotal(username);
+
         model.addAttribute("items", items);
-        model.addAttribute("subtotal", subtotal);
         model.addAttribute("cart", cart);
-        if (!model.containsAttribute("grandTotal")) {
-            model.addAttribute("grandTotal", grandTotal);
-        }
         return "cart";
     }
 
@@ -53,20 +46,20 @@ public class CartController {
         discountCode = discountCode.toUpperCase().trim();
         String username = (String) session.getAttribute("username");
         Cart cart = cartInterface.getCartByCustomer(username);
-        BigDecimal subtotal = cartInterface.calculateCartTotal(username);
+        BigDecimal subtotal = cartInterface.calculateCartSubtotal(username);
         BigDecimal grandTotal;
+
+        // check if discount code is valid.
         if (cartInterface.getPercentByCode(discountCode).isPresent()) {
-            BigDecimal percent = BigDecimal.valueOf(cartInterface.getPercentByCode(discountCode).get());
-            grandTotal = subtotal.multiply(BigDecimal.valueOf(100).subtract(percent).divide(BigDecimal.valueOf(100)));
-            ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
-            ra.addFlashAttribute("grandTotal", grandTotal);
             cart.setDiscountCode(discountCode);
-            cart.setGrandTotal(grandTotal);
+            BigDecimal discountpercent = BigDecimal
+                    .valueOf(cartInterface.getPercentByCode(cart.getDiscountCode()).get());
+            cart.setDiscountTotal(subtotal.multiply(discountpercent).divide(BigDecimal.valueOf(100)));
+            ra.addFlashAttribute("codeApplied", discountCode.toUpperCase() + " has been successfully applied");
             cartInterface.saveCart(cart);
         } else {
             grandTotal = subtotal;
             ra.addFlashAttribute("invalidCode", "Discount code not found");
-            ra.addFlashAttribute("grandTotal", grandTotal);
             cart.setGrandTotal(grandTotal);
         }
 
@@ -82,7 +75,7 @@ public class CartController {
             HttpSession session) {
         String username = (String) session.getAttribute("username");
         Product product = cartInterface.findProduct(productId).get();
-        Cart cart = customerInterface.findCustomerByUsername(username).get().getCart();
+        Cart cart = cartInterface.getCartByCustomer(username);
         int stock = product.getStock();
 
         // check if item already exist inside cart, if not, set as null
@@ -103,7 +96,8 @@ public class CartController {
         } // if product is found inside cart, then does the combined qty exceed stock?
         if (existingItem != null && quantity + existingItem.getQuantity() > stock) {
             ra.addFlashAttribute("errorMsg",
-                    "Only " + stock + " left for " + product.getName() + ". You have " + quantity + " in your cart");
+                    "Only " + stock + " left for " + product.getName() + ". You have " + existingItem.getQuantity()
+                            + " in your cart");
             return "redirect:/catalogue/" + productId;
         }
 

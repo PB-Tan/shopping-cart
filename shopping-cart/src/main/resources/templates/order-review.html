@@ -6,81 +6,360 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <style>
+      body {
+        background: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      .review-container {
+        padding: 40px 20px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .page-title::before {
+        content: '✍️';
+        font-size: 2.2rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title::before {
+        content: '⭐';
+        font-size: 1.6rem;
+      }
+
+      .rating-summary {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e8e8e8;
+        margin-bottom: 30px;
+      }
+
+      .rating-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2c3e50;
+      }
+
+      .rating-stars {
+        font-size: 1.8rem;
+        margin: 10px 0;
+      }
+
+      .rating-stars .text-warning {
+        color: #ffc107 !important;
+      }
+
+      .rating-stars .text-muted {
+        color: #dee2e6 !important;
+      }
+
+      .review-count {
+        color: #7f8c8d;
+        font-size: 1rem;
+      }
+
+      .card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e8e8e8;
+        margin-bottom: 25px;
+      }
+
+      .card-body {
+        padding: 35px;
+      }
+
+      .card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .card-title::before {
+        content: '📝';
+        font-size: 1.4rem;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        font-size: 1rem;
+      }
+
+      .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .rating-input input[type="radio"] {
+        display: none;
+      }
+
+      .rating-input label {
+        font-size: 2.5rem;
+        color: #dee2e6;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 0;
+      }
+
+      .rating-input label:hover,
+      .rating-input label:hover ~ label,
+      .rating-input input[type="radio"]:checked ~ label {
+        color: #ffc107;
+        transform: scale(1.1);
+      }
+
+      .form-control {
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+      }
+
+      .form-control:focus {
+        border-color: #2c3e50;
+        box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        background: white;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 32px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary::before {
+        content: '🚀';
+        font-size: 1.1rem;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+      }
+
+      .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 16px 20px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .alert-success::before {
+        content: '✅';
+        font-size: 1.3rem;
+      }
+
+      .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .alert-danger::before {
+        content: '⚠️';
+        font-size: 1.3rem;
+      }
+
+      .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .alert-info::before {
+        content: 'ℹ️';
+        font-size: 1.3rem;
+        margin-right: 8px;
+      }
+
+      .alert-secondary {
+        background: #e2e3e5;
+        color: #383d41;
+      }
+
+      .alert-secondary::before {
+        content: 'ℹ️';
+        font-size: 1.3rem;
+      }
+
+      .alert-link {
+        color: #0c5460;
+        font-weight: 600;
+        text-decoration: underline;
+      }
+
+      .close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: inherit;
+        opacity: 0.5;
+        cursor: pointer;
+        margin-left: auto;
+      }
+
+      .close:hover {
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .review-container {
+          padding: 30px 15px;
+        }
+
+        .card-body {
+          padding: 25px 20px;
+        }
+
+        .page-title {
+          font-size: 1.6rem;
+        }
+
+        .rating-number {
+          font-size: 2.5rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h3 th:text="'Review for ' + ${product.name}"></h3>
+    <div th:replace="fragments/layout :: siteHeader"></div>
 
-		<!-- 评价区域 -->
-		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
-			<h4>Product Reviews</h4>
+    <div class="review-container">
+      <h3 class="page-title" th:text="'Review for ' + ${product.name}">Review for Product</h3>
 
-			<!-- 平均评分显示 -->
-			<div class="mb-4">
-				<div class="d-flex align-items-center">
-					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
-					<span class="text-muted">(<span th:text="${reviewCount}">0</span> reviews)</span>
-				</div>
-				<div class="rating-stars">
-					<span th:each="i : ${#numbers.sequence(1, 5)}"
-						  th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>
-				</div>
-			</div>
+      <!-- Review section -->
+      <div th:each="p: ${productlist}">
+        <h4 class="section-title">Product Reviews</h4>
 
-			<!-- 提示信息 -->
-			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-				<span th:text="${success}"></span>
-				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-			</div>
-			<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-				<span th:text="${error}"></span>
-				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-			</div>
+        <!-- Average rating display -->
+        <div class="rating-summary">
+          <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div class="text-center mb-3 mb-md-0">
+              <div class="rating-number">
+                <span th:text="${averageRating}">0.0</span>
+                <span style="font-size: 1.5rem; color: #7f8c8d;">/ 5.0</span>
+              </div>
+              <div class="rating-stars">
+                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                      th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>
+              </div>
+              <div class="review-count">
+                (<span th:text="${reviewCount}">0</span> reviews)
+              </div>
+            </div>
+          </div>
+        </div>
 
-			<!-- 评价提交表单 -->
-			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
-				<div class="card-body">
-					<h5 class="card-title">Write a Review</h5>
-					<form th:action="@{/review/add}" method="post">
-						<input type="hidden" name="productId" th:value="${p.id}"/>
+        <!-- Flash messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+          <span th:text="${success}"></span>
+          <button type="button" class="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+          <span th:text="${error}"></span>
+          <button type="button" class="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+        </div>
 
-						<div class="mb-3">
-							<label class="form-label">Rating *</label>
-							<div class="rating-input">
-								<input type="radio" name="rating" value="5" id="star5" required/>
-								<label for="star5">★</label>
-								<input type="radio" name="rating" value="4" id="star4"/>
-								<label for="star4">★</label>
-								<input type="radio" name="rating" value="3" id="star3"/>
-								<label for="star3">★</label>
-								<input type="radio" name="rating" value="2" id="star2"/>
-								<label for="star2">★</label>
-								<input type="radio" name="rating" value="1" id="star1"/>
-								<label for="star1">★</label>
-							</div>
-						</div>
+        <!-- Review submission form -->
+        <div class="card" th:if="${session.username != null and !hasReviewed}">
+          <div class="card-body">
+            <h5 class="card-title">Write a Review</h5>
+            <form th:action="@{/review/add}" method="post">
+              <input type="hidden" name="productId" th:value="${p.id}"/>
 
-						<div class="mb-3">
-							<label for="comment" class="form-label">Review Content</label>
-							<textarea class="form-control" id="comment" name="comment" rows="4"
-									  placeholder="Share your experience..." maxlength="1000"></textarea>
-						</div>
+              <div class="mb-4">
+                <label class="form-label">Rating *</label>
+                <div class="rating-input">
+                  <input type="radio" name="rating" value="5" id="star5" required/>
+                  <label for="star5">★</label>
+                  <input type="radio" name="rating" value="4" id="star4"/>
+                  <label for="star4">★</label>
+                  <input type="radio" name="rating" value="3" id="star3"/>
+                  <label for="star3">★</label>
+                  <input type="radio" name="rating" value="2" id="star2"/>
+                  <label for="star2">★</label>
+                  <input type="radio" name="rating" value="1" id="star1"/>
+                  <label for="star1">★</label>
+                </div>
+              </div>
 
-						<button type="submit" class="btn btn-primary">Submit Review</button>
-					</form>
-				</div>
-			</div>
+              <div class="mb-4">
+                <label for="comment" class="form-label">Review Content</label>
+                <textarea class="form-control" id="comment" name="comment" rows="5"
+                          placeholder="Share your experience..." maxlength="1000"></textarea>
+              </div>
 
-			<!-- 未登录提示 -->
-			<div class="alert alert-info" th:if="${session.username == null}">
-				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
-			</div>
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+          </div>
+        </div>
 
-			<!-- 已评价提示 -->
-			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
-				You have already reviewed this product
-			</div>
+        <!-- Login prompt -->
+        <div class="alert alert-info" th:if="${session.username == null}">
+          <a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
+        </div>
 
-      <button type="submit">Submit Review</button>
-    </form>
+        <!-- Already reviewed notice -->
+        <div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
+          You have already reviewed this product
+        </div>
+      </div>
+    </div>
   </body>
 </html>

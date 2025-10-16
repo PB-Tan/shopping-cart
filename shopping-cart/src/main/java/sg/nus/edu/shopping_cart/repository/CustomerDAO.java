@@ -18,6 +18,9 @@ public interface CustomerDAO extends JpaRepository<Customer, String> {
     @Query("SELECT c FROM Customer c WHERE c.phoneNumber = ?1")
     Optional<Customer> findByPhone(String phone);
 
+    @Query("SELECT c FROM Customer c WHERE c.providerCustomerId = ?1")
+    Optional<Customer> findByProviderCustomerId(String providerId);
+
     @Modifying
     @Transactional
     @Query("UPDATE Customer c SET c.phoneNumber = ?2, c.address = ?3, c.email = ?4 WHERE c.username = ?1")

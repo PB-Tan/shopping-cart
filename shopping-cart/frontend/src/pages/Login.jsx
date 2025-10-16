@@ -11,33 +11,30 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // 从cookie获取值
-    const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    };
-
-    // 检查是否已经登录
+    // 使用 session 检查是否已登录
     useEffect(() => {
-        const username = getCookie('username');
-        if (!username) return;
+        // add body class so we can adjust global layout for login page
+        document.body.classList.add('login-page');
 
-        // 验证后端是否仍然有该用户
-        (async () => {
+        const checkSession = async () => {
             try {
-                const res = await fetch(`/api/customers/name/${username}`);
-                if (!res.ok) throw new Error('User check failed');
+                const res = await fetch('/api/customers/session', { credentials: 'include' });
+                if (!res.ok) return;
                 const body = await res.json();
                 if (body.code === 200 && body.data) {
-                    console.log('User cookie valid, redirecting to profile');
+                    console.log('Session valid, redirecting to profile');
                     navigate('/profile');
                 }
             } catch (e) {
-                console.log('User cookie invalid or server not reachable:', e.message);
+                console.log('Session check failed:', e.message);
             }
-        })();
+        };
+
+        checkSession();
+
+        return () => {
+            document.body.classList.remove('login-page');
+        };
     }, [navigate]);
 
     const handleInputChange = (e) => {
@@ -62,12 +59,37 @@ const Login = () => {
         setError('');
 
         try {
+            // For improved security: fetch salt for this username, compute hash(salt+password) client-side,
+            // then send salt and hash to server.
+            const saltResp = await fetch(`/api/customers/salt/${encodeURIComponent(formData.name)}`, { credentials: 'include' });
+            if (!saltResp.ok) {
+                throw new Error('Failed to retrieve salt for user');
+            }
+            const saltBody = await saltResp.json();
+            const salt = (saltBody && saltBody.data && saltBody.data.salt) || saltBody.salt || '';
+
+            // compute SHA-256(salt + password)
+            const hash = await (async (password, salt) => {
+                const enc = new TextEncoder();
+                const data = enc.encode(salt + password);
+                const buf = await crypto.subtle.digest('SHA-256', data);
+                const arr = Array.from(new Uint8Array(buf));
+                return arr.map(b => b.toString(16).padStart(2, '0')).join('');
+            })(formData.password, salt);
+
+            const payload = {
+                name: formData.name,
+                passwordHash: hash,
+                passwordSalt: salt
+            };
+
             const response = await fetch('/api/customers/customerlogin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                credentials: 'include',
+                body: JSON.stringify(payload)
             });
             console.log('Login request sent:', formData);
 
@@ -80,16 +102,9 @@ const Login = () => {
             console.log('Login response:', result);
 
             if (result.code === 200 && result.data) {
-                // 将username存储到cookie
-                setCookie('username', result.data.username, 7);
-                // setCookie('userId', result.data.id, 7);
-                
-                // 同时存储到localStorage作为备份
+                // 使用 session 进行登录状态管理；前端无需写 cookie
                 localStorage.setItem('user', JSON.stringify(result.data));
-                
-                console.log('Login successful, username stored in cookie');
-                
-                // 跳转到用户个人信息页面
+                console.log('Login successful (session), redirecting to profile');
                 navigate('/profile');
             } else {
                 setError(result.message || 'Invalid username or password');
@@ -108,11 +123,17 @@ const Login = () => {
 
     return (
         <div className="login-container">
+          <button className="back-button" onClick={() => { window.location.href = 'http://localhost:8080/catalogue'; }} aria-label="Go back">
+              ← Back
+          </button>
+            <div className="login-description">This page is used to sign in to your account.</div>
             <div className="login-card">
                 <div className="login-header">
                     <h1>Welcome Back</h1>
                     <p>Sign in to your account</p>
                 </div>
+
+                {/* ...existing code... */}
 
                 <form onSubmit={handleSubmit} className="login-form">
                     {error && (
@@ -166,6 +187,13 @@ const Login = () => {
                     </button>
                 </form>
 
+                {/* Place Google sign-in directly under the Sign In button (full-width, same sizing) */}
+                <div className="google-row">
+                    <a href="/api/customers/oauth2/authorize/google" className="google-button" aria-label="Sign in with Google">
+                        Sign in with Google
+                    </a>
+                </div>
+
                 <div className="login-footer">
                     <div className="footer-left">
                         <Link to="/forgot-password" className="link-button">
@@ -173,8 +201,7 @@ const Login = () => {
                         </Link>
                     </div>
                     <div className="footer-right">
-                        <span>Don't have an account? </span>
-                        <Link to="/register" className="link-button register-link">
+                        <Link to="/register" className="link-button" aria-label="Sign up">
                             Sign Up
                         </Link>
                     </div>
@@ -185,3 +212,30 @@ const Login = () => {
 };
 
 export default Login;
+
+// Global callback used by Google platform library
+window.onSignIn = async function(googleUser) {
+    try {
+        const id_token = googleUser.getAuthResponse().id_token;
+        // send id_token to backend for verification and session creation
+        const resp = await fetch('/api/customers/google/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id_token })
+        });
+        if (!resp.ok) {
+            console.error('Backend returned non-OK status for id_token');
+            return;
+        }
+        const result = await resp.json();
+        if (result.code === 200 && result.data) {
+            localStorage.setItem('user', JSON.stringify(result.data));
+            window.location.href = '/profile';
+        } else {
+            console.error('Login failed', result);
+        }
+    } catch (e) {
+        console.error('onSignIn error', e);
+    }
+}

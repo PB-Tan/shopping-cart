@@ -33,111 +33,122 @@ public class CheckoutController {
     ShipmentService shipmentService;
 
     @Autowired
-    private PaymentMethodValidator paymentMethodValidator;
+    StripeService stripeService;
 
-    @InitBinder("paymentMethod")
-    private void initPaymentMethodValidator(WebDataBinder binder) {
-        binder.addValidators(paymentMethodValidator);
-    }
+    // @Autowired
+    // private PaymentMethodValidator paymentMethodValidator;
 
-    // payment controlling
+    // @InitBinder("paymentMethod")
+    // private void initPaymentMethodValidator(WebDataBinder binder) {
+    // binder.addValidators(paymentMethodValidator);
+    // }
+
+    // proceed to checkout button from cart
     @GetMapping("/checkout")
     public String displayCheckout(HttpSession session, Model model, RedirectAttributes ra) {
         String username = (String) session.getAttribute("username");
-        Optional<Customer> customer = customerService.findCustomerByUsername(username);
-        if (customer.isEmpty()) {
-            return "redirect:/login";
-        }
+        // assuming that customer has been validated, due to security interceptor
+        Customer customer = customerService.findCustomerByUsername(username).get();
+        List<CartItem> cartItems = cartService.getCartItemsByCustomer(username);
+        Cart cart = cartService.getCartByCustomer(username);
 
-        // by this point customer exists and has been validated
-        Customer activeCustomer = customer.get();
-        List<CartItem> cartItems = activeCustomer.getCart().getCartItems();
-        // if cartItem is out of stock, then prevent customer from going into payment
-        // page,
-        // and show error msg
+        // Check if any cartItems are out of stock, and redirect if they are
         for (CartItem cartItem : cartItems) {
             int stock = cartItem.getProduct().getStock();
             int qty = cartItem.getQuantity();
             if (qty > stock) {
-                String msg = cartItem.getProduct().getName() + " is out of stock";
+                String msg = cartItem.getProduct().getName() + " quantity cannot be higher than stock: " + stock;
                 ra.addFlashAttribute("errorMsg", msg);
                 return "redirect:/cart";
             }
         }
 
-        // persist new order with order items from cart and its cart Items and empty
-        // cart
+        // if cart is empty, then prevent going into payment page and show error msg
+        if (cartItems.isEmpty()) {
+            ra.addFlashAttribute("errorMsg", "Cart cannot be empty");
+            return "redirect:/cart";
+        }
+
+        // create new order based on cart
         Order order = orderService.createOrderFromCart(username);
-        List<OrderItem> orderItems = orderService.findOrderItemByUsername(username);
-        BigDecimal cartTotal = cartService.calculateCartTotal(username);
-        model.addAttribute("customerOrderItems", orderItems);
-        model.addAttribute("customer", activeCustomer);
-        model.addAttribute("cartTotal", cartTotal);
+        System.out.println("Order Grandtotal: " + order.getGrandTotal());
 
-        // if order is empty, then prevent going into payment page and show error msg
-        if (cartTotal.compareTo(BigDecimal.ZERO) <= 0) {
-            model.addAttribute("errorMsg", "Cart cannot empty");
-            return "cart";
+        // implement stripe starting here
+        StripeResponse stripeResponse = stripeService.payProducts(cartItems, cart, username);
+        System.out.println("[Order] stripe status=" + stripeResponse.getStatus() +
+                "url=" + stripeResponse.getSessionUrl() +
+                "msg=" + stripeResponse.getMessage());
+        if ("SUCCESS".equalsIgnoreCase(stripeResponse.getStatus())) {
+            return "redirect:" + stripeResponse.getSessionUrl();
+        } else {
+            ra.addFlashAttribute("stripeError", stripeResponse.getMessage());
+            return "redirect:/cart";
         }
 
-        else {
-            return "payment";
-        }
     }
 
     // select payment methods
-    @PostMapping("/checkout/method")
-    public String selectPaymentMethod(
-            HttpSession session,
-            @RequestParam String paymentMethod) {
-        if (paymentMethod.equals("card")) {
-            return "redirect:/checkout/creditcard";
-        } else {
-            return "redirect:/checkout/qr";
-        }
-    }
+    // @PostMapping("/checkout/method")
+    // public String selectPaymentMethod(
+    // HttpSession session,
+    // @RequestParam String paymentMethod) {
+    // if (paymentMethod.equals("card")) {
+    // return "redirect:/checkout/creditcard";
+    // } else {
+    // return "redirect:/checkout/qr";
+    // }
+    // }
 
-    @GetMapping("/checkout/creditcard")
-    public String displayCreditCardForm(Model model) {
-        if (!model.containsAttribute("paymentMethod")) {
-            model.addAttribute("paymentMethod", new PaymentMethod());
-        }
-        return "credit-card-payment";
-    }
+    // @GetMapping("/checkout/creditcard")
+    // public String displayCreditCardForm(Model model) {
+    // if (!model.containsAttribute("paymentMethod")) {
+    // model.addAttribute("paymentMethod", new PaymentMethod());
+    // }
+    // return "credit-card-payment";
+    // }
 
-    @PostMapping("/checkout/creditcard")
-    public String payWithCreditCard(
-            HttpSession session,
-            @Validated @ModelAttribute("paymentMethod") PaymentMethod paymentMethod,
-            BindingResult bindingResult,
-            Model model) {
+    // @PostMapping("/checkout/creditcard")
+    // public String payWithCreditCard(
+    // HttpSession session,
+    // @Validated @ModelAttribute("paymentMethod") PaymentMethod paymentMethod,
+    // BindingResult bindingResult,
+    // Model model) {
 
-        if (bindingResult.hasErrors()) {
-            return "credit-card-payment";
-        }
+    // if (bindingResult.hasErrors()) {
+    // return "credit-card-payment";
+    // }
 
-        String username = (String) session.getAttribute("username");
-        Optional<Customer> customer = customerService.findCustomerByUsername(username);
-        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
-        if (orderOpt.isEmpty()) {
-            return "redirect:/test";
-        }
+    // String username = (String) session.getAttribute("username");
+    // Optional<Customer> customer =
+    // customerService.findCustomerByUsername(username);
+    // Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
+    // if (orderOpt.isEmpty()) {
+    // return "redirect:/test";
+    // }
 
-        model.addAttribute("customer", customer.get());
-        model.addAttribute("cartTotal", orderOpt.get().getGrandTotal());
+    // model.addAttribute("customer", customer.get());
+    // model.addAttribute("cartTotal", orderOpt.get().getGrandTotal());
 
-        return "redirect:/checkout/success";
-    }
+    // return "redirect:/checkout/success";
+    // }
 
     @GetMapping("/checkout/success")
-    public String displaySuccess(Model model, HttpSession session) {
+    public String paymentSuccess(Model model, HttpSession session) {
         String username = (String) session.getAttribute("username");
-        if (username != null) {
-            customerService.findCustomerByUsername(username).ifPresent(c -> model.addAttribute("customer", c));
-            orderService.findTopOrderByUsername(username)
-                    .ifPresent(o -> model.addAttribute("cartTotal", o.getGrandTotal()));
+        // Unwrap Optional<Customer> before placing into the model
+        model.addAttribute("customer", customerService.findCustomerByUsername(username).get());
+        Optional<Order> orderOpt = orderService.findTopOrderByUsername(username);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+            orderService.updateStock(order);
+            order.setStatus("PAID");
+            cartService.clearCart(username);
+
+            return "paymentsuccess";
+        } else {
+            return "error";
         }
-        return "paymentsuccess";
+
     }
 
     // @PostMapping("/checkout/shipping")

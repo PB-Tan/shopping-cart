@@ -66,14 +66,16 @@
 				<!-- edit by serene -->
 		<a href="javascript:history.back()" id="backButton" class="btn btn-secondary mt-4 mb-4" style="margin-left:20px;">Back</a>
 		</div>
+		<!--edit ov-->
 		<div class="container mt-5 mb-5">
-		<div class="card" th:each="p: ${productlist}" style = "padding: 50px">	
-		<h3 class = "card-title text-center" th:text="${p.name}"/>
+		<div class="card" th:each="p: ${productlist}" style = "padding: 20px;">	
+		<div>
 		<img th:src="@{${p.imageUrl}}"
 					class="card-img-top" 
-					alt="watch"
-					style="width:150px ;height:150px; object-fit:cover;">
-		
+					alt="images"
+					style="width:200px ;height:200px;padding-left:50px; object-fit:contain;">
+		<u><h3 style ="display:inline ; margin-top:10px; margin-left: 25%;" class = "card-title" th:text="${p.name}"/></h3></u>
+		</div>
 	<table>		
 		    <!-- <tr>
 				<td style="width:20%; padding-left:50px;" >Name:</td>
@@ -89,7 +91,7 @@
 			</tr>
 			<tr>
 			 	<td style="width:20%; padding-left:50px;" >Details: </td>
-				<td><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				<td style=" text-align: justify; padding-right:40px;"><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 			  			Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 			  			Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 			  			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
@@ -98,7 +100,7 @@
 			</tr>
 			<tr>
 			  	<td style="width:20%; padding-left:50px;" >Remaining stock: </td>
-				<td><b><span th:text="${p.stock}"></span></b></td>
+				<td><b><span th:text="${p.stock}"></span></b> pcs</td>
 			</tr>
 			
 			</table>
@@ -131,23 +133,25 @@
 		</div>
 		</div>
 
-		<!-- 评价区域 -->
-		<div class="container mt-5 mb-5" th:each="p: ${productlist}">
+		<!-- Review section -->
+		<div class="container mt-5 mb-5" th:each="p: ${productlist}" id="review-section">
 			<h4>Product Reviews</h4>
 
-			<!-- 平均评分显示 -->
+			<!-- Display average rating -->
 			<div class="mb-4">
 				<div class="d-flex align-items-center">
-					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0</h5>
-					<span class="text-muted">(<span th:text="${reviewCount}">0</span> reviews)</span>
-				</div>
+
+					<!--edited &nbsp; --- just to leave a space - Non breaking space (&nbsp;) -->
+					<h5 class="mb-0 me-3">Average Rating: <span th:text="${averageRating}">0.0</span> / 5.0 </h5>
+					 <span class="text-muted">&nbsp;(<span th:text="${reviewCount}">0</span> reviews)</span>
+				</div>  
 				<div class="rating-stars">
 					<span th:each="i : ${#numbers.sequence(1, 5)}"
 						  th:classappend="${i <= averageRating} ? 'text-warning' : 'text-muted'">★</span>
 				</div>
 			</div>
 
-			<!-- 提示信息 -->
+			<!-- Display alerts -->
 			<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
 				<span th:text="${success}"></span>
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -157,8 +161,8 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 			</div>
 
-			<!-- 评价提交表单 -->
-			<div class="card mb-4" th:if="${session.username != null and !hasReviewed}">
+			<!-- Review input form - Only customers who have bought the product and have not left a review before -->
+			<div class="card mb-4" th:if="${session.username != null and hasPurchased and !hasReviewed}">
 				<div class="card-body">
 					<h5 class="card-title">Write a Review</h5>
 					<form th:action="@{/review/add}" method="post">
@@ -191,17 +195,22 @@
 				</div>
 			</div>
 
-			<!-- 未登录提示 -->
+			<!-- Alert if user is not logged in -->
 			<div class="alert alert-info" th:if="${session.username == null}">
 				<a th:href="@{/login}" class="alert-link">Please login first</a> to submit a review
 			</div>
 
-			<!-- 已评价提示 -->
-			<div class="alert alert-secondary" th:if="${session.username != null and hasReviewed}">
+			<!-- Alert if user have not bought product before -->
+			<div class="alert alert-warning" th:if="${session.username != null and !hasPurchased}">
+				Only users who have purchased this product can leave a review
+			</div>
+
+			<!-- Alert if user have left a review before -->
+			<div class="alert alert-secondary" th:if="${session.username != null and hasPurchased and hasReviewed}">
 				You have already reviewed this product
 			</div>
 
-			<!-- 评价列表 -->
+			<!-- display reviews -->
 			<div class="reviews-list mt-4">
 				<h5>All Reviews (<span th:text="${reviewCount}">0</span>)</h5>
 
@@ -228,40 +237,36 @@
 				</div>
 			</div>
 		</div>
-	
-	
 
-	 
-	 
-	   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-	   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-	    <!-- WhatsApp 分享功能 JavaScript -->
+
+
+
+<!-- WhatsApp share functionality JavaScript -->
    <script>
    function shareToWhatsApp() {
-       // 获取按钮上的商品信息
+       // Read product info from the button attributes
        const button = event.currentTarget;
        const productName = button.getAttribute('data-product-name');
        const productPrice = button.getAttribute('data-product-price');
        const productId = button.getAttribute('data-product-id');
 
-       // 获取当前页面完整 URL，并替换 localhost 为局域网 IP
+       // Get current page URL and replace localhost with LAN IP
        let currentUrl = window.location.href;
-       // 替换 localhost 或 127.0.0.1 为局域网 IP
+       // Replace localhost or 127.0.0.1 with the LAN IP
        currentUrl = currentUrl.replace('localhost', '172.20.10.8');
        currentUrl = currentUrl.replace('127.0.0.1', '172.20.10.8');
 
-       // 构建分享消息
+       // Build the message to share
        const message = `Check out this product!\n\nProduct: ${productName}\nPrice: ${productPrice}\n\nView details: ${currentUrl}`;
 
-       // 编码消息用于 URL
+       // Encode message for the URL
        const encodedMessage = encodeURIComponent(message);
 
-       // 构建 WhatsApp 分享链接
+       // Build the WhatsApp share link
        const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
 
-       // 打开 WhatsApp（在新窗口）
+       // Open WhatsApp in a new window
        window.open(whatsappUrl, '_blank');
    }
      </script>

@@ -7,7 +7,7 @@ import sg.nus.edu.shopping_cart.model.OrderItem;
 
 public interface OrderInterface {
 
-    public Order findOrderById(int id);
+    public Optional<Order> findOrderById(int id);
 
     public Optional<Order> findTopOrderByUsername(String username);
 
@@ -20,5 +20,7 @@ public interface OrderInterface {
     public List<OrderItem> findOrderItemByUsername(String username);
 
     public List<OrderItem> findOrderItemByOrderId(int id);
+
+    public void updateStock(Order order);
 
 }
