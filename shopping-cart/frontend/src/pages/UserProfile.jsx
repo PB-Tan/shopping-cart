@@ -380,8 +380,8 @@ const UserProfile = () => {
     return (
         <div className="profile-container">
             <div className="profile-card">
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <button onClick={() => { window.location.href = 'http://localhost:8080/catalogue'; }} style={{ marginRight: 'auto', padding: '6px 16px', borderRadius: '6px', border: 'none', background: '#eee', cursor: 'pointer' }}>← 返回</button>
+                <div className="profile-header">
+                    <h1>Account Settings</h1>
                     <button onClick={handleLogout} className="logout-btn">Logout</button>
                 </div>
 
@@ -478,6 +478,27 @@ const UserProfile = () => {
                             Edit
                         </button>
                     </div>
+                </div>
+
+                <div style={{
+                    padding: '20px 40px',
+                    borderTop: '1px solid #e9ecef',
+                    textAlign: 'center'
+                }}>
+                    <a
+                        href="http://localhost:8080/catalogue"
+                        style={{
+                            color: '#495057',
+                            textDecoration: 'none',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            transition: 'color 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => e.target.style.color = '#212529'}
+                        onMouseLeave={(e) => e.target.style.color = '#495057'}
+                    >
+                        ← Back to Store
+                    </a>
                 </div>
             </div>
 

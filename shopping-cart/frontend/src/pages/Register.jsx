@@ -176,7 +176,7 @@ const Register = () => {
             if (result.code === 200) {
                 setSuccess('Account created successfully! Redirecting to login...');
                 setTimeout(() => {
-                    window.location.href = 'https://localhost:5173/login';
+                    navigate('/login');
                 }, 2000);
             } else {
                 setError(result.message || 'Registration failed');
@@ -367,7 +367,7 @@ const Register = () => {
 
                 <div className="register-footer">
                     <span>Already have an account? </span>
-                    <Link to="https://localhost:5173/login" className="link-button back-to-login">
+                    <Link to="/login" className="link-button back-to-login">
                         Back to Login
                     </Link>
                 </div>

@@ -1,10 +1,11 @@
+/* 整体容器 - 与Login统一的白色主调 */
 .profile-container {
     width: 100%;
     max-width: 100vw;
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 40px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,21 +20,23 @@ body.profile-page .navbar {
 
 .loading {
     text-align: center;
-    color: white;
+    color: #495057;
     font-size: 18px;
     padding: 50px;
 }
 
+/* Profile卡片 - 纯白背景 */
 .profile-card {
-    max-width: 1200px;
+    max-width: 1000px;
     width: 100%;
     margin: 0 auto;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     animation: fadeInUp 0.6s ease-out;
     box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 @keyframes fadeInUp {
@@ -47,8 +50,9 @@ body.profile-page .navbar {
     }
 }
 
+/* Profile头部 - 黑色主题 */
 .profile-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #212529;
     color: white;
     padding: 30px 40px;
     display: flex;
@@ -58,40 +62,44 @@ body.profile-page .navbar {
 
 .profile-header h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
+/* 登出按钮 - 白色边框 */
 .logout-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: transparent;
     color: white;
     border: 2px solid white;
-    padding: 10px 24px;
-    border-radius: 8px;
+    padding: 8px 20px;
+    border-radius: 6px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
     background: white;
-    color: #667eea;
-    transform: translateY(-2px);
+    color: #212529;
+    transform: translateY(-1px);
 }
 
+/* Profile内容区域 */
 .profile-content {
     padding: 40px;
 }
 
+/* 信息条目 */
 .info-item {
     display: grid;
     grid-template-columns: 200px 1fr auto;
     align-items: center;
     gap: 20px;
     padding: 20px;
-    border-bottom: 1px solid #e1e5e9;
-    transition: all 0.3s ease;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.2s ease;
 }
 
 .info-item:last-child {
@@ -107,46 +115,51 @@ body.profile-page .navbar {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 600;
-    color: #333;
-    font-size: 16px;
+    font-weight: 500;
+    color: #212529;
+    font-size: 15px;
 }
 
 .icon {
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .info-value {
-    color: #666;
-    font-size: 16px;
+    color: #6c757d;
+    font-size: 15px;
     word-break: break-word;
 }
 
+/* 编辑按钮 - 黑色背景 */
 .edit-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #212529;
     color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 8px;
+    border: 1px solid #212529;
+    padding: 8px 20px;
+    border-radius: 6px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     min-width: 100px;
 }
 
 .edit-btn:hover:not(.disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .edit-btn.disabled {
-    background: #ccc;
+    background: #e9ecef;
+    color: #adb5bd;
+    border-color: #e9ecef;
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 1;
 }
 
-/* 弹窗样式 */
+/* 弹窗遮罩 */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -170,9 +183,10 @@ body.profile-page .navbar {
     }
 }
 
+/* 弹窗内容 */
 .modal-content {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     width: 90%;
     max-width: 500px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
@@ -190,44 +204,49 @@ body.profile-page .navbar {
     }
 }
 
+/* 弹窗头部 */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 24px 30px;
-    border-bottom: 1px solid #e1e5e9;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .modal-header h2 {
     margin: 0;
-    font-size: 22px;
-    color: #333;
+    font-size: 20px;
+    color: #212529;
+    font-weight: 600;
 }
 
+/* 关闭按钮 */
 .close-btn {
     background: none;
     border: none;
-    font-size: 32px;
-    color: #999;
+    font-size: 28px;
+    color: #adb5bd;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-    background: #f0f0f0;
-    color: #333;
+    background: #f8f9fa;
+    color: #212529;
 }
 
+/* 弹窗主体 */
 .modal-body {
     padding: 30px;
 }
 
+/* 表单组 */
 .form-group {
     margin-bottom: 20px;
 }
@@ -235,38 +254,48 @@ body.profile-page .navbar {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #333;
+    color: #212529;
     font-weight: 500;
     font-size: 14px;
 }
 
+/* 输入框 - 白色背景，灰色边框 */
 .form-group input {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e1e5e9;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
+    font-size: 15px;
+    color: #212529;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
     box-sizing: border-box;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #495057;
+    box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.1);
+    background-color: #ffffff;
+}
+
+.form-group input::placeholder {
+    color: #adb5bd;
+    opacity: 1;
 }
 
 .form-help {
     display: block;
     margin-top: 6px;
-    color: #666;
+    color: #6c757d;
     font-size: 12px;
 }
 
+/* 错误提示 */
 .error-message {
-    background-color: #fee;
-    border: 1px solid #fcc;
-    color: #c33;
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
     padding: 12px 16px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -276,10 +305,11 @@ body.profile-page .navbar {
     font-size: 14px;
 }
 
+/* 成功提示 */
 .success-message {
-    background-color: #efe;
-    border: 1px solid #cfc;
-    color: #3c3;
+    background-color: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
     padding: 12px 16px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -293,41 +323,45 @@ body.profile-page .navbar {
     font-size: 16px;
 }
 
+/* 弹窗底部 */
 .modal-footer {
     padding: 20px 30px;
-    border-top: 1px solid #e1e5e9;
+    border-top: 1px solid #e9ecef;
     display: flex;
     justify-content: flex-end;
     gap: 12px;
 }
 
+/* 取消按钮 - 白色背景，灰色边框 */
 .cancel-btn {
     background: transparent;
-    color: #666;
-    border: 2px solid #ddd;
-    padding: 12px 24px;
-    border-radius: 8px;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    padding: 10px 24px;
+    border-radius: 6px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .cancel-btn:hover {
-    background: #f5f5f5;
-    border-color: #999;
+    background: #f8f9fa;
+    border-color: #adb5bd;
+    color: #495057;
 }
 
+/* 保存按钮 - 黑色背景 */
 .save-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    background: #212529;
+    color: #ffffff;
+    border: 1px solid #212529;
+    padding: 10px 24px;
+    border-radius: 6px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -336,15 +370,18 @@ body.profile-page .navbar {
 }
 
 .save-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .save-btn:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
+/* 加载动画 */
 .spinner {
     width: 16px;
     height: 16px;
@@ -369,20 +406,21 @@ body.profile-page .navbar {
         padding: 20px;
         flex-direction: column;
         gap: 15px;
+        text-align: center;
     }
 
     .profile-header h1 {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .profile-content {
-        padding: 20px;
+        padding: 24px 20px;
     }
 
     .info-item {
         grid-template-columns: 1fr;
-        gap: 10px;
-        padding: 15px;
+        gap: 12px;
+        padding: 16px;
     }
 
     .info-label {
@@ -391,12 +429,12 @@ body.profile-page .navbar {
 
     .info-value {
         font-size: 14px;
-        margin-left: 34px;
+        margin-left: 30px;
     }
 
     .edit-btn {
         width: 100%;
-        margin-left: 34px;
+        margin-left: 30px;
     }
 
     .modal-content {

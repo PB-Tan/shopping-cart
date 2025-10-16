@@ -45,13 +45,13 @@ public class LoginController {
     // By this point, customer exists and password matches
     // set attribute to session for future use
     session.setAttribute("username", username.toLowerCase());
-    // After login, redirect to the frontend SPA catalogue
-    return "redirect:https://localhost:5173/catalogue";
+    // After login, redirect to the backend catalogue
+    return "redirect:/catalogue";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session, Model model) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:https://localhost:5173/login";
     }
 }

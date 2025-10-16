@@ -41,6 +41,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/home" element={<Navigate to="http://localhost:8080/catalogue" replace />} />
             <Route path="/products" element={<ProductManagement />} />
             <Route path="/create" element={<CreateProduct />} />
           </Routes>

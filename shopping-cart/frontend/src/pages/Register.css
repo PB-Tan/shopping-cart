@@ -1,25 +1,28 @@
+/* 整体容器 - 与Login统一的白色主调 */
 .register-container {
     min-height: calc(100vh + 80px);
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     padding: 60px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* 注册卡片 - 纯白背景 */
 .register-card {
-    background: white;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    padding: 48px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 520px;
+    max-width: 540px;
     animation: fadeInUp 0.6s ease-out;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 @keyframes fadeInUp {
@@ -33,32 +36,40 @@
     }
 }
 
+/* 标题区域 - 黑色主标题 */
 .register-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .register-header h1 {
-    color: #333;
+    color: #212529;
     font-size: 28px;
     font-weight: 600;
     margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
 }
 
 .register-header p {
-    color: #666;
-    font-size: 16px;
+    color: #6c757d;
+    font-size: 14px;
     margin: 0;
+    font-weight: 400;
 }
 
+/* 表单区域 */
 .register-form {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
+/* 表单组 */
 .form-group {
     margin-bottom: 20px;
 }
 
+/* 表单行（用于并排显示） */
 .form-row {
     display: flex;
     gap: 16px;
@@ -72,35 +83,41 @@
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #333;
+    color: #212529;
     font-weight: 500;
     font-size: 14px;
 }
 
+/* 输入框 - 白色背景，灰色边框 */
 .form-group input {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e1e5e9;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
+    font-size: 15px;
+    color: #212529;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
     box-sizing: border-box;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #495057;
+    box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.1);
+    background-color: #ffffff;
 }
 
 .form-group input::placeholder {
-    color: #a0a0a0;
+    color: #adb5bd;
+    opacity: 1;
 }
 
+/* 错误提示 */
 .error-message {
-    background-color: #fee;
-    border: 1px solid #fcc;
-    color: #c33;
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
     padding: 12px 16px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -110,10 +127,11 @@
     font-size: 14px;
 }
 
+/* 成功提示 */
 .success-message {
-    background-color: #efe;
-    border: 1px solid #cfc;
-    color: #3c3;
+    background-color: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
     padding: 12px 16px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -127,26 +145,30 @@
     font-size: 16px;
 }
 
+/* 注册按钮 - 黑色背景 */
 .register-button {
     width: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 14px 24px;
+    background: #212529;
+    color: #ffffff;
+    border: 1px solid #212529;
+    padding: 12px 24px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    letter-spacing: 0.3px;
 }
 
 .register-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .register-button:active {
@@ -154,10 +176,11 @@
 }
 
 .register-button:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
+/* 加载动画 */
 .spinner {
     width: 16px;
     height: 16px;
@@ -172,38 +195,51 @@
     100% { transform: rotate(360deg); }
 }
 
+/* 页脚区域 */
 .register-footer {
     text-align: center;
     padding-top: 20px;
-    border-top: 1px solid #e1e5e9;
-    color: #666;
+    border-top: 1px solid #e9ecef;
+    color: #6c757d;
     font-size: 14px;
+    margin-top: 24px;
 }
 
+/* 链接按钮 - 灰色 */
 .link-button {
     background: none;
     border: none;
-    color: #667eea;
+    color: #495057;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease;
     padding: 0;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .link-button:hover {
-    color: #764ba2;
+    color: #212529;
     text-decoration: underline;
 }
 
-/* Responsive Design */
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .register-card {
+        padding: 40px 32px;
+    }
+}
+
 @media (max-width: 480px) {
     .register-container {
-        padding: 10px;
+        padding: 40px 10px;
     }
-    
+
     .register-card {
-        padding: 30px 20px;
+        padding: 32px 24px;
+    }
+
+    .register-header h1 {
+        font-size: 24px;
     }
 
     .form-row {

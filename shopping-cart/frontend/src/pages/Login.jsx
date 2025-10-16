@@ -22,8 +22,8 @@ const Login = () => {
                 if (!res.ok) return;
                 const body = await res.json();
                 if (body.code === 200 && body.data) {
-                    console.log('Session valid, redirecting to profile');
-                    navigate('/profile');
+                    console.log('Session valid, redirecting to home');
+                    window.location.href = 'http://localhost:8080/catalogue';
                 }
             } catch (e) {
                 console.log('Session check failed:', e.message);
@@ -104,8 +104,8 @@ const Login = () => {
             if (result.code === 200 && result.data) {
                 // 使用 session 进行登录状态管理；前端无需写 cookie
                 localStorage.setItem('user', JSON.stringify(result.data));
-                console.log('Login successful (session), redirecting to profile');
-                navigate('/profile');
+                console.log('Login successful (session), redirecting to home');
+                window.location.href = 'http://localhost:8080/catalogue';
             } else {
                 setError(result.message || 'Invalid username or password');
             }
@@ -123,10 +123,6 @@ const Login = () => {
 
     return (
         <div className="login-container">
-          <button className="back-button" onClick={() => { window.location.href = 'http://localhost:8080/catalogue'; }} aria-label="Go back">
-              ← Back
-          </button>
-            <div className="login-description">This page is used to sign in to your account.</div>
             <div className="login-card">
                 <div className="login-header">
                     <h1>Welcome Back</h1>
@@ -206,6 +202,12 @@ const Login = () => {
                         </Link>
                     </div>
                 </div>
+
+                <div style={{ textAlign: 'center', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #dee2e6' }}>
+                    <a href="http://localhost:8080/catalogue" className="link-button" style={{ fontSize: '0.875rem' }}>
+                        🏠 Browse Products as Guest
+                    </a>
+                </div>
             </div>
         </div>
     );
@@ -231,7 +233,7 @@ window.onSignIn = async function(googleUser) {
         const result = await resp.json();
         if (result.code === 200 && result.data) {
             localStorage.setItem('user', JSON.stringify(result.data));
-            window.location.href = '/profile';
+            window.location.href = 'http://localhost:8080/catalogue';
         } else {
             console.error('Login failed', result);
         }
