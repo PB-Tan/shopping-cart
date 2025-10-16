@@ -443,9 +443,31 @@ public class CustomerController {
             return Result.error("Invalid name");
         }
 
-        entity.setPassword(newPassword);
-        customerService.updateCustomerPassworde(name, newPassword);
-        return Result.success("Password changed successfully");
+        if (newPassword == null || newPassword.isEmpty()) {
+            return Result.error("New password is required");
+        }
+
+        // Generate a random salt and hash the new password using SHA-256(salt + password)
+        try {
+            byte[] saltBytes = new byte[16];
+            new java.security.SecureRandom().nextBytes(saltBytes);
+            StringBuilder sbSalt = new StringBuilder();
+            for (byte b : saltBytes) sbSalt.append(String.format("%02x", b));
+            String generatedSalt = sbSalt.toString();
+
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest((generatedSalt + newPassword).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) sb.append(String.format("%02x", b));
+            String hashed = sb.toString();
+
+            entity.setPassword(hashed);
+            entity.setPasswordSalt(generatedSalt);
+            customerService.updateCustomerPassworde(name, hashed);
+            return Result.success("Password changed successfully");
+        } catch (Exception e) {
+            return Result.error("Server error computing hash: " + e.getMessage());
+        }
     }
 
     // 根据用户名获取用户信息
