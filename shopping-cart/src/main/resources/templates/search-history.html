@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Search history</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div th:replace="~{fragments/layout :: siteHeader}"></div>
+    <div class="container mt-4">
+      <h3 th:text="${'Search history for ' + username}">Search history</h3>
+      <div class="table-responsive mt-3">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Search By</th>
+              <th>Keyword</th>
+              <th>Results</th>
+              <th>Cart Snapshot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="log : ${logs}">
+              <td th:text="${#temporals.format(log.createdAt, 'yyyy-MM-dd HH:mm')}" />
+              <td th:text="${log.searchby}" />
+              <td>
+                <a th:href="@{/catalogue/search(searchby=${log.searchby},keyword=${log.keyword})}"
+                   th:text="${log.keyword}"></a>
+              </td>
+              <td th:text="${log.resultCount != null && log.resultCount > 0 ? 'Found ' + log.resultCount : 'Not found'}" />
+              <td th:text="${log.cartSnapshot}" />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <a class="btn btn-secondary" th:href="@{/catalogue}">Back to catalogue</a>
+    </div>
+  </body>
+  </html>
+
