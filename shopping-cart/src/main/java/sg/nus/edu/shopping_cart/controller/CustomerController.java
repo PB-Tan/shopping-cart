@@ -251,6 +251,7 @@ public class CustomerController {
             String name = request.get("name");
             // support client-side hashed password
             String passwordHash = request.get("passwordHash");
+            String password = request.get("password");
             String passwordSalt = request.get("passwordSalt");
             String email = request.get("email");
             String firstName = request.get("firstName");
