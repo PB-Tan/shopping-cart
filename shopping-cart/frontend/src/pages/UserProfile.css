@@ -12,6 +12,11 @@
     box-sizing: border-box;
 }
 
+/* Hide global navbar when viewing profile to remove the top block */
+body.profile-page .navbar {
+    display: none;
+}
+
 .loading {
     text-align: center;
     color: white;

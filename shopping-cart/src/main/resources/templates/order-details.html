@@ -7,49 +7,254 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <style>
+      body {
+        background: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      .order-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .table-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e8e8e8;
+        overflow: hidden;
+        margin-bottom: 30px;
+      }
+
+      .table {
+        margin-bottom: 0;
+      }
+
+      .table thead th {
+        background: #fafafa;
+        color: #2c3e50;
+        font-weight: 600;
+        border-bottom: 2px solid #e8e8e8;
+        padding: 16px;
+        font-size: 0.95rem;
+      }
+
+      .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        color: #2c3e50;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .table tbody tr {
+        transition: background-color 0.2s ease;
+      }
+
+      .table tbody tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      .table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .btn-outline-primary {
+        color: #2c3e50;
+        border: 2px solid #2c3e50;
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .btn-outline-primary:hover {
+        background: #2c3e50;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+      }
+
+      /* View Review button - light gray */
+      .btn-view-review {
+        color: #95a5a6;
+        border: 2px solid #95a5a6;
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        min-width: 110px;
+        text-align: center;
+        display: inline-block;
+      }
+
+      .btn-view-review:hover {
+        background: #95a5a6;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        text-decoration: none;
+      }
+
+      /* Leave Review button - dark gray */
+      .btn-leave-review {
+        color: #2c3e50;
+        border: 2px solid #2c3e50;
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        min-width: 110px;
+        text-align: center;
+        display: inline-block;
+      }
+
+      .btn-leave-review:hover {
+        background: #2c3e50;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+        text-decoration: none;
+      }
+
+      .summary-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e8e8e8;
+        overflow: hidden;
+      }
+
+      .summary-header {
+        background: #fafafa;
+        padding: 16px 20px;
+        border-bottom: 2px solid #e8e8e8;
+      }
+
+      .summary-header strong {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .summary-body {
+        padding: 20px;
+      }
+
+      .summary-body .d-flex {
+        margin-bottom: 12px;
+        color: #2c3e50;
+      }
+
+      .summary-body hr {
+        border-top: 2px solid #e8e8e8;
+        margin: 20px 0;
+      }
+
+      .summary-body .h5 {
+        color: #2c3e50;
+        font-weight: 700;
+      }
+
+      .btn-secondary {
+        background: #7f8c8d;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 28px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background: #6c7a7b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .back-button-container {
+        text-align: center;
+        padding: 40px 0;
+      }
+
+      @media (max-width: 768px) {
+        .order-container {
+          padding: 30px 15px;
+        }
+
+        .page-title {
+          font-size: 1.6rem;
+        }
+
+        .table {
+          font-size: 0.9rem;
+        }
+
+        .table thead th,
+        .table tbody td {
+          padding: 12px 8px;
+        }
+
+        .summary-card {
+          margin-top: 30px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div th:replace="fragments/layout :: siteHeader"></div>
-    <h2 class="text-center my-4"> Order details </h2>
-    <div class="mx-auto px-5" style="max-width: 75%; padding-top: 50px">
-    <table class="table table-hover table-bordered table-condensed">
-      <thead class="thead-light">
-        <tr>
-          <th>Id</th>
-          <th>Product Name</th>
-          <th>Unit Price</th>
-          <th>Quantity</th>
-          <th>Total paid</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="orderItem : ${orderItems}">
-          <td th:text="${orderItem.id}" />
-          <td th:text="${orderItem.product.name}" />
-          <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.product.unitPrice,1,2)}"/>
-          <td th:text="${orderItem.quantity}" />
-          <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.itemTotal,1,2)}" /> 
-          <td>
-            <a
-              th:href="@{/catalogue/{id}#review-section(id=${orderItem.product.id})}"
-              class="btn btn-sm btn-outline-primary"
-              th:text="${reviewStatusMap[orderItem.product.id] ? 'View Review' : 'Leave Review'}"
-            >
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <div class="container mt-5">
-      <div class = "row">
-      <div class="col-md-5 ml-auto">
-          <div class="card shadow-sm cart-summary">
-            <div class="card-header bg-white">
+    <div class="order-container">
+      <h2 class="page-title">Order Details</h2>
+      <div class="table-card">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Product Name</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Total paid</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="orderItem : ${orderItems}">
+              <td th:text="${orderItem.id}" />
+              <td th:text="${orderItem.product.name}" />
+              <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.product.unitPrice,1,2)}"/>
+              <td th:text="${orderItem.quantity}" />
+              <td th:text="'$'+ ${#numbers.formatDecimal(orderItem.itemTotal,1,2)}" />
+              <td>
+                <a
+                  th:href="@{/catalogue/{id}#review-section(id=${orderItem.product.id})}"
+                  th:classappend="${reviewStatusMap[orderItem.product.id] ? 'btn btn-sm btn-view-review' : 'btn btn-sm btn-leave-review'}"
+                  th:text="${reviewStatusMap[orderItem.product.id] ? 'View Review' : 'Leave Review'}"
+                >
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row">
+        <div class="col-md-5 ml-auto">
+          <div class="summary-card">
+            <div class="summary-header">
               <strong>Order Total</strong>
             </div>
-            <div class="card-body">
+            <div class="summary-body">
               <div class="d-flex justify-content-between">
                 <span>Subtotal</span>
                 <span
@@ -74,10 +279,9 @@
                   >0.00</span
                 >
               </div>
-              <hr class="my-3" />
+              <hr />
               <div class="d-flex justify-content-between">
-                <span class="h5 mb-0"
-                >Grand total</span>
+                <span class="h5 mb-0">Grand total</span>
                 <span
                   class="h5 mb-0"
                   th:text="${'$' + #numbers.formatDecimal(order.grandTotal,1,'COMMA',2, 'POINT')}"
@@ -85,16 +289,15 @@
                 >
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="back-button-container">
+        <a th:href="@{/order/history}" class="btn btn-secondary">
+          Back to Orders
+        </a>
       </div>
     </div>
-    </div>
-    <div class="container-lg" style="text-align: center; padding-top: 100px;">
-    <a
-      th:href="@{/order/history}"
-              class="btn btn-secondary">
-            Back to Orders
-        </a>
-    </div>
-    
   </body>
 </html>

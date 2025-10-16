@@ -87,17 +87,10 @@ public class ReviewController {
             if (review == null) {
                 redirectAttributes.addFlashAttribute("error", "Review does not exist");
             } else {
-                // Debug info: print username comparison
-                String reviewUsername = review.getCustomer() != null ? review.getCustomer().getUsername() : "NULL";
-                System.out.println("DEBUG - Session username: [" + username + "]");
-                System.out.println("DEBUG - Review username: [" + reviewUsername + "]");
-                System.out.println("DEBUG - Are they equal? " + reviewUsername.equals(username));
-
                 if (review.getCustomer() == null) {
                     redirectAttributes.addFlashAttribute("error", "Review's customer information is missing");
-                } else if (!review.getCustomer().getUsername().equals(username)) {
-                    redirectAttributes.addFlashAttribute("error", "You can only delete your own reviews (Session: "
-                            + username + ", Review: " + reviewUsername + ")");
+                } else if (!review.getCustomer().getUsername().toLowerCase().equals(username.toLowerCase())) {
+                    redirectAttributes.addFlashAttribute("error", "You can only delete your own reviews");
                 } else {
                     reviewService.deleteReview(reviewId);
                     redirectAttributes.addFlashAttribute("success", "Review deleted successfully");

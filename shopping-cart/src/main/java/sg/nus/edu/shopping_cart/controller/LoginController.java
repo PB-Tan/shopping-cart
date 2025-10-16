@@ -16,7 +16,10 @@ public class LoginController {
 
     @GetMapping("/login")
     public String displayLogin() {
-        return "login";
+        // In this app, the React frontend handles the login UI/routing.
+        // Redirect requests for /login to the frontend root so the React router
+        // can display the client-side Login page.
+        return "redirect:/";
     }
 
     @PostMapping("/login")

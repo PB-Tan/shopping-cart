@@ -10,9 +10,17 @@
     .search-form .form-control,
     .search-form .form-control:focus {
       border-radius: 8px;
-      border: 1px solid #ddd;
+      border: 2px solid #ddd;
       transition: all 0.3s ease;
       font-size: 0.95rem;
+      color: #2c3e50;
+      background: white;
+      height: 45px;
+    }
+
+    .search-form .form-control::placeholder {
+      color: #95a5a6;
+      opacity: 1;
     }
 
     .search-form .form-control:focus {
@@ -23,8 +31,9 @@
 
     .search-form label {
       color: #2c3e50;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: block;
     }
 
     .search-form .btn-primary {
@@ -192,15 +201,15 @@
         <div class="col-md-8 order-2 order-md-1">
           <form th:action="@{/catalogue/search}" method="GET" class="search-form">
             <div class="form-row align-items-end">
-              <div class="form-group col-12 col-md-4">
-                <label for="searchBy" class="mb-1">Search By:</label>
+              <div class="form-group col-12 col-md-3 mb-md-0">
+                <label for="searchBy" class="mb-2">Search By:</label>
                 <select class="form-control" id="searchBy" name="searchby">
                   <option value="name">Product Name</option>
                   <option value="category">Product Category</option>
                 </select>
               </div>
-              <div class="form-group col-12 col-md-5">
-                <label for="keyword" class="mb-1">Enter Keyword:</label>
+              <div class="form-group col-12 col-md-6 mb-md-0">
+                <label for="keyword" class="mb-2">Enter Keyword:</label>
                 <input
                   type="text"
                   id="keyword"
@@ -209,8 +218,8 @@
                   placeholder="Search for products..."
                 />
               </div>
-              <div class="form-group col-12 col-md-3">
-                <button type="submit" class="btn btn-primary btn-block">
+              <div class="form-group col-12 col-md-3 mb-md-0">
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 32px;">
                   🔍 Search
                 </button>
               </div>

@@ -1,10 +1,10 @@
 -- ===== CUSTOMERS =====
 INSERT INTO `customer`
-(username, first_name, last_name, email, password, address, country, postal_code, phone_number, provider_customer_id)
+(username, first_name, last_name, email, password, password_salt, address, country, postal_code, phone_number, provider_customer_id)
 VALUES
-('alice','Alice','Tan','alice@example.com','pw123','123 Orchard Rd','Singapore','238888','+65-81112222','CUST001'),
-('ben','Ben','Ng','ben@example.com','pw123','88 Serangoon Ave','Singapore','556677','+65-82223333','CUST002'),
-('charlie','Charlie','Lim','charlie@example.com','pw123','1 Pasir Ris St 1','Singapore','510101','+65-83334444','CUST003');
+('alice','Alice','Tan','alice@example.com','e59107728e9d5e917eb6c1782158b264300383e96f659ad84f8432f57ef8b958','cc01f42d4522222b7c2b6f3926bcd417','123 Orchard Rd','Singapore','238888','+65-81112222','CUST001'),
+('ben','Ben','Ng','ben@example.com','8ef3775ae8c2caec3ab105a02f63a7220b0141b813b141678f54dab7d3258b59','7dbf8e836430178d750718b96df3b83a','88 Serangoon Ave','Singapore','556677','+65-82223333','CUST002'),
+('charlie','Charlie','Lim','charlie@example.com','1c2c1e519f9e623a4056adfa0dc11cef39283f7848ec19ccaaf4c8228eb30832','2524ca55b397414f11480575c2031263','1 Pasir Ris St 1','Singapore','510101','+65-83334444','CUST003');
 
 -- ===== CARTS (owning side FK to customer) =====
 INSERT INTO `cart` (customer_username)
