@@ -10,18 +10,18 @@
     <div class="container mt-4">
       <h3 th:text="${'Search history for ' + username}">Search history</h3>
       <div class="table-responsive mt-3">
-        <table class="table table-striped">
+        <table class="table table-hover">
           <thead>
             <tr>
               <th>When</th>
-              <th>Search By</th>
+              <!-- <th>Search By</th> -->
               <th>Keyword</th>
-              <th>Results</th>
+              <!-- <th>Results</th> -->
               <!-- <th>Cart Snapshot</th> -->
             </tr>
           </thead>
           <tbody>
-            <tr th:each="log : ${logs}">
+            <!-- <tr th:each="log : ${logs}">
               <td th:text="${#temporals.format(log.createdAt, 'yyyy-MM-dd HH:mm')}" />
               <td th:text="${log.searchby}" />
               <td>
@@ -29,6 +29,15 @@
                    th:text="${log.keyword}"></a>
               </td>
               <td th:text="${log.resultCount != null && log.resultCount > 0 ? 'Found ' + log.resultCount : 'Not found'}" />
+              <!-- <td th:text="${log.cartSnapshot}" /> -->
+            </tr> 
+            <tr th:each="viewlog : ${viewlogs}">
+              <td th:text="${#temporals.format(viewlog.createdAt, 'yyyy-MM-dd HH:mma')}" />
+              <td>
+                <a th:href="@{/catalogue/{id}(id = ${viewlog.productId})}"
+                   th:text="${viewlog.productName}"></a>
+              </td>
+              <!-- <td th:text="${log.resultCount != null && log.resultCount > 0 ? 'Found ' + log.resultCount : 'Not found'}" /> -->
               <!-- <td th:text="${log.cartSnapshot}" /> -->
             </tr>
           </tbody>

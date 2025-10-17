@@ -14,6 +14,9 @@ public class WebAppConfig implements WebMvcConfigurer {
     @Autowired
     SearchLoggingInterceptor searchLoggingInterceptor;
 
+    @Autowired
+    ProductViewLoggingInterceptor productViewLoggingInterceptor;
+
     @Override
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
     registry.addInterceptor(securityInterceptor)
@@ -25,5 +28,8 @@ public class WebAppConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(searchLoggingInterceptor)
                 .addPathPatterns("/catalogue/search");
+
+        registry.addInterceptor(productViewLoggingInterceptor)
+                .addPathPatterns("/catalogue/*");
     }
 }

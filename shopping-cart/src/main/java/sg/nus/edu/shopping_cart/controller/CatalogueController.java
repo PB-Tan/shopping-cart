@@ -105,9 +105,6 @@ public class CatalogueController {
         } else {
             return "home";
         }
-
-  
-
         return "searchResults";
 
     }
@@ -126,11 +123,11 @@ public class CatalogueController {
         if (pro != null) {
             String viewer = (String) session.getAttribute("username");
             // persist product view log
-            ProductViewLog viewLog = new ProductViewLog();
-            viewLog.setUsername(viewer);
-            viewLog.setProductId(pro.getId());
-            viewLog.setProductName(pro.getName());
-            productViewLogService.save(viewLog);
+            // ProductViewLog viewLog = new ProductViewLog();
+            // viewLog.setUsername(viewer);
+            // viewLog.setProductId(pro.getId());
+            // viewLog.setProductName(pro.getName());
+            // productViewLogService.save(viewLog);
 
             // also store in SearchLog so it appears in search history
             if (viewer != null) {

@@ -45,6 +45,7 @@ public class SearchLoggingInterceptor implements HandlerInterceptor {
 
         String searchby = request.getParameter("searchby");
         String keyword = request.getParameter("keyword");
+        
 
         HttpSession session = request.getSession(false);
         String username = session == null ? null : (String) session.getAttribute("username");

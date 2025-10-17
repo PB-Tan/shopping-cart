@@ -33,6 +33,8 @@ public class SearchLog {
 
     private LocalDateTime createdAt;
 
+    private int productId;
+
     @PrePersist  // JPA callback to set createdAt before saving in to database
     public void onCreate() {
         if (createdAt == null) {

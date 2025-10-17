@@ -1,5 +1,7 @@
 package sg.nus.edu.shopping_cart.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,11 @@ public class ProductViewLogService {
     @Transactional
     public ProductViewLog save(ProductViewLog log) {
         return repository.save(log);
+    }
+
+    @Transactional (readOnly = false)
+    public List<ProductViewLog> findByUsername(String username) {
+        return repository.findByUsernameOrderByCreatedAtDesc(username);
     }
 }
 
