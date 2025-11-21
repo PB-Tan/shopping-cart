@@ -23,7 +23,7 @@ import sg.nus.edu.shopping_cart.model.SearchLog;
 import sg.nus.edu.shopping_cart.service.SearchLogService;
 
 @Controller
-@RequestMapping("/catalogue")
+@RequestMapping("/catalogue", "/")
 public class CatalogueController {
 
     @Autowired
